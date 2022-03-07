@@ -27,10 +27,10 @@ class Condition extends Model
     );
 
     /**
-     * Get all of the flowAction for the Condition
-     */
+     * Get all of the post's flowActions.
+    */
     public function flowActions()
     {
-        return $this->hasMany(FlowAction::class);
+        return $this->morphMany(FlowAction::class, 'linked');
     }
 }

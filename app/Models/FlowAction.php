@@ -34,32 +34,10 @@ class FlowAction extends Model
 
     /**
      * Get the template that owns the FlowAction
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function template()
     {
         return $this->belongsTo(Template::class, 'flow_action_id');
-    }
-
-    /**
-     * Get the channelType that owns the FlowAction
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function channelType()
-    {
-        return $this->belongsTo(ChannelType::class, 'linked_id');
-    }
-
-    /**
-     * Get the condition that owns the FlowAction
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function condition()
-    {
-        return $this->belongsTo(Condition::class, 'linked_id');
     }
 
     /**
@@ -68,5 +46,13 @@ class FlowAction extends Model
     public function campaign()
     {
         return $this->belongsTo(Campaign::class, 'campaign_id');
+    }
+
+    /**
+     * Get all of the owning linked models.
+     */
+    public function linked()
+    {
+        return $this->morphTo();
     }
 }

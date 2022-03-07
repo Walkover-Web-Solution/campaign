@@ -23,11 +23,11 @@ class ChannelType extends Model
         'updated_at'
     );
 
-    /**
-     * Get all of the flowAction for the ChannelType
-     */
+   /**
+     * Get all of the post's flowActions.
+    */
     public function flowActions()
     {
-        return $this->hasMany(FlowAction::class);
+        return $this->morphMany(FlowAction::class, 'linked');
     }
 }
