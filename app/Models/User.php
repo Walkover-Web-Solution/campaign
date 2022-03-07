@@ -17,10 +17,13 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
+
     protected $fillable = [
         'name',
         'email',
-        'password',
+        'ref_id',
+        'company_id',
+        'meta'
     ];
 
     /**
@@ -28,10 +31,6 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
 
     /**
      * The attributes that should be cast.
@@ -39,6 +38,14 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        'meta'=>'json',
     ];
+
+    /**
+     * Get the company that owns the User
+  */
+    public function company()
+    {
+        return $this->belongsTo(Company::class, 'company_id');
+    }
 }
