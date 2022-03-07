@@ -11,11 +11,11 @@ class ChannelType extends Model
 
     protected $fillable = [
         'name',
-        'configuration',
+        'configurations',
     ];
 
     protected $casts = [
-        'configuration' => 'json',
+        'configurations' => 'json',
     ];
 
     protected $hidden = array(
