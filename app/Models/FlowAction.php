@@ -12,7 +12,7 @@ class FlowAction extends Model
     protected $fillables = [
         'campaign_id',
         'linked_id',
-        'table_associated',
+        'linked_type',
         'is_condition'
     ];
     protected $casts = array(
