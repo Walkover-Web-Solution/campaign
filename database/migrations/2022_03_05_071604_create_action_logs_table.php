@@ -15,6 +15,12 @@ class CreateActionLogsTable extends Migration
     {
         Schema::create('action_logs', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('campaign_id');
+            $table->integer('no_of_records');
+            $table->string('status');
+            $table->string('ip');
+            $table->string('ref_id');
+            $table->foreignId('flow_action_id');
             $table->timestamps();
         });
     }

@@ -15,6 +15,10 @@ class CreateTemplateDetailsTable extends Migration
     {
         Schema::create('template_details', function (Blueprint $table) {
             $table->id();
+            $table->string('template_id');
+            $table->string('name');
+            $table->string('content');
+            $table->string('meta');
             $table->timestamps();
         });
     }

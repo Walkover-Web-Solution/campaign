@@ -15,6 +15,15 @@ class CreateCampaignsTable extends Migration
     {
         Schema::create('campaigns', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('company_id');
+            $table->foreignId('user_id');
+            $table->foreignId('company_token_id');
+            $table->string('name');
+            $table->boolean('is_active')->default(true);
+            $table->json('configurations');
+            $table->json('meta');
+            $table->string('slug');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

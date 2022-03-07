@@ -15,6 +15,11 @@ class CreateCompanyTokenIpsTable extends Migration
     {
         Schema::create('company_token_ips', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('token_id')->constrained();
+            $table->ipAddress('ip');
+            $table->foreignId('ip_type_id')->constrained('ip_types');
+            $table->datetime('expires_at')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

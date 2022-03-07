@@ -15,6 +15,9 @@ class CreateCampaignReportsTable extends Migration
     {
         Schema::create('campaign_reports', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('campaign_id');
+            $table->foreignId('action_log_id');
+            $table->json('report');
             $table->timestamps();
         });
     }
