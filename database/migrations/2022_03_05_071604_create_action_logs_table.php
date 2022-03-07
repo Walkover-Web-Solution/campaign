@@ -18,6 +18,7 @@ class CreateActionLogsTable extends Migration
             $table->foreignId('campaign_id');
             $table->integer('no_of_records');
             $table->string('status');
+            $table->string('reason');
             $table->string('ip');
             $table->string('ref_id');
             $table->foreignId('flow_action_id');
