@@ -49,6 +49,8 @@ class ClientTableSeeder extends Seeder
             $clientObj = Client::where('id', $client['email'])->first();
             if (empty($clientObj)) {
                 Client::create($client);
+            } else {
+                $clientObj->update($client);
             }
         }
     }
