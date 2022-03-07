@@ -16,6 +16,6 @@ class DatabaseSeeder extends Seeder
         // \App\Models\User::factory(10)->create();
         $this->call(ClientTableSeeder::class);
         $this->call(ChannelTypeTableSeeder::class);
-        $this->call(IPTypesTableSeeder::class);
+        $this->call(IPTypeTableSeeder::class);
     }
 }

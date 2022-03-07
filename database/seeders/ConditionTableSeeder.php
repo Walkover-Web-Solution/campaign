@@ -44,6 +44,8 @@ class ConditionTableSeeder extends Seeder
             $conditionObj = Condition::where('id', $condition['id'])->first();
             if (empty($conditionObj)) {
                 Condition::create($condition);
+            } else {
+                $conditionObj->update($condition);
             }
         }
     }
