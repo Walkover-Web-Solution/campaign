@@ -26,6 +26,9 @@ class ChannelTypeTableSeeder extends Seeder
                                 "name" => "",
                                 "template_id" => ""
                             ),
+                            "source" => "",
+                            "sourceFieldLabel" => "name",
+                            "sourceFieldValue" => "name",
                             "is_required" => true
                         ),
                         array(
@@ -114,7 +117,7 @@ class ChannelTypeTableSeeder extends Seeder
                         array(
                             "name" => "variables",
                             "type" => 'list',
-                            "label" => 'BCC',
+                            "label" => '',
                             "regex" => "",
                             "source" => "",
                             "sourceFieldLabel" => "",
@@ -136,6 +139,9 @@ class ChannelTypeTableSeeder extends Seeder
                                 "name" => "",
                                 "template_id" => ""
                             ),
+                            "source" => "",
+                            "sourceFieldLabel" => "name",
+                            "sourceFieldValue" => "name",
                             "is_required" => true
                         )
 
@@ -143,7 +149,7 @@ class ChannelTypeTableSeeder extends Seeder
                     "mapping" => array(
                         array(
                             "name" => "mobiles",
-                            "type" => 'text',
+                            "type" => 'list',
                             "is_required" => true,
                             "label" => 'Mobiles',
                             "regex" => "",
@@ -155,7 +161,7 @@ class ChannelTypeTableSeeder extends Seeder
                         array(
                             "name" => "variables",
                             "type" => 'list',
-                            "label" => 'BCC',
+                            "label" => '',
                             "regex" => "",
                             "source" => "",
                             "sourceFieldLabel" => "",
@@ -169,14 +175,41 @@ class ChannelTypeTableSeeder extends Seeder
 
             [
                 "name" => "OTP",
-                "configurations" => new \StdClass
+                "configurations" => array(
+                    "fields" => array(),
+                    "mapping" => array(
+                        array(
+                            "name" => "mobiles",
+                            "type" => 'list',
+                            "is_required" => true,
+                            "label" => 'Mobiles',
+                            "regex" => "",
+                            "source" => "",
+                            "sourceFieldLabel" => "",
+                            "sourceFieldValue" => "",
+                            "is_required" => true
+                        )
+                    )
+                )
             ],
 
             [
                 "name" => "whatsapp",
                 "configurations" => array(
                     "fields" => array(),
-                    "mapping" => array()
+                    "mapping" => array(
+                        array(
+                            "name" => "mobiles",
+                            "type" => 'list',
+                            "is_required" => true,
+                            "label" => 'Mobiles',
+                            "regex" => "",
+                            "source" => "",
+                            "sourceFieldLabel" => "",
+                            "sourceFieldValue" => "",
+                            "is_required" => true
+                        )
+                    )
                 )
             ],
 
@@ -184,13 +217,25 @@ class ChannelTypeTableSeeder extends Seeder
                 "name" => "voice",
                 "configurations" => array(
                     "fields" => array(),
-                    "mapping" => array()
+                    "mapping" => array(
+                        array(
+                            "name" => "mobiles",
+                            "type" => 'list',
+                            "is_required" => true,
+                            "label" => 'Mobiles',
+                            "regex" => "",
+                            "source" => "",
+                            "sourceFieldLabel" => "",
+                            "sourceFieldValue" => "",
+                            "is_required" => true
+                        )
+                    )
                 )
             ],
         ];
 
         foreach ($channelTypes as $channelType) {
-            $channelTypeObj = ChannelType::withoutGlobalScopes()->where('name', $channelType['name'])->first();
+            $channelTypeObj = ChannelType::where('name', $channelType['name'])->first();
             if (empty($channelTypeObj)) {
                 ChannelType::create($channelType);
             } else {

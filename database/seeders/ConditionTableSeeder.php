@@ -14,15 +14,37 @@ class ConditionTableSeeder extends Seeder
      */
     public function run()
     {
-        $condition = Condition::all();
-        if (!$condition->isEmpty()) {
+        /*
+         * getting count of rows from db table
+         */
+        $conditionsCount = Condition::all()->count();
+
+        /*
+         * creating an array for all the rows 
+         */
+        $conditionsArr = [
+            [
+                'id' => 1,
+                'name' => 'wait',
+                'configuration' => array('wait_time' => 'in seconds')
+            ]
+        ];
+
+        /*
+         * checks if this array has same length with the number of rows in database
+         */
+        if ($conditionsCount == count($conditionsArr)) {
             return true;
         }
 
-        Condition::create([
-            'id' => 1,
-            'name' => 'wait',
-            'configuration' => array('wait_time' => 'in seconds')
-        ]);
+        /*
+         * checks for every element in array if it is already present and executing query to create if not
+         */
+        foreach ($conditionsArr as $condition) {
+            $conditionObj = Condition::where('id', $condition['id'])->first();
+            if (empty($conditionObj)) {
+                Condition::create($condition);
+            }
+        }
     }
 }
