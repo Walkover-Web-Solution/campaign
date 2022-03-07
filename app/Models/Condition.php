@@ -29,7 +29,7 @@ class Condition extends Model
     /**
      * Get all of the flowAction for the Condition
      */
-    public function flowAction()
+    public function flowActions()
     {
         return $this->hasMany(FlowAction::class);
     }

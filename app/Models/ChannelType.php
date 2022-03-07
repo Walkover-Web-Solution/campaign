@@ -25,8 +25,8 @@ class ChannelType extends Model
 
     /**
      * Get all of the flowAction for the ChannelType
-    */
-    public function flowAction()
+     */
+    public function flowActions()
     {
         return $this->hasMany(FlowAction::class);
     }

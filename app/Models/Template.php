@@ -16,7 +16,7 @@ class Template extends Model
     ];
 
     protected $casts = [
-        'variables'=>'json',
+        'variables' => 'json',
     ];
 
     protected $hidden = array(
@@ -26,8 +26,8 @@ class Template extends Model
 
     /**
      * Get all of the templateDetail for the Template
-    */
-    public function templateDetail()
+     */
+    public function templateDetails()
     {
         return $this->hasMany(TemplateDetail::class, 'template_id');
     }
@@ -37,9 +37,8 @@ class Template extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function flowAction()
+    public function flowActions()
     {
         return $this->hasMany(FlowAction::class, 'flow_action_id');
     }
-
 }

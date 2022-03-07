@@ -40,10 +40,12 @@ class Campaign extends Model
     {
         parent::boot();
 
-        static::creatxing(function ($campaign) {
+        static::creating(function ($campaign) {
             /**
              * generating  the slug name
-            */
+             * logic : creating the $slug string as "campaignName-campaignnumber"
+             * if slug is empty in campaign table then ad  the $slug value in the refrenced campaign_id
+             */
             $i = 0;
             while (true) {
                 $slug = \Str::slug($campaign->name, '-');
@@ -63,7 +65,7 @@ class Campaign extends Model
 
     /**
      * Get the user that owns the Campaign
-    */
+     */
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
@@ -72,7 +74,7 @@ class Campaign extends Model
     /**
      * Get the company that owns the Campaign
      *
-    */
+     */
     public function company()
     {
         return $this->belongsTo(Company::class, 'company_id');
@@ -81,7 +83,7 @@ class Campaign extends Model
     /**
      * Get the token that owns the Campaign
      *
-    */
+     */
     public function token()
     {
         return $this->belongsTo(token::class, 'company_token_id');
@@ -89,7 +91,7 @@ class Campaign extends Model
 
     /**
      * Get all of the actionLogs for the Campaign
-    */
+     */
     public function actionLogs()
     {
         return $this->hasMany(ActionLog::class, 'campaign_id');
@@ -97,18 +99,17 @@ class Campaign extends Model
 
     /**
      * Get all of the flowAction for the Campaign
-    */
-    public function flowAction()
+     */
+    public function flowActions()
     {
         return $this->hasMany(FlowAction::class, 'campaign_id');
     }
 
     /**
      * Get all of the campaignReports for the Campaign
-    */
+     */
     public function campaignReports()
     {
         return $this->hasMany(CampaignReport::class, 'campaign_id');
     }
-
 }

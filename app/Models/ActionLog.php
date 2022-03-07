@@ -26,14 +26,14 @@ class ActionLog extends Model
     /**
      * Get all of the campaignReport for the ActionLog
      */
-    public function campaignReport()
+    public function campaignReports()
     {
         return $this->hasMany(CampaignReport::class);
     }
 
     /**
      * Get the flowAction that owns the ActionLog
-   */
+     */
     public function flowAction()
     {
         return $this->belongsTo(FlowAction::class, 'flow_action_id');
@@ -41,10 +41,9 @@ class ActionLog extends Model
 
     /**
      * Get the campaign that owns the ActionLog
-   */
+     */
     public function campaign()
     {
         return $this->belongsTo(Campaign::class, 'campaign_id');
     }
-
 }

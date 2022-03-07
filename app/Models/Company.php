@@ -9,18 +9,26 @@ class Company extends Model
 {
     use HasFactory;
     protected $fillable = [
-        ' client_id',
+        'client_id',
         'name',
         'ref_id',
         'email',
         'authkey'
     ];
 
-    public static function boot()
-    {
+    /***
+     * generating  the auth key for company
+     */
+    public static function boot(){
         parent::boot();
-        static::creating(function ($company ){
-            //will generate random auth_key for client
+        static::creating(function($company){
+             $authkey=md5(uniqid(microtime(true).mt_Rand(), true));
+             $company->authkey=$authkey;
+        });
+        static::created(function($company){
+           $company->tokens()->create([
+             'name'=>'Default Token'
+           ]);
         });
     }
 
@@ -28,9 +36,7 @@ class Company extends Model
      * The users that belong to the Company
      */
     public function users(){
-        return  $this->belongsToMany(User::class,'company_user')->using(CompanyUser::class)
-        ->withPivot('ref_id')
-        ->withTimestamps();
+        return  $this->belongsToMany(User::class,'company_user');
      }
 
      /**

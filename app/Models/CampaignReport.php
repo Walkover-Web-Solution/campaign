@@ -16,7 +16,7 @@ class CampaignReport extends Model
     ];
 
     protected $casts = [
-        'report'=>'json',
+        'report' => 'json',
     ];
 
     protected $hidden = array(
@@ -26,7 +26,7 @@ class CampaignReport extends Model
 
     /**
      * Get the actionLog that owns the CampaignReport
-    */
+     */
     public function actionLog()
     {
         return $this->belongsTo(ActionLog::class, 'action_log_id');
@@ -34,11 +34,9 @@ class CampaignReport extends Model
 
     /**
      * Get the campaign that owns the CampaignReport
-    */
+     */
     public function campaign()
     {
         return $this->belongsTo(Campaign::class, 'campaign_id');
     }
-
 }
-
