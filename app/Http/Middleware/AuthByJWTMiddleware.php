@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Exception;
 use Illuminate\Http\Request;
+use Firebase\JWT\JWT;
 
 class AuthByJWTMiddleware
 {
@@ -18,13 +19,14 @@ class AuthByJWTMiddleware
     public function handle(Request $request, Closure $next)
     {
         if (empty($request->header('authorization'))) {
-            throw new \Exception('Unauthorized', 1);
+            throw new \Exception('Invalid Request');
         }
 
         try {
-            $res = JWTDecode($request->header('authrization'));
+            $value = $request->header('authorization');
+            $res = JWTDecode($value);
         } catch (\Exception $e) {
-            throw new \Exception('Unauthorized', 2);
+            throw new \Exception('Unauthorized');
         }
 
         return $next($request);

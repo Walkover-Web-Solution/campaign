@@ -17,7 +17,7 @@ class AuthByAuthkeyMiddleware
     public function handle(Request $request, Closure $next)
     {
         if (empty($request->header('authkey'))) {
-            throw new \Exception('Unauthorized', 1);
+            throw new \Exception('Unauthorized');
         }
 
         //used by MSG91 service 

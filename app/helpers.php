@@ -1,6 +1,7 @@
 <?php
 
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 
 
 function ISTToGMT($date)
@@ -32,5 +33,5 @@ function JWTEncode($value)
 function JWTDecode($value)
 {
     $key = config('services.msg91.jwt_secret');
-    return  JWT::decode($value, $key, array('HS256'));
+    return JWT::decode($value, new Key($key, 'HS256'));
 }
