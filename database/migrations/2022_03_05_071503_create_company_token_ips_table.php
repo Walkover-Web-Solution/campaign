@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUsersTable extends Migration
+class CreateCompanyTokenIpsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CreateUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('company_token_ips', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('company_id');
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->string('ref_id');
-            $table->json('meta');
+            $table->foreignId('token_id')->constrained();
+            $table->ipAddress('ip');
+            $table->foreignId('ip_type_id')->constrained('ip_types');
+            $table->datetime('expires_at')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -31,6 +31,6 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('company_token_ips');
     }
 }
