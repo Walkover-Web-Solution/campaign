@@ -36,7 +36,7 @@ class Company extends Model
      * The users that belong to the Company
      */
     public function users(){
-        return  $this->belongsToMany(User::class,'company_user');
+        return  $this->hasMany(User::class);
      }
 
      /**
