@@ -3,7 +3,6 @@
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
-
 function ISTToGMT($date)
 {
     $date = new \DateTime($date);

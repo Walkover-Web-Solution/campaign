@@ -9,7 +9,7 @@ class FlowAction extends Model
 {
     use HasFactory;
 
-    protected $fillables = [
+    protected $fillable = [
         'campaign_id',
         'linked_id',
         'linked_type',
@@ -24,6 +24,7 @@ class FlowAction extends Model
         'parent_id'
     );
 
+
     /**
      * Get the actionLog that owns the FlowAction
      */
@@ -37,7 +38,7 @@ class FlowAction extends Model
      */
     public function template()
     {
-        return $this->belongsTo(Template::class, 'flow_action_id');
+        return $this->hasOne(Template::class);
     }
 
     /**
