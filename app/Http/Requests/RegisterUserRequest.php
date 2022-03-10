@@ -46,7 +46,13 @@ class RegisterUserRequest extends FormRequest
     public function validated()
     {
         $token=$this->header('authorization');
-        $res= JWTDecode($token);
+        try
+        {
+            $res= JWTDecode($token);
+        }
+        catch (\Exception $e) {
+            return false;
+        }
         return [
             'user'=>array(
                 'name'=>$res->user->username,
