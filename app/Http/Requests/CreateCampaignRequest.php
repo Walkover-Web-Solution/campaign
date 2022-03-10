@@ -81,11 +81,6 @@ class CreateCampaignRequest extends FormRequest
             ]);
         }
 
-        $template = $this->template;
-        if (!isset($template['variables'])) {
-            $template['variables'] = [];
-        }
-        $template['content'] = 'dummy content';
 
         $flow_action = $this->flow_action;
 
@@ -96,7 +91,6 @@ class CreateCampaignRequest extends FormRequest
             'flow_action' => $flow_action,
             'company_token_id' => $token->id,
             'user_id' => $this->user->id,
-            'template' => $template,
             'is_active' => true
         );
     }

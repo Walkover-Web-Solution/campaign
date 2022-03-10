@@ -38,7 +38,7 @@ class FlowAction extends Model
      */
     public function template()
     {
-        return $this->belongsTo(Template::class);
+        return $this->hasOne(Template::class);
     }
 
     /**

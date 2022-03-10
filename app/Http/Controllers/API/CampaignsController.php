@@ -9,7 +9,7 @@ use App\Http\Resources\CustomResource;
 use App\Models\Campaign;
 use App\Models\ChannelType;
 use App\Models\Condition;
-use App\Models\Template;
+use App\Models\TemplateDetail;
 use Illuminate\Http\Request;
 
 class CampaignsController extends Controller
@@ -77,32 +77,51 @@ class CampaignsController extends Controller
      */
     public function store(CreateCampaignRequest $request)
     {
+        //validating request
         $input = $request->validated();
 
+        // create campaign with the company assoication
         $campaign = $request->company->campaigns()->create($input);
 
         $parent_id = null;
+
+        //taking each element of flow_action array and perform action individually
         foreach ($input['flow_action'] as $action) {
+            //create flow_action with created campaign
             $flow_action = $campaign->flowActions()->create($action);
+
+            //set parent id to previously created flow_action and if first set to null
             $flow_action->parent_id = $parent_id;
+
+            //check if type is channel or condition and set is_condition to true if condition
             if ($action['type'] == 'channel') {
                 $linked = ChannelType::where('id', $action['linked_id'])->first();
-            }
-            if ($action['type'] == 'condition') {
+            } else if ($action['type'] == 'condition') {
+                $flow_action->is_condition = true;
                 $linked = Condition::where('id', $action['linked_id'])->first();
             }
+            //link flow_action to the respected linked Model
             $linked->flowActions()->save($flow_action);
 
-            if ($action['type'] == 'condition') {
-                $flow_action->is_condition = true;
-            }
             $flow_action->save();
+            //set parent_id to created flow_action for use of next iteration
             $parent_id = $flow_action->id;
 
-            // $template = Template::where('flow_action_id', $flow_action->id);
-            // if (empty($template)) {
-            //     $flow_action->template()->create($action['template']);
-            // }
+
+            //set variables and content to the template array
+            $template = $action['template'];
+            if (!isset($template['variables'])) {
+                $template['variables'] = [];
+            }
+            $template['content'] = 'dummy content';
+
+            //create Template
+            $tmp = $flow_action->template()->create($template);
+            //check if its details present in TemplateDetail table, if not create one
+            $template_detail = TemplateDetail::where('template_id', $tmp->template_id)->first();
+            if (empty($template_detail)) {
+                $tmp->templateDetails()->create($template);
+            }
         }
 
 
