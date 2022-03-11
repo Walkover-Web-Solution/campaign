@@ -26,5 +26,6 @@ Route::get('/iptypes', [IPTypesController::class, 'index']);
 
 Route::post('/campaigns', [CampaignsController::class, 'store']);
 Route::get('/campaigns', [CampaignsController::class, 'index']);
-Route::get('/channeltypes',[ChannelTypesController::class,'index']);
+Route::get('/channeltypes', [ChannelTypesController::class, 'index']);
 Route::post('/campaigns/{campaign}', [CampaignsController::class, 'update']);
+Route::delete('/campaigns/{campaign}', [CampaignsController::class, 'destroy']);

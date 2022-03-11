@@ -4,7 +4,9 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateCampaignRequest;
+use App\Http\Requests\DeleteCampaignRequest;
 use App\Http\Requests\IndexCampaignRequest;
+use App\Http\Requests\RestoreCampaignRequest;
 use App\Http\Requests\UpdateCampaignRequest;
 use App\Http\Resources\CustomResource;
 use App\Models\Campaign;
@@ -195,8 +197,18 @@ class CampaignsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(DeleteCampaignRequest $request, Campaign $campaign)
     {
-        //
+        // delete all templates related to this campaign via flowActions
+        $campaign->flowActions()->get()->map(function ($item) {
+            $item->template()->delete();
+        });
+
+        // deletes all flow actions realated to this campaign
+        $campaign->flowActions()->delete();
+
+        // delete this campaign
+        $campaign->delete();
+        return new CustomResource(['message' => "Delete Campaign successfully"]);
     }
 }
