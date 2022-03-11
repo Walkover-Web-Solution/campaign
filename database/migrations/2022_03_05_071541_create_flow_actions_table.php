@@ -20,6 +20,7 @@ class CreateFlowActionsTable extends Migration
             $table->string('linked_type');
             $table->integer('parent_id');
             $table->boolean('is_condition');
+            $table->json('configurations');
             $table->timestamps();
         });
     }

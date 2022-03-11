@@ -13,10 +13,12 @@ class FlowAction extends Model
         'campaign_id',
         'linked_id',
         'linked_type',
-        'is_condition'
+        'is_condition',
+        'configurations'
     ];
     protected $casts = array(
         'is_condition' => 'boolean',
+        'configurations'=>'object'
     );
     protected $hidden = array(
         'created_at',
