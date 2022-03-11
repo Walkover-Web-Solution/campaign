@@ -19,7 +19,7 @@ class AuthByJWTMiddleware
     public function handle(Request $request, Closure $next)
     {
         if (empty($request->header('authorization'))) {
-            throw new \Exception('Invalid Request');
+            throw new \Exception('Invalid Request new');
         }
 
         try {

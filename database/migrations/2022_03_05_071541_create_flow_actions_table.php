@@ -17,9 +17,10 @@ class CreateFlowActionsTable extends Migration
             $table->id();
             $table->foreignId('campaign_id');
             $table->foreignId('linked_id');
-            $table->string('linked_type')->default(false);
-            $table->integer('parent_id')->nullable(true);
-            $table->boolean('is_condition')->default(false);
+            $table->string('linked_type');
+            $table->integer('parent_id');
+            $table->boolean('is_condition');
+            $table->json('configurations');
             $table->timestamps();
         });
     }
