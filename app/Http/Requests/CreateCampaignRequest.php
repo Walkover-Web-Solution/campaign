@@ -63,6 +63,7 @@ class CreateCampaignRequest extends FormRequest
             'flow_action' => 'array',
             'flow_action.*.linked_id' => 'numeric',
             'flow_action.*.parent_id' => 'nullable|confirmed',
+            'flow_action.*.configurations' => 'nullable',
             'flow_action.*.template' => 'array',
             'flow_action.*.template.template_id' => 'numeric',
             'flow_action.*.template.name' => 'string',

@@ -149,6 +149,8 @@ class CampaignsController extends Controller
         $parent_id = null;
         //taking each element of flow_action array and perform action individually
         foreach ($input['flow_action'] as $action) {
+            $action['configurations'] = empty($action['configurations']) ? [] : $action['configurations'];
+
             //create flow_action with created campaign
             $flow_action = $campaign->flowActions()->create($action);
 

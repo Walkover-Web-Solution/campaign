@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use phpDocumentor\Reflection\Types\Nullable;
 
 class CreateFlowActionsTable extends Migration
 {
@@ -17,9 +18,9 @@ class CreateFlowActionsTable extends Migration
             $table->id();
             $table->foreignId('campaign_id');
             $table->foreignId('linked_id');
-            $table->string('linked_type');
-            $table->integer('parent_id');
-            $table->boolean('is_condition');
+            $table->string('linked_type')->default(false);
+            $table->integer('parent_id')->nullable();
+            $table->boolean('is_condition')->default(false);
             $table->json('configurations');
             $table->timestamps();
         });
