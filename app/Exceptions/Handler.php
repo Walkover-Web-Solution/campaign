@@ -4,6 +4,10 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -37,5 +41,79 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+
+        $this->renderable(function (ThrottleRequestsException $e, $request) {
+            return response([
+                'message' => 'Too many Attempts'
+            ], 429);
+        });
+
+
+        $this->renderable(function (NotFoundHttpException  $e, $request) {
+
+            $message = $e->getMessage();
+            if (empty($message)) {
+                $message = 'Route not found';
+            } else {
+                if (strpos($message, "App\\Models\\")) {
+                    $message = 'Not Found';
+                }
+            }
+
+            return response([
+                'errors' => $message,
+                'hasError' => true,
+                'status' => 'fail'
+
+            ]);
+        });
+
+
+
+
+
+
+
+
+        $this->renderable(function (ValidationException $e, $request) {
+            return $this->invalidJson($request, $e);
+        });
+
+        $this->renderable(function (\Exception $e, $request) {
+
+            $message = $e->getMessage();
+            return response([
+                'errors' => $message,
+                'hasError' => true,
+                'status' => 'fail'
+            ]);
+        });
+    }
+
+    protected function invalidJson($request, ValidationException $exception)
+    {
+        return response()->json([
+            "status" => "fail",
+            "hasError" => true,
+            'errors'  => $this->transformErrors($exception),
+
+        ]);
+    }
+
+    private function transformErrors(ValidationException $exception)
+    {
+        $errors = [];
+
+        foreach ($exception->errors() as $field => $message) {
+            $errors[] = $message[0];
+            /*
+           $errors[] = [
+               'field' => $field,
+               'message' => $message[0],
+           ];
+           */
+        }
+
+        return $errors;
     }
 }
