@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CampaignsController;
+use App\Http\Controllers\API\ChannelTypesController;
 use App\Http\Controllers\API\IPTypesController;
 use App\Http\Controllers\TestingController;
 use Illuminate\Http\Request;
@@ -25,3 +26,4 @@ Route::get('/iptypes', [IPTypesController::class, 'index']);
 
 Route::post('/campaigns', [CampaignsController::class, 'store']);
 Route::get('/campaigns', [CampaignsController::class, 'index']);
+Route::class('/channeltypes',[ChannelTypesController::class,'index']);
