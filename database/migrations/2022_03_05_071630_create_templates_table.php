@@ -15,6 +15,9 @@ class CreateTemplatesTable extends Migration
     {
         Schema::create('templates', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('flow_action_id');
+            $table->string('template_id');
+            $table->json('variables')->nullable();
             $table->timestamps();
         });
     }

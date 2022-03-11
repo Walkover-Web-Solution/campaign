@@ -15,6 +15,12 @@ class CreateFlowActionsTable extends Migration
     {
         Schema::create('flow_actions', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('campaign_id');
+            $table->foreignId('linked_id');
+            $table->string('linked_type');
+            $table->integer('parent_id');
+            $table->boolean('is_condition');
+            $table->json('configurations');
             $table->timestamps();
         });
     }

@@ -15,6 +15,9 @@ class CreateConditionsTable extends Migration
     {
         Schema::create('conditions', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->boolean('is_boolean');
+            $table->boolean('wait_to_fail');
             $table->timestamps();
         });
     }

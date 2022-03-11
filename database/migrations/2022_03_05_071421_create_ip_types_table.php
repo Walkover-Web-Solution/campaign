@@ -15,6 +15,7 @@ class CreateIpTypesTable extends Migration
     {
         Schema::create('ip_types', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
             $table->timestamps();
         });
     }

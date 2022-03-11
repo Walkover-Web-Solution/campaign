@@ -15,6 +15,13 @@ class CreateTokensTable extends Migration
     {
         Schema::create('tokens', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('company_id');
+            $table->string('name');
+            $table->string('token');
+            $table->boolean('is_active')->default(true);
+            $table->boolean('is_primary')->default(false);
+            $table->string('throttle_limit')->default('1:30')->comment('request per unit of time: time unit in seconds');
+            $table->string('temporary_throttle_limit')->default('10:86400')->comment('request per unit of time: time unit in seconds for tempoarary block ip');
             $table->timestamps();
         });
     }
