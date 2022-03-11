@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateCampaignRequest;
 use App\Http\Requests\IndexCampaignRequest;
+use App\Http\Requests\UpdateCampaignRequest;
 use App\Http\Resources\CustomResource;
 use App\Models\Campaign;
 use App\Models\ChannelType;
@@ -23,7 +24,7 @@ class CampaignsController extends Controller
     {
         $itemsPerPage = $request->input('itemsPerPage', 25);
 
-        $fields = $request->input('fields', 'id,name,is_active,configurations');
+        $fields = $request->input('fields', 'id,name,is_active,slug');
 
 
         $paginator = Campaign::select(explode(',', $fields))->where('company_id', $request->company->id)
@@ -85,6 +86,67 @@ class CampaignsController extends Controller
 
         $parent_id = null;
 
+        if (isset($input['flow_action'])) {
+            $this->createFlowAction($campaign, $input);
+        }
+
+
+        return new CustomResource($campaign);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(UpdateCampaignRequest $request, Campaign $campaign)
+    {
+        $input = $request->validated();
+        $campaign->update($input);
+
+
+        if (isset($input['flow_action'])) {
+
+            // delete all templates attachted to every flowactions of this campaign
+            $campaign->flowActions()->get()->map(function ($item) {
+                $item->template()->delete();
+            });
+
+            // delete all flow actions related to this campaign
+            $campaign->flowActions()->delete();
+
+            $this->createFlowAction($campaign, $input);
+        }
+        return new CustomResource($campaign);
+    }
+
+    private function createFlowAction(Campaign $campaign, $input)
+    {
+        $parent_id = null;
         //taking each element of flow_action array and perform action individually
         foreach ($input['flow_action'] as $action) {
             //create flow_action with created campaign
@@ -123,43 +185,6 @@ class CampaignsController extends Controller
                 $tmp->templateDetails()->create($template);
             }
         }
-
-
-        return new CustomResource($campaign);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
     }
 
     /**

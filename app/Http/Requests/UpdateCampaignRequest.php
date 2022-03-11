@@ -3,12 +3,11 @@
 namespace App\Http\Requests;
 
 use App\Models\Company;
-use App\Models\Token;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class CreateCampaignRequest extends FormRequest
+class UpdateCampaignRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -17,7 +16,6 @@ class CreateCampaignRequest extends FormRequest
      */
     public function authorize()
     {
-
         //check for authorization key in header
         if (!($this->hasHeader('authorization'))) {
             return false;
@@ -56,43 +54,56 @@ class CreateCampaignRequest extends FormRequest
      */
     public function rules()
     {
-        $validationArray = [
-            'name' => ['required', 'string', 'min:3', 'max:50', Rule::unique('campaigns', 'name')->where(function ($query) {
+        return [
+            'name' => ['nullable', 'string', 'min:3', 'max:50', Rule::unique('campaigns', 'name')->where(function ($query) {
                 return $query->where('company_id', $this->company->id);
+            })->ignore($this->campaign->id)],
+            'company_token_id' => ['nullable', Rule::exists('company_tokens', 'id')->where(function ($query) {
+                $query->where('company_id', $this->company->id);
             })],
-            'flow_action' => 'array',
-            'flow_action.*.linked_id' => 'numeric',
-            'flow_action.*.parent_id' => 'nullable|confirmed',
-            'flow_action.*.template' => 'array',
-            'flow_action.*.template.template_id' => 'numeric',
-            'flow_action.*.template.name' => 'string',
+            'flow_action' => 'nullable|array',
+            'is_active' => 'nullable',
+            'flow_action.*.template' => 'nullable|array',
+            'flow_action.*.template.template_id' => 'nullable|numeric',
+            'flow_action.*.template.name' => 'nullable|string',
+            'flow_action.*.template.content' => 'nullable',
             'flow_action.*.template.variables' => 'nullable|array',
             'flow_action.*.template.meta' => 'nullable'
         ];
-        return $validationArray;
     }
 
     public function validated()
     {
+        $input = $this->validator->validated();
+
+        if (isset($this->flow_action)) {
+            $input['flow_action'] = $this->flow_action;
+        } else {
+            $input['flow_action'] = [];
+        }
+
+        if (isset($this->configurations)) {
+            $input['configurations'] = $this->configurations;
+        } else {
+            $input['configurations'] = [];
+        }
+
         $token = $this->company->tokens()->first();
         if (empty($token)) {
             $token = $this->company->tokens()->create([
                 'name' => 'Default Token'
             ]);
         }
+        $input['company_token_id'] = $token->id;
+        $input['user_id'] = $this->user->id;
 
+        if (isset($this->is_active)) {
+            $input['is_active'] = $this->is_active;
+        }
 
-        if (isset($this['flow_action']))
-            $flow_action = $this->flow_action;
-
-        return array(
-            'name' => $this->name,
-            'configurations' => empty($this->configurations) ? [] : $this->configurations,
-            'meta' => [],
-            'flow_action' => empty($flow_action) ? [] : $flow_action,
-            'company_token_id' => $token->id,
-            'user_id' => $this->user->id,
-            'is_active' => true
-        );
+        if (empty($this->company_token_id)) {
+            $input['company_token_id'] = $this->campaign->company_token_id;
+        }
+        return $input;
     }
 }
