@@ -43,7 +43,7 @@ class Company extends Model
       * Get all of the tokens and campaign for the Company
     */
       public function tokens(){
-        return $this->hasMany(CompanyToken::class);
+        return $this->hasMany(Token::class);
        }
 
 
