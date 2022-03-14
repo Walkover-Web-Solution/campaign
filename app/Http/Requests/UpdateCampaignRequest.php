@@ -58,7 +58,7 @@ class UpdateCampaignRequest extends FormRequest
             'name' => ['nullable', 'string', 'min:3', 'max:50', Rule::unique('campaigns', 'name')->where(function ($query) {
                 return $query->where('company_id', $this->company->id);
             })->ignore($this->campaign->id)],
-            'token_id' => ['nullable', Rule::exists('company_tokens', 'id')->where(function ($query) {
+            'token_id' => ['nullable', Rule::exists('tokens', 'id')->where(function ($query) {
                 $query->where('company_id', $this->company->id);
             })],
             'flow_action' => 'nullable|array',
