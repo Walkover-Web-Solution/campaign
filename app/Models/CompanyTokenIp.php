@@ -13,6 +13,7 @@ class CompanyTokenIp extends Model
     protected $fillable = [
         'ip',
         'expires_at',
+        'company_token_id',
         'ip_type_id'
     ];
     protected $hidden = array(
