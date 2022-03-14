@@ -42,7 +42,7 @@ class CampaignsController extends Controller
                     $query->where('is_active', (bool)$request->is_active);
                 }
                 if ($request->has('token_id')) {
-                    $query->where('company_token_id', $request->token_id);
+                    $query->where('token_id', $request->token_id);
                 }
             })
             ->orderBy('id', 'desc')

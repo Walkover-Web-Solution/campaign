@@ -91,7 +91,7 @@ class CreateCampaignRequest extends FormRequest
             'configurations' => empty($this->configurations) ? [] : $this->configurations,
             'meta' => [],
             'flow_action' => empty($flow_action) ? [] : $flow_action,
-            'company_token_id' => $token->id,
+            'token_id' => $token->id,
             'user_id' => $this->user->id,
             'is_active' => true
         );

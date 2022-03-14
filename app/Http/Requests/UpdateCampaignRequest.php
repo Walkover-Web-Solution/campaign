@@ -58,7 +58,7 @@ class UpdateCampaignRequest extends FormRequest
             'name' => ['nullable', 'string', 'min:3', 'max:50', Rule::unique('campaigns', 'name')->where(function ($query) {
                 return $query->where('company_id', $this->company->id);
             })->ignore($this->campaign->id)],
-            'company_token_id' => ['nullable', Rule::exists('company_tokens', 'id')->where(function ($query) {
+            'token_id' => ['nullable', Rule::exists('company_tokens', 'id')->where(function ($query) {
                 $query->where('company_id', $this->company->id);
             })],
             'flow_action' => 'nullable|array',
@@ -94,15 +94,15 @@ class UpdateCampaignRequest extends FormRequest
                 'name' => 'Default Token'
             ]);
         }
-        $input['company_token_id'] = $token->id;
+        $input['token_id'] = $token->id;
         $input['user_id'] = $this->user->id;
 
         if (isset($this->is_active)) {
             $input['is_active'] = $this->is_active;
         }
 
-        if (empty($this->company_token_id)) {
-            $input['company_token_id'] = $this->campaign->company_token_id;
+        if (empty($this->token_id)) {
+            $input['token_id'] = $this->campaign->token_id;
         }
         return $input;
     }

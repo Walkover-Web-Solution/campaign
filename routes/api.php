@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CampaignsController;
 use App\Http\Controllers\API\ChannelTypesController;
+use App\Http\Controllers\API\CompanyTokenIPsController;
 use App\Http\Controllers\API\IPTypesController;
 use App\Http\Controllers\TestingController;
 use Illuminate\Http\Request;
@@ -24,8 +25,11 @@ Route::post('/register', [AuthController::class, 'register']);
 
 Route::get('/iptypes', [IPTypesController::class, 'index']);
 
-Route::post('/campaigns', [CampaignsController::class, 'store']);
-Route::get('/campaigns', [CampaignsController::class, 'index']);
+Route::resource('/campaigns', CampaignsController::class);
+
 Route::get('/channeltypes', [ChannelTypesController::class, 'index']);
-Route::post('/campaigns/{campaign}', [CampaignsController::class, 'update']);
-Route::delete('/campaigns/{campaign}', [CampaignsController::class, 'destroy']);
+
+// Route::post('/campaigns/{campaign}', [CampaignsController::class, 'update']);
+// Route::delete('/campaigns/{campaign}', [CampaignsController::class, 'destroy']);
+
+Route::resource('/tokens/{token}/ips', CompanyTokenIPsController::class);
