@@ -12,7 +12,6 @@ class Campaign extends Model
     protected $fillable = [
         'user_id',
         'name',
-        'campaign_type_id',
         'company_token_id',
         'is_active',
         'configurations',
@@ -86,7 +85,7 @@ class Campaign extends Model
      */
     public function token()
     {
-        return $this->belongsTo(token::class, 'company_token_id');
+        return $this->belongsTo(CompanyToken::class, 'company_token_id');
     }
 
     /**

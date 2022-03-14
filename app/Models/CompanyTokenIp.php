@@ -53,6 +53,6 @@ class CompanyTokenIp extends Model
      */
     public function token()
     {
-        return $this->belongsTo(Token::class, 'company_token_id');
+        return $this->belongsTo(CompanyToken::class, 'company_token_id');
     }
 }
