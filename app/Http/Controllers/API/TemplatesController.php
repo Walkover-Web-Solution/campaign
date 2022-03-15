@@ -3,6 +3,10 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CustomResource;
+use App\Models\FlowAction;
+use App\Models\Template;
+use App\Models\TemplateDetail;
 use Illuminate\Http\Request;
 
 class TemplatesController extends Controller
@@ -12,9 +16,11 @@ class TemplatesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Template $template)
     {
-        //
+        $tempid=$template->template_id;
+        return  new CustomResource(TemplateDetail::where('template_id',$tempid)->first());
+
     }
 
     /**
@@ -44,7 +50,7 @@ class TemplatesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show()
     {
         //
     }

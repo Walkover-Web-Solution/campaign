@@ -8,6 +8,7 @@ use App\Http\Controllers\API\CompanyTokenIPsController;
 use App\Http\Controllers\API\IPTypesController;
 use App\Http\Controllers\API\TokensController;
 use App\Http\Controllers\TestingController;
+use App\Http\Controllers\API\TemplatesController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -37,3 +38,5 @@ Route::get('/iptypes', [IPTypesController::class, 'index']);
 Route::get('/channeltypes', [ChannelTypesController::class, 'index']);
 
 Route::get('/clients', [ClientController::class, 'index'])->withoutMiddleware('authby.jwt');
+
+Route::get('/templates/{template}', [TemplatesController::class,'index']);
