@@ -96,9 +96,10 @@ class CampaignsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Campaign $campaign)
     {
-        //
+        $campaign["flow_actions"] = $campaign->flowActions()->get();
+        return new CustomResource($campaign);
     }
 
     /**
@@ -147,11 +148,13 @@ class CampaignsController extends Controller
         foreach ($input['flow_action'] as $action) {
             $action['configurations'] = empty($action['configurations']) ? [] : $action['configurations'];
 
+            //set parent id to previously created flow_action and if first set to null
+            $action['parent_id'] = $parent_id;
+
             //create flow_action with created campaign
             $flow_action = $campaign->flowActions()->create($action);
-
-            //set parent id to previously created flow_action and if first set to null
-            $flow_action->parent_id = $parent_id;
+            echo ($flow_action) . ' hel';
+            // $flow_action->parent_id = $parent_id;
 
             //check if type is channel or condition and set is_condition to true if condition
             if ($action['type'] == 'channel') {
