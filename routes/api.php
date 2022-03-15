@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CampaignsController;
 use App\Http\Controllers\API\ChannelTypesController;
+use App\Http\Controllers\API\ClientController;
 use App\Http\Controllers\API\CompanyTokenIPsController;
 use App\Http\Controllers\API\IPTypesController;
 use App\Http\Controllers\API\TokensController;
@@ -34,3 +35,5 @@ Route::resource('/tokens', TokensController::class);
 Route::get('/iptypes', [IPTypesController::class, 'index']);
 
 Route::get('/channeltypes', [ChannelTypesController::class, 'index']);
+
+Route::get('/clients', [ClientController::class, 'index'])->withoutMiddleware('authby.jwt');
