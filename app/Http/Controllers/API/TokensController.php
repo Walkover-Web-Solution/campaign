@@ -33,16 +33,12 @@ class TokensController extends Controller
             })
             ->paginate($itemsPerPage, ['*'], 'pageNo');
 
-        return response([
-            'status' => 'success',
-            'hasError' => false,
-            'data' => array(
-                'data' => $paginator->items(),
-                'itemsPerPage' => $itemsPerPage,
-                'pageNumber' => $paginator->currentPage(),
-                'totalEntityCount' => $paginator->total(),
-                'totalPageCount' => ceil($paginator->total() / $paginator->perPage())
-            )
+        return new CustomResource([
+            'data' => $paginator->items(),
+            'itemsPerPage' => $itemsPerPage,
+            'pageNumber' => $paginator->currentPage(),
+            'totalEntityCount' => $paginator->total(),
+            'totalPageCount' => ceil($paginator->total() / $paginator->perPage())
         ]);
     }
 
@@ -116,9 +112,9 @@ class TokensController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateTokenRequest $request,Token $token)
+    public function update(UpdateTokenRequest $request, Token $token)
     {
-        $input=$request->validated() ;
+        $input = $request->validated();
         $token->update($input);
         return new CustomResource($token);
     }
@@ -129,14 +125,15 @@ class TokensController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Token $token,Request $request){
-        if($token->company_id != $request->company->id){
+    public function destroy(Token $token, Request $request)
+    {
+        if ($token->company_id != $request->company->id) {
             throw new \Exception("Unauthorized", 1);
         }
-        if($token->is_primary){
+        if ($token->is_primary) {
             throw new \Exception("Can not update default  token");
         }
         $token->delete();
-        return new CustomResource(['message'=>"Delete successfully"]);
+        return new CustomResource(['message' => "Delete successfully"]);
     }
 }

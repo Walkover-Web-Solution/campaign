@@ -45,17 +45,14 @@ class CampaignsController extends Controller
             ->orderBy('id', 'desc')
             ->paginate($itemsPerPage, ['*'], 'pageNo');
 
-        return response([
-            'status' => 'success',
-            'hasError' => false,
-            'data' => array(
-                'data' => $paginator->items(),
-                'itemsPerPage' => $itemsPerPage,
-                'pageNo' => $paginator->currentPage(),
-                'pageNumber' => $paginator->currentPage(),
-                'totalEntityCount' => $request->company->campaigns()->count(),
-                'totalPageCount' => ceil($paginator->total() / $paginator->perPage())
-            )
+
+        return new CustomResource([
+            'data' => $paginator->items(),
+            'itemsPerPage' => $itemsPerPage,
+            'pageNo' => $paginator->currentPage(),
+            'pageNumber' => $paginator->currentPage(),
+            'totalEntityCount' => $request->company->campaigns()->count(),
+            'totalPageCount' => ceil($paginator->total() / $paginator->perPage())
         ]);
     }
 
@@ -170,20 +167,23 @@ class CampaignsController extends Controller
             //set parent_id to created flow_action for use of next iteration
             $parent_id = $flow_action->id;
 
+            //check only if flow action is channel then only create template
+            if ($action['type'] != 'condition') {
 
-            //set variables and content to the template array
-            $template = $action['template'];
-            if (!isset($template['variables'])) {
-                $template['variables'] = [];
-            }
-            $template['content'] = 'dummy content';
+                //set variables and content to the template array
+                $template = $action['template'];
+                if (!isset($template['variables'])) {
+                    $template['variables'] = [];
+                }
+                $template['content'] = 'dummy content';
 
-            //create Template
-            $tmp = $flow_action->template()->create($template);
-            //check if its details present in TemplateDetail table, if not create one
-            $template_detail = TemplateDetail::where('template_id', $tmp->template_id)->first();
-            if (empty($template_detail)) {
-                $tmp->templateDetails()->create($template);
+                //create Template
+                $tmp = $flow_action->template()->create($template);
+                //check if its details present in TemplateDetail table, if not create one
+                $template_detail = TemplateDetail::where('template_id', $tmp->template_id)->first();
+                if (empty($template_detail)) {
+                    $tmp->templateDetails()->create($template);
+                }
             }
         }
     }

@@ -30,16 +30,12 @@ class CompanyTokenIPsController extends Controller
             ->orderBy('ip_type_id')
             ->paginate($itemsPerPage, ['*'], 'pageNo');
 
-        return response([
-            'status' => 'success',
-            'hasError' => false,
-            'data' => array(
-                'data' => $paginator->items(),
-                'itemsPerPage' => $itemsPerPage,
-                'pageNumber' => $paginator->currentPage(),
-                'totalEntityCount' => $token->ips()->count(),
-                'totalPageCount' => ceil($paginator->total() / $paginator->perPage())
-            )
+        return new CustomResource([
+            'data' => $paginator->items(),
+            'itemsPerPage' => $itemsPerPage,
+            'pageNumber' => $paginator->currentPage(),
+            'totalEntityCount' => $token->ips()->count(),
+            'totalPageCount' => ceil($paginator->total() / $paginator->perPage())
         ]);
     }
 
