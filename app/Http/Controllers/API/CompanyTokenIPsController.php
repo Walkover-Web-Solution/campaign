@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\IndexCompanyTokenIPRequest;
 use App\Http\Requests\StoreCompanyTokenIPRequest;
 use App\Http\Requests\UpdateCompanyTokenIPRequest;
 use App\Http\Resources\CustomResource;
@@ -18,7 +17,7 @@ class CompanyTokenIPsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Token $token, IndexCompanyTokenIPRequest $request)
+    public function index(Token $token, Request $request)
     {
         $itemsPerPage = $request->input('itemsPerPage', 25);
 

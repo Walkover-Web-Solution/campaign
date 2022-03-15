@@ -4,9 +4,6 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateCampaignRequest;
-use App\Http\Requests\DeleteCampaignRequest;
-use App\Http\Requests\IndexCampaignRequest;
-use App\Http\Requests\RestoreCampaignRequest;
 use App\Http\Requests\UpdateCampaignRequest;
 use App\Http\Resources\CustomResource;
 use App\Models\Campaign;
@@ -22,7 +19,7 @@ class CampaignsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(IndexCampaignRequest $request)
+    public function index(Request $request)
     {
         $itemsPerPage = $request->input('itemsPerPage', 25);
 
@@ -197,7 +194,7 @@ class CampaignsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(DeleteCampaignRequest $request, Campaign $campaign)
+    public function destroy(Request $request, Campaign $campaign)
     {
         // delete all templates related to this campaign via flowActions
         $campaign->flowActions()->get()->map(function ($item) {

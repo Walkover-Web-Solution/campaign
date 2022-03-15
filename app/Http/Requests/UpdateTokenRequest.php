@@ -15,25 +15,6 @@ class UpdateTokenRequest extends FormRequest
      */
     public function authorize()
     {
-          //check for authrization key in header
-          if (!($this->hasHeader('authorization'))) {
-            return false;
-        }
-        // decode key
-        try {
-            $res = JWTdecode(request()->header('authorization'));
-        } catch (\Exception $e) {
-            return false;
-        }
-        // get company whose ref_id matches with the company's id found in key
-        $company = Company::where('ref_id', $res->company->id)->first();
-        if (empty($company)) {
-            return false;
-        }
-        // merge into the request
-        $this->merge([
-            'company' => $company,
-        ]);
         return $this->company->id == $this->token->company_id;
     }
 
@@ -54,6 +35,4 @@ class UpdateTokenRequest extends FormRequest
             "temporary_throttle_time" => 'nullable|numeric',
         ];
     }
-
-
 }

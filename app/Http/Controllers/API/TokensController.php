@@ -3,8 +3,6 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\IndexTokenRequest;
-use App\Http\Requests\TokenRequest;
 use App\Http\Requests\UpdateTokenRequest;
 use App\Http\Resources\CustomResource;
 use App\Models\Token;
@@ -18,7 +16,7 @@ class TokensController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(TokenRequest $request)
+    public function index(Request $request)
     {
         $itemsPerPage = $request->input('itemsPerPage', 25);
         $paginator = Token::select('id', 'name')->where('company_id', $request->company->id)
@@ -64,7 +62,7 @@ class TokensController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(TokenRequest $request)
+    public function store(Request $request)
     {
         $request->validate([
             'name' => ['required', 'string', 'min:3', 'max:50', 'alpha_dash', Rule::unique('tokens', 'name')->where(function ($query)  use ($request) {
@@ -81,7 +79,7 @@ class TokensController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(TokenRequest $request, Token $token)
+    public function show(Request $request, Token $token)
     {
         if ($token->company_id != $request->company->id) {
             throw new \Exception("Unauthorized", 1);
@@ -131,7 +129,7 @@ class TokensController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Token $token,TokenRequest $request){
+    public function destroy(Token $token,Request $request){
         if($token->company_id != $request->company->id){
             throw new \Exception("Unauthorized", 1);
         }

@@ -17,35 +17,6 @@ class CreateCampaignRequest extends FormRequest
      */
     public function authorize()
     {
-
-        //check for authorization key in header
-        if (!($this->hasHeader('authorization'))) {
-            return false;
-        }
-        // decode key
-        try {
-            $res = JWTdecode(request()->header('authorization'));
-        } catch (\Exception $e) {
-            return false;
-        }
-
-        // get company whose ref_id matches with the company's id found in key
-        $company = Company::where('ref_id', $res->company->id)->first();
-        if (empty($company)) {
-            return false;
-        }
-
-        // get user whose company matches with the company passed in key
-        $user = User::where('company_id', $company->id)->first();
-        if (empty($user)) {
-            return false;
-        }
-
-        // merge into the request
-        $this->merge([
-            'company' => $company,
-            'user' => $user
-        ]);
         return true;
     }
 
