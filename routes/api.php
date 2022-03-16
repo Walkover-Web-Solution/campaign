@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/testing', [TestingController::class, 'index']);
+Route::get('/testing', [TestingController::class, 'index'])->withoutMiddleware('authby.jwt');
 
 Route::post('/register', [AuthController::class, 'register']);
 
@@ -39,4 +39,4 @@ Route::get('/channeltypes', [ChannelTypesController::class, 'index']);
 
 Route::get('/clients', [ClientController::class, 'index'])->withoutMiddleware('authby.jwt');
 
-Route::get('/templates/{template}', [TemplatesController::class,'index']);
+Route::get('/templates/{template}', [TemplatesController::class, 'index']);

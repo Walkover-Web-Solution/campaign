@@ -2,8 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Company;
-use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -16,6 +14,9 @@ class UpdateCampaignRequest extends FormRequest
      */
     public function authorize()
     {
+        if ($this->route('campaign')->company_id != $this->company->id) {
+            return false;
+        }
         return true;
     }
 

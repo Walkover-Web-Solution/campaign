@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateCampaignRequest;
 use App\Http\Resources\CustomResource;
 use App\Models\Campaign;
 use App\Models\ChannelType;
+use App\Models\Company;
 use App\Models\Condition;
 use App\Models\TemplateDetail;
 use Illuminate\Http\Request;
@@ -96,10 +97,13 @@ class CampaignsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Campaign $campaign)
+    public function show(Request $request, Campaign $campaign)
     {
-        $campaign["flow_actions"] = $campaign->flowActions()->get();
-        return new CustomResource($campaign);
+        if ($campaign->company_id == $request->company->id) {
+            $campaign["flow_actions"] = $campaign->flowActions()->get();
+            return new CustomResource($campaign);
+        }
+        return new CustomResource(['message' => 'Campaign Not Found']);
     }
 
     /**
@@ -124,7 +128,6 @@ class CampaignsController extends Controller
     {
         $input = $request->validated();
         $campaign->update($input);
-
 
         if (isset($input['flow_action'])) {
 
@@ -153,8 +156,6 @@ class CampaignsController extends Controller
 
             //create flow_action with created campaign
             $flow_action = $campaign->flowActions()->create($action);
-            echo ($flow_action) . ' hel';
-            // $flow_action->parent_id = $parent_id;
 
             //check if type is channel or condition and set is_condition to true if condition
             if ($action['type'] == 'channel') {
@@ -171,7 +172,7 @@ class CampaignsController extends Controller
             $parent_id = $flow_action->id;
 
             //check only if flow action is channel then only create template
-            if ($action['type'] != 'condition') {
+            if ($action['type'] == 'channel') {
 
                 //set variables and content to the template array
                 $template = $action['template'];
@@ -199,6 +200,11 @@ class CampaignsController extends Controller
      */
     public function destroy(Request $request, Campaign $campaign)
     {
+        // check if the campaign is of request's company or not
+        if ($campaign->company_id != $request->company->id) {
+            return new CustomResource(['message' => "Campaign Not Found"]);
+        }
+
         // delete all templates related to this campaign via flowActions
         $campaign->flowActions()->get()->map(function ($item) {
             $item->template()->delete();

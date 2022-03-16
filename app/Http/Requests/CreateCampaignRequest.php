@@ -2,9 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Company;
-use App\Models\Token;
-use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
