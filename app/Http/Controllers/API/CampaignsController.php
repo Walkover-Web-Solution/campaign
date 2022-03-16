@@ -146,13 +146,14 @@ class CampaignsController extends Controller
 
     private function createFlowAction(Campaign $campaign, $input)
     {
-        $parent_id = null;
+        $obj = new \stdClass();
+        $obj->parent_id = null;
         //taking each element of flow_action array and perform action individually
-        foreach ($input['flow_action'] as $action) {
+        collect($input['flow_action'])->map(function ($action) use ($obj, $campaign) {
             $action['configurations'] = empty($action['configurations']) ? [] : $action['configurations'];
 
             //set parent id to previously created flow_action and if first set to null
-            $action['parent_id'] = $parent_id;
+            $action['parent_id'] = $obj->parent_id;
 
             //create flow_action with created campaign
             $flow_action = $campaign->flowActions()->create($action);
@@ -169,7 +170,7 @@ class CampaignsController extends Controller
 
             $flow_action->save();
             //set parent_id to created flow_action for use of next iteration
-            $parent_id = $flow_action->id;
+            $obj->parent_id = $flow_action->id;
 
             //check only if flow action is channel then only create template
             if ($action['type'] == 'channel') {
@@ -189,7 +190,7 @@ class CampaignsController extends Controller
                     $tmp->templateDetails()->create($template);
                 }
             }
-        }
+        });
     }
 
     /**

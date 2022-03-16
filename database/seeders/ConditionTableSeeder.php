@@ -25,18 +25,18 @@ class ConditionTableSeeder extends Seeder
         $conditionsArr = [
             [
                 'name' => 'Wait',
-                'is_boolean'=>false,
-                'wait_to_fail'=>false
+                'is_boolean' => false,
+                'wait_to_fail' => false
             ],
             [
                 'name' => 'Read',
-                'is_boolean'=>true,
-                'wait_to_fail'=>true
+                'is_boolean' => true,
+                'wait_to_fail' => true
             ],
             [
                 'name' => 'Delivered',
-                'is_boolean'=>true,
-                'wait_to_fail'=>true
+                'is_boolean' => true,
+                'wait_to_fail' => true
             ]
         ];
 
@@ -50,13 +50,13 @@ class ConditionTableSeeder extends Seeder
         /*
          * checks for every element in array if it is already present and executing query to create if not
          */
-        foreach ($conditionsArr as $condition) {
+        collect($conditionsArr)->map(function ($condition) {
             $conditionObj = Condition::where('name', $condition['name'])->first();
             if (empty($conditionObj)) {
                 Condition::create($condition);
             } else {
                 $conditionObj->update($condition);
             }
-        }
+        });
     }
 }

@@ -234,13 +234,13 @@ class ChannelTypeTableSeeder extends Seeder
             ],
         ];
 
-        foreach ($channelTypes as $channelType) {
+        collect($channelTypes)->map(function ($channelType) {
             $channelTypeObj = ChannelType::where('name', $channelType['name'])->first();
             if (empty($channelTypeObj)) {
                 ChannelType::create($channelType);
             } else {
                 $channelTypeObj->update($channelType);
             }
-        }
+        });
     }
 }
