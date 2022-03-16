@@ -18,9 +18,7 @@ class TemplatesController extends Controller
      */
     public function index(Template $template)
     {
-        $tempid=$template->template_id;
-        return  new CustomResource(TemplateDetail::where('template_id',$tempid)->first());
-
+        return  new CustomResource(TemplateDetail::all());
     }
 
     /**
@@ -50,9 +48,10 @@ class TemplatesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show()
+    public function show(Template $template)
     {
-        //
+        $tempid=$template->template_id;
+        return  new CustomResource(TemplateDetail::where('template_id',$tempid)->first());
     }
 
     /**

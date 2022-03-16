@@ -39,4 +39,4 @@ Route::get('/channeltypes', [ChannelTypesController::class, 'index']);
 
 Route::get('/clients', [ClientController::class, 'index'])->withoutMiddleware('authby.jwt');
 
-Route::get('/templates/{template}', [TemplatesController::class, 'index']);
+Route::resource('/templates', TemplatesController::class);
