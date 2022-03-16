@@ -14,8 +14,31 @@ class TestingController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        try {
+            $string = [
+                "company" => array(
+                    "0" => "",
+                    "id" => "452001",
+                    "username" => "whozzat",
+                    "email" => "paresh@whozzat.com"
+                ),
+                "need_validation" => false,
+                "user" => array(
+                    "id" => "452001",
+                    "username" => "prasuk",
+                    "email" => "prasuk@whozzat.com"
+                ),
+                "ip" => null
+            ];
+            $encoded = JWTEncode($string);
+            dd($encoded);
+            $res = JWTDecode($encoded);
+            dd($res->user);
+        } catch (\Exception $e) {
+            dd($e);
+        }
         $key = "example_key";
         $payload = array(
             "iss" => "http://example.org",

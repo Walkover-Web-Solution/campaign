@@ -18,7 +18,7 @@ class ClientTableSeeder extends Seeder
          * getting count of rows from db table
          */
         $clientsCount = Client::all()->count();
-        
+
         /*
          * creating an array for all the rows 
          */
@@ -45,13 +45,13 @@ class ClientTableSeeder extends Seeder
         /*
          * checks for every element in array if it is already present and executing query to create if not
          */
-        foreach ($clientsArr as $client) {
+        collect($clientsArr)->map(function ($client) {
             $clientObj = Client::where('id', $client['email'])->first();
             if (empty($clientObj)) {
                 Client::create($client);
             } else {
                 $clientObj->update($client);
             }
-        }
+        });
     }
 }

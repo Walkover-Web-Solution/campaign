@@ -3,22 +3,22 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ClientRequest;
 use App\Http\Resources\CustomResource;
-use App\Models\FlowAction;
-use App\Models\Template;
-use App\Models\TemplateDetail;
+use App\Models\Client;
 use Illuminate\Http\Request;
 
-class TemplatesController extends Controller
+class ClientController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Template $template)
+    public function index(ClientRequest $request)
     {
-        return  new CustomResource(TemplateDetail::all());
+        $clients = Client::select('name', 'authkey')->get();
+        return new CustomResource($clients);
     }
 
     /**
@@ -48,10 +48,9 @@ class TemplatesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Template $template)
+    public function show($id)
     {
-        $tempid=$template->template_id;
-        return  new CustomResource(TemplateDetail::where('template_id',$tempid)->first());
+        //
     }
 
     /**

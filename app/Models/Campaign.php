@@ -111,4 +111,9 @@ class Campaign extends Model
     {
         return $this->hasMany(CampaignReport::class, 'campaign_id');
     }
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
 }
