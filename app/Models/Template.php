@@ -29,7 +29,7 @@ class Template extends Model
      */
     public function templateDetails()
     {
-        return $this->hasMany(TemplateDetail::class, 'template_id');
+        return $this->belongsTo(TemplateDetail::class, 'template_id');
     }
 
     /**
@@ -39,6 +39,6 @@ class Template extends Model
      */
     public function flowActions()
     {
-        return $this->hasMany(FlowAction::class, 'flow_action_id');
+        return $this->hasOne(FlowAction::class, 'flow_action_id');
     }
 }

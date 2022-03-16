@@ -28,7 +28,7 @@ class TemplateDetail extends Model
     */
     public function template()
     {
-        return $this->belongsTo(Template::class, 'template_id');
+        return $this->hasMany(Template::class, 'template_id');
     }
 
     

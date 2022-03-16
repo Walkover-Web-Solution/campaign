@@ -36,18 +36,19 @@ class Company extends Model
      * The users that belong to the Company
      */
     public function users(){
-        return  $this->belongsToMany(User::class,'company_user');
+        return  $this->hasMany(User::class);
      }
 
      /**
       * Get all of the tokens and campaign for the Company
     */
       public function tokens(){
-        return $this->hasMany(CompanyToken::class);
+        return $this->hasMany(Token::class);
        }
 
 
        public function campaigns(){
         return $this->hasMany(Campaign::class);
        }
+
 }
