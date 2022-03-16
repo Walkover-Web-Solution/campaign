@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Http\Resources\CustomResource;
 use App\Models\Company;
 use App\Models\User;
 use Closure;
@@ -36,13 +37,15 @@ class AuthByJWTMiddleware
             // get company whose ref_id matches with the company's id found in key
             $company = Company::where('ref_id', $res->company->id)->first();
             if (empty($company)) {
-                return false;
+                $response = new CustomResource(["message" => "invalid request"]);
+                return response()->json($response, 404);
             }
 
             // get user whose company matches with the company passed in key
             $user = User::where('company_id', $company->id)->first();
             if (empty($user)) {
-                return false;
+                $response = new CustomResource(["message" => "invalid request"]);
+                return response()->json($response, 404);
             }
 
             // merge into the request
