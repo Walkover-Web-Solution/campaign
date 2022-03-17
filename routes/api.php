@@ -40,8 +40,3 @@ Route::get('/channeltypes', [ChannelTypesController::class, 'index']);
 Route::get('/clients', [ClientController::class, 'index'])->withoutMiddleware('authby.jwt');
 
 Route::resource('/templates', TemplatesController::class);
-<<<<<<< HEAD
-
-Route::get('/encode', [TestingController::class, 'dataEncode'])->withoutMiddleware('authby.jwt');
-=======
->>>>>>> dev

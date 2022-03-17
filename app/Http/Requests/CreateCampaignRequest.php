@@ -29,17 +29,6 @@ class CreateCampaignRequest extends FormRequest
                 return $query->where('company_id', $this->company->id);
             })],
             'flow_action' => 'array',
-<<<<<<< HEAD
-            'flow_action.*.linked_id' => 'numeric',
-            'flow_action.*.parent_id' => 'nullable|confirmed',
-            'flow_action.*.configurations' => 'nullable',
-            'flow_action.*.template' => 'array',
-            'flow_action.*.template.template_id' => 'numeric',
-            'flow_action.*.template.name' => 'string',
-            'flow_action.*.template.variables' => 'nullable|array',
-            'flow_action.*.template.meta' => 'nullable'
-=======
->>>>>>> dev
         ];
 
         // if flow_action is set then only fields are required (cause flow_action is not required above)
