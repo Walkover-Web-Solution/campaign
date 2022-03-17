@@ -17,7 +17,7 @@ class CreateCampaignsTable extends Migration
             $table->id();
             $table->foreignId('company_id');
             $table->foreignId('user_id');
-            $table->foreignId('token_id');
+            $table->foreignId('company_token_id');
             $table->string('name');
             $table->boolean('is_active')->default(true);
             $table->json('configurations');

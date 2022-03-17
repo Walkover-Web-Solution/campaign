@@ -29,6 +29,7 @@ class CreateCampaignRequest extends FormRequest
                 return $query->where('company_id', $this->company->id);
             })],
             'flow_action' => 'array',
+<<<<<<< HEAD
             'flow_action.*.linked_id' => 'numeric',
             'flow_action.*.parent_id' => 'nullable|confirmed',
             'flow_action.*.configurations' => 'nullable',
@@ -37,7 +38,26 @@ class CreateCampaignRequest extends FormRequest
             'flow_action.*.template.name' => 'string',
             'flow_action.*.template.variables' => 'nullable|array',
             'flow_action.*.template.meta' => 'nullable'
+=======
+>>>>>>> dev
         ];
+
+        // if flow_action is set then only fields are required (cause flow_action is not required above)
+        if (isset(request()->flow_action)) {
+            $additionalRules = [
+                'flow_action.*.linked_id' => 'required|numeric',
+                'flow_action.*.parent_id' => 'nullable|confirmed',
+                'flow_action.*.configurations' => 'nullable',
+                'flow_action.*.type' => 'required|string',
+                'flow_action.*.template' => 'required_if:flow_action.*.type,channel|array', //template and its fields are required only if flow_action.*.type is channel
+                'flow_action.*.template.template_id' => 'required_if:flow_action.*.type,channel|numeric',
+                'flow_action.*.template.name' => 'required_if:flow_action.*.type,channel|string',
+                'flow_action.*.template.variables' => 'nullable|array',
+                'flow_action.*.template.meta' => 'required_if:flow_action.*.type,channel|nullable'
+            ];
+            $validationArray = $validationArray + $additionalRules;
+        }
+
         return $validationArray;
     }
 
