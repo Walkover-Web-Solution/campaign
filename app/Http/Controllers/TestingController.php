@@ -47,6 +47,7 @@ class TestingController extends Controller
             "nbf" => 1357000000
         );
 
+
         /**
          * IMPORTANT:
          * You must specify supported algorithms for your application. See
@@ -57,6 +58,20 @@ class TestingController extends Controller
         $decoded = JWT::decode($jwt, new Key($key, 'HS256'));
 
         return new CustomResource($decoded);
+    }
+
+
+    public function encodeData(Request $request)
+    {
+        if (request()->header('testerKey') != 'testerKey') {
+            return new CustomResource(["message" => 'invalid request']);
+        }
+        try {
+            $input = $request->all();
+            return new CustomResource(["authorization" => JWTEncode($input)]);
+        } catch (\Exception $e) {
+            return new CustomResource(["message" => $e->getMessage()]);
+        }
     }
 
     /**
