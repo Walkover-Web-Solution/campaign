@@ -59,6 +59,17 @@ class TestingController extends Controller
         return new CustomResource($decoded);
     }
 
+    public function dataEncode(Request $request)
+    {
+        try {
+            $input = $request->all();
+            $encoded = JWTEncode($input);
+            return new CustomResource(["authorization" => $encoded]);
+        } catch (\Exception $e) {
+            return new CustomResource(["message" => $e->getMessage()]);
+        }
+    }
+
     /**
      * Show the form for creating a new resource.
      *
