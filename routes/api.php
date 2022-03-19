@@ -9,6 +9,7 @@ use App\Http\Controllers\API\IPTypesController;
 use App\Http\Controllers\API\TokensController;
 use App\Http\Controllers\TestingController;
 use App\Http\Controllers\API\TemplatesController;
+use App\Http\Controllers\RunCampaignController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -40,3 +41,5 @@ Route::get('/channeltypes', [ChannelTypesController::class, 'index']);
 Route::get('/clients', [ClientController::class, 'index'])->withoutMiddleware('authby.jwt');
 
 Route::resource('/templates', TemplatesController::class);
+
+Route::post('/campaigns/{slug}/run', [RunCampaignController::class, 'run']);
