@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Resources\CustomResource;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -112,8 +113,14 @@ class Campaign extends Model
         return $this->hasMany(CampaignReport::class, 'campaign_id');
     }
 
-    public function getRouteKeyName()
+    public function resolveRouteBinding($value, $field = null)
     {
-        return 'slug';
+        try {
+            $res = JWTDecode(request()->header('authorization'));
+            $company = Company::where('ref_id', $res->company->id)->first();
+        } catch (\Exception $e) {
+            return new CustomResource(["message" => "Unauthorized"]);
+        }
+        return Campaign::where('company_id', $company->id)->where('slug', $value)->first();
     }
 }
