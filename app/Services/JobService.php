@@ -19,7 +19,8 @@ class JobService
 
     public function processRunCampaign($input)
     {
-        $flow_action = FlowAction::where('id', $input['flow_action']);
+        // get linked id from flow action to name the queue
+        $flow_action = FlowAction::where('id', $input['flow_action_id'])->first();
         switch ($flow_action->linked_id) {
             case 1:
                 $queue = 'run_email_campaigns';
