@@ -5,12 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\RunCampaignRequest;
 use App\Http\Resources\CustomResource;
 use App\Libs\MongoDBLib;
-<<<<<<< HEAD
-use App\Models\Campaign;
-use App\Services\JobService;
-use Illuminate\Http\Request;
-=======
->>>>>>> a8bb31924646972d41c79f1dd0be3c9ea082f559
 
 class RunCampaignController extends Controller
 {
