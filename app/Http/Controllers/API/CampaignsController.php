@@ -4,12 +4,14 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateCampaignRequest;
+use App\Http\Requests\GetFieldsRequest;
 use App\Http\Requests\UpdateCampaignRequest;
 use App\Http\Resources\CustomResource;
 use App\Models\Campaign;
 use App\Models\ChannelType;
 use App\Models\Company;
 use App\Models\Condition;
+use App\Models\FlowAction;
 use App\Models\TemplateDetail;
 use Illuminate\Http\Request;
 
@@ -217,5 +219,36 @@ class CampaignsController extends Controller
         // delete this campaign
         $campaign->delete();
         return new CustomResource(['message' => "Delete Campaign successfully"]);
+    }
+
+    public function getFields(GetFieldsRequest $request)
+    {
+        // get all channel ids from flow actions attached to given campaign
+        $flowAction = FlowAction::where('linked_type', 'App\Models\ChannelType')
+            ->where('campaign_id', $request->campaign->id)->get();
+
+        $obj = new \stdClass();
+        $obj->mapping = [];
+        $obj->variables = [];
+        // make validation for every channel id
+        collect($flowAction)->map(function ($channel) use ($obj) {
+
+            // inserting template variables
+            $template = $channel->template()->first();
+            $varaibles = collect($template->variables);
+            $varaibles->map(function ($var) use ($obj) {
+                if (!in_array($var, $obj->variables))
+                    array_push($obj->variables, $var);
+            });
+
+            // inserting channel configurations->mapping
+            $channelType = ChannelType::where('id', $channel->linked_id)->first();
+            $mapping = collect($channelType->configurations['mapping']);
+            $mapping->map(function ($map) use ($obj) {
+                if (!in_array($map, $obj->mapping))
+                    array_push($obj->mapping, $map);
+            });
+        });
+        return (new CustomResource(['mapping' => $obj->mapping, 'variables' => $obj->variables]));
     }
 }
