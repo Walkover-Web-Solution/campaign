@@ -58,7 +58,11 @@ class RunCampaignRequest extends FormRequest
             $mapping = collect($channelType->configurations['mapping']);
             $mapping->each(function ($map) use ($obj) {
                 if ($map['is_required'])
+<<<<<<< HEAD
                     $obj->validationArray['data.' . $map['name']] = 'required';
+=======
+                    $obj->validationArray['data.*.' . $map['name']] = 'required';
+>>>>>>> a8bb31924646972d41c79f1dd0be3c9ea082f559
             });
         });
         return ($obj->validationArray);
