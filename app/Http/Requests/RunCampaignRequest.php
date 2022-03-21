@@ -17,7 +17,17 @@ class RunCampaignRequest extends FormRequest
      */
     public function authorize()
     {
-        $campaign = Campaign::where('slug', $this->slug)->first();
+        // get campaign using slug for same company
+        $campaign = Campaign::where('slug', $this->slug)
+            ->where('company_id', $this->company->id)
+            ->first();
+
+        // return false if not found for required clause
+        if (empty($campaign)) {
+            return false;
+        }
+
+        // merge campaign to request
         $this->merge([
             'campaign' => $campaign
         ]);
@@ -31,6 +41,7 @@ class RunCampaignRequest extends FormRequest
      */
     public function rules()
     {
+        // get all channel ids from flow actions attached to given campaign
         $channelIds = FlowAction::where('linked_type', 'App\Models\ChannelType')
             ->where('campaign_id', $this->campaign->id)
             ->pluck('linked_id')
@@ -39,17 +50,17 @@ class RunCampaignRequest extends FormRequest
         $obj = new \stdClass();
         $obj->validationArray = [];
 
-        if (!empty($this->data)) {
-            collect($channelIds)->map(function ($channelId) use ($obj) {
-                $channelType = ChannelType::where('id', $channelId)->first();
+        // make validation for every channel id
+        collect($channelIds)->map(function ($channelId) use ($obj) {
+            $channelType = ChannelType::where('id', $channelId)->first();
 
-                $mapping = collect($channelType->configurations['mapping']);
-                $mapping->each(function ($map) use ($obj) {
-                    echo  $map['name'] . ' ';
+            // validations for is_required taken from conigurations->mapping array
+            $mapping = collect($channelType->configurations['mapping']);
+            $mapping->each(function ($map) use ($obj) {
+                if ($map['is_required'])
                     $obj->validationArray['data.*.' . $map['name']] = 'required';
-                });
             });
-        }
+        });
         return ($obj->validationArray);
     }
 }

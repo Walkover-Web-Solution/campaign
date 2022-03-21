@@ -18,9 +18,11 @@ class RabbitMQJob implements ShouldQueue
      *
      * @return void
      */
-    public function __construct()
+    protected $data;
+    public function __construct($data)
     {
-        //
+        // passing data to job
+        $this->data = $data;
     }
 
     /**
