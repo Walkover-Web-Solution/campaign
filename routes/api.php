@@ -44,3 +44,5 @@ Route::resource('/templates', TemplatesController::class);
 Route::post('/encode', [TestingController::class, 'encodeData'])->withoutMiddleware('authby.jwt');
 
 Route::get('/campaigns/{slug}/fields', [CampaignsController::class, 'getFields']);
+
+Route::get('/campaigns/{slug}/snippets', [CampaignsController::class, 'getSnippets']);

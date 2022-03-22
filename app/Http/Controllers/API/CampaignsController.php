@@ -9,7 +9,6 @@ use App\Http\Requests\UpdateCampaignRequest;
 use App\Http\Resources\CustomResource;
 use App\Models\Campaign;
 use App\Models\ChannelType;
-use App\Models\Company;
 use App\Models\Condition;
 use App\Models\FlowAction;
 use App\Models\TemplateDetail;
@@ -237,9 +236,9 @@ class CampaignsController extends Controller
             $template = $channel->template()->first();
             $varaibles = collect($template->variables);
             $varaibles->map(function ($var) use ($obj) {
-                if (!in_array($var, $obj->variables))
-                    array_push($obj->variables, $var);
+                array_push($obj->variables, $var);
             });
+            $obj->variables = array_unique($obj->variables);
 
             // inserting channel configurations->mapping
             $channelType = ChannelType::where('id', $channel->linked_id)->first();
@@ -250,5 +249,50 @@ class CampaignsController extends Controller
             });
         });
         return (new CustomResource(['mapping' => $obj->mapping, 'variables' => $obj->variables]));
+    }
+
+    public function getSnippets(GetFieldsRequest $request)
+    {
+        $sampleData = [
+            "mobiles" => array('1234567890', '3216549870'),
+            "emails" => array(
+                "to" => array("name@email.com", "name2@email.com"),
+                "cc" => array("name@email.com", "name2@email.com"),
+                "bcc" => array("name@email.com", "name2@email.com"),
+            )
+        ];
+
+        // get all channel ids from flow actions attached to given campaign
+        $flowAction = FlowAction::where('linked_type', 'App\Models\ChannelType')
+            ->where('campaign_id', $request->campaign->id)->get();
+
+        $obj = new \stdClass();
+        $obj->snippets = [];
+        $obj->variables = [];
+        $obj->inc = 1;
+
+        // make validation for every channel id
+        collect($flowAction)->map(function ($channel) use ($obj, $sampleData) {
+            $email = 1;
+            // according to channel type get data from sampleData
+            if ($channel->linked_id == $email) {
+                $obj->snippets['emails'] = $sampleData['emails'];
+            } else {
+                $obj->snippets['mobiles'] = $sampleData['mobiles'];
+            }
+
+            // inserting template variables
+            $template = $channel->template()->first();
+            $varaibles = collect($template->variables);
+            $varaibles->map(function ($var) use ($obj) {
+                if (!in_array($var, $obj->variables)) {
+                    $obj->variables['var' . $obj->inc] = $var;
+                    $obj->inc++;
+                }
+            });
+        });
+
+        $obj->snippets = array_merge($obj->snippets, $obj->variables);
+        return new CustomResource($obj->snippets);
     }
 }
