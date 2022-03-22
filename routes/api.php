@@ -9,6 +9,8 @@ use App\Http\Controllers\API\IPTypesController;
 use App\Http\Controllers\API\TokensController;
 use App\Http\Controllers\TestingController;
 use App\Http\Controllers\API\TemplatesController;
+use App\Http\Controllers\ConditionsController;
+use Database\Seeders\ConditionTableSeeder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -42,3 +44,5 @@ Route::get('/clients', [ClientController::class, 'index'])->withoutMiddleware('a
 Route::resource('/templates', TemplatesController::class);
 
 Route::post('/encode', [TestingController::class, 'encodeData'])->withoutMiddleware('authby.jwt');
+
+Route::get('/conditions', [ConditionsController::class, 'index']);
