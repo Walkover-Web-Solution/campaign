@@ -48,4 +48,10 @@ Route::post('/campaigns/{slug}/run', [RunCampaignController::class, 'run']);
 
 Route::post('/encode', [TestingController::class, 'encodeData'])->withoutMiddleware('authby.jwt');
 
+<<<<<<< HEAD
 Route::get('/conditions', [ConditionsController::class, 'index']);
+=======
+Route::get('/campaigns/{slug}/fields', [CampaignsController::class, 'getFields']);
+
+Route::get('/campaigns/{slug}/snippets', [CampaignsController::class, 'getSnippets']);
+>>>>>>> fieldsAPI
