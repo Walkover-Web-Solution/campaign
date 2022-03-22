@@ -47,6 +47,7 @@ class TestingController extends Controller
             "nbf" => 1357000000
         );
 
+
         /**
          * IMPORTANT:
          * You must specify supported algorithms for your application. See
@@ -59,12 +60,14 @@ class TestingController extends Controller
         return new CustomResource($decoded);
     }
 
-    public function dataEncode(Request $request)
+    public function encodeData(Request $request)
     {
+        if (request()->header('testerKey') != 'testerKey') {
+            return new CustomResource(["message" => 'invalid request']);
+        }
         try {
             $input = $request->all();
-            $encoded = JWTEncode($input);
-            return new CustomResource(["authorization" => $encoded]);
+            return new CustomResource(["authorization" => JWTEncode($input)]);
         } catch (\Exception $e) {
             return new CustomResource(["message" => $e->getMessage()]);
         }
