@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Libs\JobLib;
+use App\Models\FlowAction;
 
 /**
  * Class JobService
@@ -16,23 +17,25 @@ class JobService
         $this->lib = $lib;
     }
 
-    public function processRunCampaign($input, $campaign)
+    public function processRunCampaign($input)
     {
-        $input = array(
-            'input' => $input,
-            'campaign_id' => $campaign->id
-        );
-
-        switch ($campaign->campaign_type_id) {
+        // get linked id from flow action to name the queue
+        $flow_action = FlowAction::where('id', $input['flow_action_id'])->first();
+        switch ($flow_action->linked_id) {
             case 1:
                 $queue = 'run_email_campaigns';
                 break;
-
             case 2:
                 $queue = 'run_sms_campaigns';
                 break;
+            case 3:
+                $queue = 'run_otp_campaigns';
+                break;
             case 4:
-                $queue = 'run_voice_campaigns'; // initializeing the queue name for the rabbhit mq
+                $queue = 'run_whastapp_campaigns';
+                break;
+            case 5:
+                $queue = 'run_voice_campaigns';
                 break;
         }
         $this->lib->enqueue($queue, $input);

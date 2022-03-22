@@ -3,69 +3,54 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RunCampaignRequest;
-use Illuminate\Http\Request;
+use App\Http\Resources\CustomResource;
+use App\Libs\MongoDBLib;
 
 class RunCampaignController extends Controller
 {
+    protected $mongo;
+    public function __construct()
+    {
+        $this->mongo = new MongoDBLib();
+    }
+
     public function run(RunCampaignRequest $request)
     {
         $campaign = $request->campaign;
-        $input = $request->all();
+        $flow_action = $campaign->flowActions()->where('parent_id', null)->first();
 
-        \JOB::processRunCampaign($input, $campaign);
-
-        $message = 'Campaign Run Successfully';
-
-        return response([
-            'message' => $message
-        ]);
-    }
-    public function runBulk(RunCampaignRequest $request, MongoDBLib  $mongo, MSG91Service $msg91)
-    {
-        $campaign = $request->campaign;
-
-
-        if ($request->filled('request_id') && $request->filled('data')) {
-
-            // adding data to request data
-            $bulkRequest = $mongo->collection('run_campaign_data')->findOne(['request_id' => $request->request_id]);
-
-            $input = $bulkRequest['data']->jsonSerialize();
-
-            $data = array_merge($input, $request->data);
-
-            $mongo->collection('run_campaign_data')->update(
-                ['request_id' => $request->request_id],
-                ['data' => $data]
-            );
-
-            return new CustomResource(['message' => 'Batch added successfully']);
-        } elseif ($request->has('request_id') && $request->missing('data')) {
-            // close the request
-            $bulkCampaignRequest = BulkCampaignRequest::where('request_id', $request->request_id)->first();
-            $bulkCampaignRequest->update([
-                'run_at' => date('Y-m-d H:i:s')
-            ]);
-            \RMQ::processBulkCampaignRequest($bulkCampaignRequest);
-            //$msg91->sendBulkDataToCampaign($bulkCampaignRequest);
-            $bcrReq = $mongo->collection('run_campaign_data')->findOne(['request_id' => $request->request_id]);
-            $totalRecords = count($bcrReq['data']);
-            return new CustomResource(
-                [
-                    'message' => 'Request closed for run',
-                    'total_records' => $totalRecords
-                ]
-            );
-        } else {
-            // create bulk request 
-            $bulkRequest = BulkCampaignRequest::create([
-                'campaign_id' => $campaign->id
-            ]);
-            $mongo->collection('run_campaign_data')->insertOne([
-                'request_id' => $bulkRequest->request_id,
-                'data' => []
-            ]);
-            return new CustomResource($bulkRequest->toArray());
+        if ($request->filled('data')) {
+            $data = [
+                'data' => $request->data
+            ];
+            $mongo_id['_id'] = $this->mongo->collection('run_campaign_data')->insertOne($data);
         }
+
+        // insert data in ActionLogs table
+        $actionLogData = [
+            "no_of_records" => count($request->data),
+            "ip" => request()->ip(),
+            "status" => "",
+            "reason" => "",
+            "ref_id" => "",
+            "flow_action_id" => $flow_action->id
+        ];
+        $actionLog = $campaign->actionLogs()->create($actionLogData);
+
+        // setting values to be send with job
+        $values['campaign_id'] = $campaign->id;
+        $values['mongo_id'] = $mongo_id;
+        $values['flow_action_id'] = $flow_action->id;
+        $values['action_log_id'] = $actionLog->id;
+
+        // JobService
+        \JOB::processRunCampaign($values);
+
+        return new CustomResource(['message' => 'Executed Successfully']);
+    }
+
+    public function dryRun()
+    {
+        //
     }
 }

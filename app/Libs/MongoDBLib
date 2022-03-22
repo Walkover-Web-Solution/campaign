@@ -2,8 +2,6 @@
 
 namespace App\Libs;
 
-use MongoDB\Client;
-
 
 
 
@@ -15,8 +13,8 @@ class MongoDBLib
     protected $db;
     public function __construct()
     {
-        $client = new Client(env('MONGODB_CLIENT_URL'));
-        $this->db = $client->{env('MONGODB_DATABASE')};
+        // $client = new Client(env('MONGODB_CLIENT_URL'));
+        // $this->db = $client->{env('MONGODB_DATABASE')};
     }
 
     public function getCollections()

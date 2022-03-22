@@ -2,6 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Campaign;
+use App\Models\ChannelType;
+use App\Models\FlowAction;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -14,6 +17,20 @@ class RunCampaignRequest extends FormRequest
      */
     public function authorize()
     {
+        // get campaign using slug for same company
+        $campaign = Campaign::where('slug', $this->slug)
+            ->where('company_id', $this->company->id)
+            ->first();
+
+        // return false if not found for required clause
+        if (empty($campaign)) {
+            return false;
+        }
+
+        // merge campaign to request
+        $this->merge([
+            'campaign' => $campaign
+        ]);
         return true;
     }
 
@@ -24,32 +41,26 @@ class RunCampaignRequest extends FormRequest
      */
     public function rules()
     {
-        $email = 1;
-        $sms = 2;
-        $otp = 3;
-        $whasapp = 4;
-        $voice = 5;
+        // get all channel ids from flow actions attached to given campaign
+        $channelIds = FlowAction::where('linked_type', 'App\Models\ChannelType')
+            ->where('campaign_id', $this->campaign->id)
+            ->pluck('linked_id')
+            ->toArray();
 
-        $validationArray = [
-            'request_id' => '',
-            "data" => ['array', 'max:2000']
-        ];
+        $obj = new \stdClass();
+        $obj->validationArray = [];
 
+        // make validation for every channel id
+        collect($channelIds)->map(function ($channelId) use ($obj) {
+            $channelType = ChannelType::where('id', $channelId)->first();
 
-
-
-        // if (!empty($this->data)) {
-        //     if ($this->campaign->campaign_type_id != $otp || $this->campaign->campaign_type_id != $flow) {
-        //         $fields = collect($this->campaign->campaignType->configurations->fields)->where('is_receiver_variable', true);
-        //         $fields->each(function ($field) use (&$validationArray) {
-        //             if (isset($field->validations)) {
-        //                 $validationArray['data.*.' . $field->name] = $field->validations;
-        //             }
-        //         });
-        //     }
-        // }
-
-
-        return  $validationArray;
+            // validations for is_required taken from conigurations->mapping array
+            $mapping = collect($channelType->configurations['mapping']);
+            $mapping->each(function ($map) use ($obj) {
+                if ($map['is_required'])
+                    $obj->validationArray['data.*.' . $map['name']] = 'required';
+            });
+        });
+        return ($obj->validationArray);
     }
 }
