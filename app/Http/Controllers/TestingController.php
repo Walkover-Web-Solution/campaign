@@ -60,7 +60,6 @@ class TestingController extends Controller
         return new CustomResource($decoded);
     }
 
-
     public function encodeData(Request $request)
     {
         if (request()->header('testerKey') != 'testerKey') {
