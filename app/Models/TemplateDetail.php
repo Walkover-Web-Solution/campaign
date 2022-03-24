@@ -17,6 +17,11 @@ class TemplateDetail extends Model
         'meta'
     ];
 
+    protected $casts = [
+        'meta' => 'json',
+    ];
+
+
     protected $hidden = array(
         'created_at',
         'updated_at'
@@ -25,12 +30,9 @@ class TemplateDetail extends Model
 
     /**
      * Get the template that owns the TemplateDetail
-    */
+     */
     public function template()
     {
         return $this->hasMany(Template::class, 'template_id');
     }
-
-    
 }
-

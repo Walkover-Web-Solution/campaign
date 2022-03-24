@@ -102,6 +102,18 @@ class CampaignsController extends Controller
     {
         if ($campaign->company_id == $request->company->id) {
             $campaign["flow_actions"] = $campaign->flowActions()->get();
+            $i = 0;
+            foreach ($campaign['flow_actions'] as $action) {
+                $template = $action->template()->first();
+                if (!empty($template)){
+                    $temp_det = TemplateDetail::where('template_id', $template->template_id)->first();
+                    $campaign['flow_actions'][$i]['template'] = $template;
+                    $campaign['flow_actions'][$i]['template']['name'] = $temp_det->name;
+                    $campaign['flow_actions'][$i]['template']['content'] = $temp_det->content;
+                    $campaign['flow_actions'][$i]['template']['meta'] = $temp_det->meta;
+                }
+                $i++;
+            }
             return new CustomResource($campaign);
         }
         return new CustomResource(['message' => 'Campaign Not Found']);
