@@ -44,7 +44,7 @@ Route::get('/clients', [ClientController::class, 'index'])->withoutMiddleware('a
 
 Route::resource('/templates', TemplatesController::class);
 
-Route::post('/campaigns/{slug}/run', [RunCampaignController::class, 'run']);
+Route::post('/campaigns/{slug}/run', [RunCampaignController::class, 'run'])->withoutMiddleware('authby.jwt')->middleware('authby.jwt.token');
 
 Route::post('/encode', [TestingController::class, 'encodeData'])->withoutMiddleware('authby.jwt');
 
