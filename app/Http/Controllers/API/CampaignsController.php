@@ -102,6 +102,8 @@ class CampaignsController extends Controller
     {
         if ($campaign->company_id == $request->company->id) {
             $campaign["flow_actions"] = $campaign->flowActions()->get();
+            $campaign["flow_actions"] = $campaign->flowActions()
+            ->with(['template'])->get();
             return new CustomResource($campaign);
         }
         return new CustomResource(['message' => 'Campaign Not Found']);
@@ -186,9 +188,13 @@ class CampaignsController extends Controller
                 //create Template
                 $tmp = $flow_action->template()->create($template);
                 //check if its details present in TemplateDetail table, if not create one
-                $template_detail = TemplateDetail::where('template_id', $tmp->template_id)->first();
+                $template_detail = TemplateDetail::where('template_id', $tmp->template_id)
+                    ->where('channel_type_id', $flow_action->linked_id)
+                    ->first();
                 if (empty($template_detail)) {
-                    $tmp->templateDetails()->create($template);
+                    $temp_det = $tmp->templateDetails()->create($template);
+                    $temp_det->channel_type_id = $flow_action->linked_id;
+                    $temp_det->save();
                 }
             }
         });
