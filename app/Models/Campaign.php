@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Http\Resources\CustomResource;
+use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -118,6 +119,8 @@ class Campaign extends Model
         try {
             $res = JWTDecode(request()->header('authorization'));
             $company = Company::where('ref_id', $res->company->id)->first();
+            if (empty($company))
+                throw new Exception();
         } catch (\Exception $e) {
             return new CustomResource(["message" => "Unauthorized"]);
         }
