@@ -36,6 +36,8 @@ Route::resource('/tokens/{token}/ips', CompanyTokenIPsController::class);
 
 Route::resource('/tokens', TokensController::class);
 
+Route::post('/tokens/{token}/associate', [TokensController::class, 'associate']);
+
 Route::get('/iptypes', [IPTypesController::class, 'index']);
 
 Route::get('/channeltypes', [ChannelTypesController::class, 'index']);
