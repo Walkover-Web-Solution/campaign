@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AssociateTokenToCampaignRequest;
 use App\Http\Requests\UpdateTokenRequest;
 use App\Http\Resources\CustomResource;
+use App\Models\Campaign;
 use App\Models\Token;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -138,5 +140,22 @@ class TokensController extends Controller
         }
         $token->delete();
         return new CustomResource(['message' => "Delete successfully"]);
+    }
+
+    /**
+     * Associate the token with campaign
+     */
+    public function associate(Token $token, AssociateTokenToCampaignRequest $request)
+    {
+        $updateData = array("token_id" => $token->id);
+
+        if (isset($request->campaigns)) {
+            $primary_token = $request->company->tokens()->select('id')->where('is_primary', true)->first();
+            Campaign::where('token_id', $token->id)->update(['token_id' => $primary_token->id]);
+            Campaign::whereIn('slug', collect($request->campaigns)->pluck('slug')->toArray())->update($updateData);
+        }
+        return new CustomResource([
+            'message' => 'Associated successfully'
+        ]);
     }
 }

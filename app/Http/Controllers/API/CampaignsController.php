@@ -188,6 +188,7 @@ class CampaignsController extends Controller
                     $template['variables'] = [];
                 }
                 $template['content'] = 'dummy content';
+                $template['channel_type_id'] = $flow_action->linked_id;
 
                 //create Template
                 $tmp = $flow_action->template()->create($template);
@@ -197,8 +198,6 @@ class CampaignsController extends Controller
                     ->first();
                 if (empty($template_detail)) {
                     $temp_det = $tmp->templateDetails()->create($template);
-                    $temp_det->channel_type_id = $flow_action->linked_id;
-                    $temp_det->save();
                 }
             }
         });

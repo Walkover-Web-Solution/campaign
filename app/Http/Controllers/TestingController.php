@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\CustomResource;
+use App\Jobs\RabbitMQJob;
+use Exception;
 use Illuminate\Http\Request;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use Illuminate\Bus\Dispatcher;
 
 class TestingController extends Controller
 {
@@ -16,6 +19,21 @@ class TestingController extends Controller
      */
     public function index(Request $request)
     {
+        $values['campaign_id'] = '1';
+        $values['mongo_id'] = '2';
+        $values['flow_action_id'] = '3';
+        $values['action_log_id'] = '4';
+        try
+        {
+            // app(Dispatcher::class)->dispatch(new RabbitMQJob($values));
+            // die("here");
+            RabbitMQJob::dispatch($values)->onQueue('raghunath');
+            // $res = RabbitMQJob::dispatch($values)->onQueue("run_email_campaigns");
+            // return new CustomResource($res);
+        }
+        catch(Exception $ex){
+            return $ex;
+        }
         try {
             $string = [
                 "company" => array(

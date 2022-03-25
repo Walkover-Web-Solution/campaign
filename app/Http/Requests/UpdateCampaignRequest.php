@@ -37,7 +37,7 @@ class UpdateCampaignRequest extends FormRequest
             'flow_action' => 'nullable|array',
             'is_active' => 'nullable',
             'flow_action.*.template' => 'nullable|array',
-            'flow_action.*.template.template_id' => 'nullable|numeric',
+            'flow_action.*.template.template_id' => 'nullable|regex:/^[a-zA-Z0-9-_]+$/',
             'flow_action.*.template.name' => 'nullable|string',
             'flow_action.*.template.content' => 'nullable',
             'flow_action.*.template.variables' => 'nullable|array',

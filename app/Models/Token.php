@@ -13,7 +13,8 @@ class Token extends Model
         'name',
         'is_active',
         'throttle_limit',
-        'temporary_throttle_limit'
+        'temporary_throttle_limit',
+        'temporary_throttle_time'
     ];
 
     protected $casts = array(
