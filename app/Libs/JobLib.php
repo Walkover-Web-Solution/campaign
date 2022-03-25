@@ -8,6 +8,12 @@ class JobLib
 {
     public function enqueue($queue, $data)
     {
-        RabbitMQJob::dispatch($data)->onQueue($queue);
+        if(env('APP_ENV') == 'local'){
+            RabbitMQJob::dispatch($data)->onQueue($queue)->onConnection('rabbitmqlocal');
+        }
+        else{
+            RabbitMQJob::dispatch($data)->onQueue($queue);
+        }
+        
     }
 }

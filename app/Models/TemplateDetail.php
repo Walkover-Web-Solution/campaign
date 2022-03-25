@@ -13,6 +13,7 @@ class TemplateDetail extends Model
     protected $fillable = [
         'name',
         'template_id',
+        'channel_type_id',
         'content',
         'meta'
     ];
