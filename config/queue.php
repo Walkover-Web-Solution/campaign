@@ -111,7 +111,7 @@ return [
 
             'driver' => 'rabbitmq',
             'queue' => env('RABBITMQ_QUEUE', 'default'),
-            'connection' => PhpAmqpLib\Connection\AMQPSSLConnection::class,
+            'connection' => PhpAmqpLib\Connection\AMQPLazySSLConnection::class,
 
             'hosts' => [
                 [

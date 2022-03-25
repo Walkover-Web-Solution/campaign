@@ -12,7 +12,7 @@ class JobLib
             RabbitMQJob::dispatch($data)->onQueue($queue)->onConnection('rabbitmqlocal');
         }
         else{
-            RabbitMQJob::dispatch($data)->onQueue($queue)->onConnection('rabbitmq');
+            RabbitMQJob::dispatch($data)->onQueue($queue);
         }
         
     }
