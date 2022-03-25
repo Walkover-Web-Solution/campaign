@@ -39,7 +39,7 @@ class CreateCampaignRequest extends FormRequest
                 'flow_action.*.configurations' => 'nullable',
                 'flow_action.*.type' => 'required|string',
                 'flow_action.*.template' => 'required_if:flow_action.*.type,channel|array', //template and its fields are required only if flow_action.*.type is channel
-                'flow_action.*.template.template_id' => 'required_if:flow_action.*.type,channel|numeric',
+                'flow_action.*.template.template_id' => 'required_if:flow_action.*.type,channel|regex:/^[a-zA-Z0-9-_]+$/',
                 'flow_action.*.template.name' => 'required_if:flow_action.*.type,channel|string',
                 'flow_action.*.template.variables' => 'nullable|array',
                 'flow_action.*.template.meta' => 'required_if:flow_action.*.type,channel|nullable'
