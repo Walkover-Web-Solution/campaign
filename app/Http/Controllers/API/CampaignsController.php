@@ -12,6 +12,7 @@ use App\Models\ChannelType;
 use App\Models\Condition;
 use App\Models\FlowAction;
 use App\Models\TemplateDetail;
+use App\Models\Token;
 use Illuminate\Http\Request;
 
 class CampaignsController extends Controller
@@ -101,9 +102,14 @@ class CampaignsController extends Controller
     public function show(Request $request, Campaign $campaign)
     {
         if ($campaign->company_id == $request->company->id) {
-            $campaign = $campaign->with(['token', 'flowActions', 'flowActions.template'])->get();
+
+            $campaign["token"] = $campaign->token()->first();
+            $campaign["flow_actions"] = $campaign->flowActions()
+                ->with(['template'])->get();
+
             return new CustomResource($campaign);
         }
+
         return new CustomResource(['message' => 'Campaign Not Found']);
     }
 
