@@ -101,9 +101,7 @@ class CampaignsController extends Controller
     public function show(Request $request, Campaign $campaign)
     {
         if ($campaign->company_id == $request->company->id) {
-            $campaign["flow_actions"] = $campaign->flowActions()->get();
-            $campaign["flow_actions"] = $campaign->flowActions()
-            ->with(['template'])->get();
+            $campaign = $campaign->with(['token', 'flowActions', 'flowActions.template'])->get();
             return new CustomResource($campaign);
         }
         return new CustomResource(['message' => 'Campaign Not Found']);
