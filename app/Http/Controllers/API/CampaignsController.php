@@ -28,7 +28,7 @@ class CampaignsController extends Controller
 
         $fields = $request->input('fields', 'id,name,is_active,slug');
 
-
+        
         $paginator = Campaign::select(explode(',', $fields))->where('company_id', $request->company->id)
             ->where(function ($query) use ($request) {
                 if ($request->has('name')) {
@@ -43,6 +43,9 @@ class CampaignsController extends Controller
                 }
                 if ($request->has('token_id')) {
                     $query->where('token_id', $request->token_id);
+                }
+                if ($request->has('slug')) {
+                    $query->where('slug', $request->slug);
                 }
             })
             ->orderBy('id', 'desc')

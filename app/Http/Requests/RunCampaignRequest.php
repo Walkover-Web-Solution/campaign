@@ -19,7 +19,7 @@ class RunCampaignRequest extends FormRequest
     {
         // get campaign using slug for same company
         $campaign = Campaign::where('slug', $this->slug)
-            ->where('company_id', $this->company->id)
+            ->where('company_id', $this->company->id)->where('is_active','1')
             ->first();
 
         // return false if not found for required clause
