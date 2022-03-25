@@ -115,6 +115,9 @@ class TokensController extends Controller
     public function update(UpdateTokenRequest $request, Token $token)
     {
         $input = $request->validated();
+        if ($token->is_primary) {
+            return new CustomResource(["message" => "Can not update default token"]);
+        }
         $token->update($input);
         return new CustomResource($token);
     }
@@ -131,7 +134,7 @@ class TokensController extends Controller
             throw new \Exception("Unauthorized", 1);
         }
         if ($token->is_primary) {
-            throw new \Exception("Can not update default  token");
+            return new CustomResource(["message" => "Can not delete default token"]);
         }
         $token->delete();
         return new CustomResource(['message' => "Delete successfully"]);
