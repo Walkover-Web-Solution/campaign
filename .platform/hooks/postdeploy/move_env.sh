@@ -1,3 +1,3 @@
 #!/bin/sh
 
-sudo mv /tmp/.env /var/app/current/.env
+# sudo mv /tmp/.env /var/app/current/.env
