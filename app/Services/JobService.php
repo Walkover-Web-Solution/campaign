@@ -38,6 +38,6 @@ class JobService
                 $queue = 'run_voice_campaigns';
                 break;
         }
-        $this->lib->enqueue($queue, $input);
+        $this->lib->enqueue($queue, json_encode($input));
     }
 }

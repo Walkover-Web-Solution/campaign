@@ -23,7 +23,7 @@ class RunCampaignController extends Controller
             $data = [
                 'data' => $request->data
             ];
-            $mongo_id['_id'] = $this->mongo->collection('run_campaign_data')->insertOne($data);
+            $mongo_id = $this->mongo->collection('run_campaign_data')->insertOne($data);
         }
 
         // insert data in ActionLogs table
@@ -33,15 +33,13 @@ class RunCampaignController extends Controller
             "status" => "",
             "reason" => "",
             "ref_id" => "",
-            "flow_action_id" => $flow_action->id
+            "flow_action_id" => $flow_action->id,
+            "mongo_id" => $mongo_id
         ];
         $actionLog = $campaign->actionLogs()->create($actionLogData);
 
         // setting values to be send with job
-        $values['campaign_id'] = $campaign->id;
-        $values['mongo_id'] = $mongo_id;
         $values['flow_action_id'] = $flow_action->id;
-        $values['action_log_id'] = $actionLog->id;
 
         // JobService
         \JOB::processRunCampaign($values);
