@@ -19,8 +19,9 @@ class JobService
 
     public function processRunCampaign($actionLog)
     {
-        // setting values to be send with job
-        $input['action_log_id'] = $actionLog->id;
+        // setting object to be send with job
+        $input = new \stdClass();
+        $input->action_log_id = $actionLog->id;
 
         // get linked id from flow action to name the queue
         $flow_action = FlowAction::where('id', $actionLog->flow_action_id)->first();
@@ -41,6 +42,6 @@ class JobService
                 $queue = 'run_voice_campaigns';
                 break;
         }
-        $this->lib->enqueue($queue, json_encode($input));
+        $this->lib->enqueue($queue, $input);
     }
 }
