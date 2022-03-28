@@ -38,11 +38,8 @@ class RunCampaignController extends Controller
         ];
         $actionLog = $campaign->actionLogs()->create($actionLogData);
 
-        // setting values to be send with job
-        $values['flow_action_id'] = $flow_action->id;
-
         // JobService
-        \JOB::processRunCampaign($values);
+        \JOB::processRunCampaign($actionLog);
 
         return new CustomResource(['message' => 'Executed Successfully']);
     }

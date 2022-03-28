@@ -17,10 +17,13 @@ class JobService
         $this->lib = $lib;
     }
 
-    public function processRunCampaign($input)
+    public function processRunCampaign($actionLog)
     {
+        // setting values to be send with job
+        $input['action_log_id'] = $actionLog->id;
+
         // get linked id from flow action to name the queue
-        $flow_action = FlowAction::where('id', $input['flow_action_id'])->first();
+        $flow_action = FlowAction::where('id', $actionLog->flow_action_id)->first();
         switch ($flow_action->linked_id) {
             case 1:
                 $queue = 'run_email_campaigns';
