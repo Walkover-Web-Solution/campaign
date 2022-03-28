@@ -19,7 +19,7 @@ class RunCampaignRequest extends FormRequest
     {
         // get campaign using slug for same company
         $campaign = Campaign::where('slug', $this->slug)
-            ->where('company_id', $this->company->id)->where('is_active','1')
+            ->where('company_id', $this->company->id)->where('is_active', '1')
             ->first();
 
         // return false if not found for required clause
@@ -57,8 +57,12 @@ class RunCampaignRequest extends FormRequest
             // validations for is_required taken from conigurations->mapping array
             $mapping = collect($channelType->configurations['mapping']);
             $mapping->each(function ($map) use ($obj) {
-                if ($map['is_required'])
-                    $obj->validationArray['data.*.' . $map['name']] = 'required';
+                if ($map['is_required']) {
+                    $obj->validationArray['data.' . $map['name']] = $map['is_array'] ? 'required | array' : 'required';
+                } else {
+                    $obj->validationArray['data.' . $map['name']] = $map['is_array'] ? 'array' : '';
+                }
+                // $obj->validationArray['data.' . $map['name']] = ($map['is_required'] ? 'required | ' : '') . ($map['is_array'] ? 'array' : ''); //($map['is_array'] ? 'required|array' : 'required') : '';
             });
         });
         return ($obj->validationArray);

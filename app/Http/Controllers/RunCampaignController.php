@@ -28,7 +28,7 @@ class RunCampaignController extends Controller
 
         // insert data in ActionLogs table
         $actionLogData = [
-            "no_of_records" => count($request->data),
+            "no_of_records" => $flow_action->linked_id == 1 ? count($request->data['to']) : ($flow_action->linked_id == 3 ? 1 : count($request->data['mobiles'])),
             "ip" => request()->ip(),
             "status" => "",
             "reason" => "",

@@ -92,7 +92,8 @@ class ChannelTypeTableSeeder extends Seeder
                             "source" => "",
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
-                            "is_required" => true
+                            "is_required" => true,
+                            "is_array" => true
                         ),
                         array(
                             "name" => "cc",
@@ -102,7 +103,8 @@ class ChannelTypeTableSeeder extends Seeder
                             "source" => "",
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
-                            "is_required" => false
+                            "is_required" => false,
+                            "is_array" => true
                         ),
                         array(
                             "name" => "bcc",
@@ -112,7 +114,8 @@ class ChannelTypeTableSeeder extends Seeder
                             "source" => "",
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
-                            "is_required" => false
+                            "is_required" => false,
+                            "is_array" => true
                         ),
                         array(
                             "name" => "variables",
@@ -122,7 +125,8 @@ class ChannelTypeTableSeeder extends Seeder
                             "source" => "",
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
-                            "is_required" => false
+                            "is_required" => false,
+                            "is_array" => true
                         )
                     )
 
@@ -156,7 +160,8 @@ class ChannelTypeTableSeeder extends Seeder
                             "source" => "",
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
-                            "is_required" => true
+                            "is_required" => true,
+                            "is_array" => true
                         ),
                         array(
                             "name" => "variables",
@@ -166,7 +171,8 @@ class ChannelTypeTableSeeder extends Seeder
                             "source" => "",
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
-                            "is_required" => false
+                            "is_required" => false,
+                            "is_array" => true
                         )
                     )
                 )
@@ -179,10 +185,10 @@ class ChannelTypeTableSeeder extends Seeder
                     "fields" => array(),
                     "mapping" => array(
                         array(
-                            "name" => "mobiles",
+                            "name" => "mobile",
                             "type" => 'list',
                             "is_required" => true,
-                            "label" => 'Mobiles',
+                            "label" => 'Mobile',
                             "regex" => "",
                             "source" => "",
                             "sourceFieldLabel" => "",
@@ -207,7 +213,8 @@ class ChannelTypeTableSeeder extends Seeder
                             "source" => "",
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
-                            "is_required" => true
+                            "is_required" => true,
+                            "is_array" => true
                         )
                     )
                 )
@@ -227,7 +234,8 @@ class ChannelTypeTableSeeder extends Seeder
                             "source" => "",
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
-                            "is_required" => true
+                            "is_required" => true,
+                            "is_array" => true
                         )
                     )
                 )
