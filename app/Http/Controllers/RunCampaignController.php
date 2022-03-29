@@ -19,10 +19,27 @@ class RunCampaignController extends Controller
         $campaign = $request->campaign;
         $flow_action = $campaign->flowActions()->where('parent_id', null)->first();
 
+        // get 'from' data from flowAction configurations if not passed with body
+        if (empty($request->data['from'])) {
+            $from['from'] = $flow_action->configurations->from;
+            $request->data = array_merge($request->data, $from);
+        }
+        // get 'cc' data from flowAction configurations if cc field is not there in request body, but pass empty if key-with-no-data is there
+        if (!isset($request->data['cc'])) {
+            $cc['cc'] = $flow_action->configurations->cc;
+            $request->data = array_merge($request->data, $cc);
+        }
+        // get 'bcc' data from flowAction configurations if cc field is not there in request body, but pass empty if key-with-no-data is there
+        if (!isset($request->data['bcc'])) {
+            $bcc['bcc'] = $flow_action->configurations->bcc;
+            $request->data = array_merge($request->data, $bcc);
+        }
+
         if ($request->filled('data')) {
             $data = [
                 'data' => $request->data
             ];
+            // insert into mongo
             $mongo_id = $this->mongo->collection('run_campaign_data')->insertOne($data);
         }
 
