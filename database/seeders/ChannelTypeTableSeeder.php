@@ -193,7 +193,8 @@ class ChannelTypeTableSeeder extends Seeder
                             "source" => "",
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
-                            "is_required" => true
+                            "is_required" => true,
+                            "is_array" => false
                         )
                     )
                 )

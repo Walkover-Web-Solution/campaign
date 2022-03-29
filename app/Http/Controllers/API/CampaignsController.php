@@ -28,7 +28,7 @@ class CampaignsController extends Controller
 
         $fields = $request->input('fields', 'id,name,is_active,slug');
 
-        
+
         $paginator = Campaign::select(explode(',', $fields))->where('company_id', $request->company->id)
             ->where(function ($query) use ($request) {
                 if ($request->has('name')) {
@@ -266,11 +266,29 @@ class CampaignsController extends Controller
     public function getSnippets(GetFieldsRequest $request)
     {
         $sampleData = [
-            "mobiles" => array('1234567890', '3216549870'),
+            "mobiles" => array(
+                array(
+                    "mobiles" => "1234567890"
+                ), array(
+                    "mobiles" => "1234567890"
+                )
+            ),
             "emails" => array(
-                "to" => array("name@email.com", "name2@email.com"),
-                "cc" => array("name@email.com", "name2@email.com"),
-                "bcc" => array("name@email.com", "name2@email.com"),
+                "to" => array(
+                    array("name" => "name", "email" => "name@email.com"),
+                    array("name" => "name2", "email" => "name2@email.com")
+                ),
+                "cc" => array(
+                    array("email" => "name@email.com"),
+                    array("email" => "name2@email.com")
+                ),
+                "bcc" => array(
+                    array("email" => "name@email.com"),
+                    array("email" => "name2@email.com")
+                ),
+            ),
+            "mobile" =>  array(
+                "mobiles" => "1234567890"
             )
         ];
 
@@ -284,13 +302,24 @@ class CampaignsController extends Controller
         $obj->inc = 1;
 
         // make validation for every channel id
-        collect($flowAction)->map(function ($channel) use ($obj, $sampleData) {
+        collect($flowAction)->map(function ($channel) use ($obj, $sampleData, $request) {
+
+            $obj->snippets['endpoint'] = env('SNIPPET_HOST_URL') . $request->campaign->slug . '/run';
+
+            $token = $request->campaign->token()->first();
+            $obj->snippets['header'] = array(
+                "token" => $token->token
+            );
+
             $email = 1;
+            $otp = 3;
             // according to channel type get data from sampleData
             if ($channel->linked_id == $email) {
-                $obj->snippets['emails'] = $sampleData['emails'];
+                $obj->snippets['requestBody']['data']['emails'] = $sampleData['emails'];
+            } else if ($channel->linked_id == $otp) {
+                $obj->snippets['requestBody']['data']['mobile'] = $sampleData['mobile'];
             } else {
-                $obj->snippets['mobiles'] = $sampleData['mobiles'];
+                $obj->snippets['requestBody']['data']['mobiles'] = $sampleData['mobiles'];
             }
 
             // inserting template variables
@@ -304,7 +333,7 @@ class CampaignsController extends Controller
             });
         });
 
-        $obj->snippets = array_merge($obj->snippets, $obj->variables);
+        $obj->snippets['requestBody']['data'] = array_merge($obj->snippets['requestBody']['data'], $obj->variables);
         return new CustomResource($obj->snippets);
     }
 }
