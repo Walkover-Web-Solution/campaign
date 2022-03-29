@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActionLogsController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CampaignsController;
 use App\Http\Controllers\API\ChannelTypesController;
@@ -53,3 +54,5 @@ Route::get('/conditions', [ConditionsController::class, 'index']);
 Route::get('/campaigns/{slug}/fields', [CampaignsController::class, 'getFields']);
 
 Route::get('/campaigns/{slug}/snippets', [CampaignsController::class, 'getSnippets']);
+
+Route::get('/logs', [ActionLogsController::class, 'index']);
