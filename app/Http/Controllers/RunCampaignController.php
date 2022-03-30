@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\RunCampaignRequest;
 use App\Http\Resources\CustomResource;
 use App\Libs\MongoDBLib;
+use App\Models\ActionLog;
 
 class RunCampaignController extends Controller
 {
@@ -35,14 +36,6 @@ class RunCampaignController extends Controller
             $request->data = array_merge($request->data, $bcc);
         }
 
-        if ($request->filled('data')) {
-            $data = [
-                'data' => $request->data
-            ];
-            // insert into mongo
-            $mongo_id = $this->mongo->collection('run_campaign_data')->insertOne($data);
-        }
-
         // insert data in ActionLogs table
         $actionLogData = [
             "no_of_records" => $flow_action->linked_id == 1 ? count($request->data['to']) : ($flow_action->linked_id == 3 ? 1 : count($request->data['mobiles'])),
@@ -51,9 +44,23 @@ class RunCampaignController extends Controller
             "reason" => "",
             "ref_id" => "",
             "flow_action_id" => $flow_action->id,
-            "mongo_id" => $mongo_id
+            "mongo_id" => ""
         ];
         $actionLog = $campaign->actionLogs()->create($actionLogData);
+
+
+        if ($request->filled('data')) {
+            $data = [
+                'action_log_id'=>$actionLog->id,
+                'data' => $request->data
+            ];
+            // insert into mongo
+            $mongo_id = $this->mongo->collection('run_campaign_data')->insertOne($data);
+        }
+
+        $log= ActionLog::find($actionLog->id);
+        $log->mongo_id=$mongo_id;
+        $log->save();
 
         // JobService
         \JOB::processRunCampaign($actionLog);
