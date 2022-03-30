@@ -6,6 +6,7 @@ use App\Http\Resources\CustomResource;
 use App\Models\ActionLog;
 use App\Models\Campaign;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ActionLogsController extends Controller
 {
@@ -16,19 +17,28 @@ class ActionLogsController extends Controller
      */
     public function index(Request $request)
     {
-        $obj = new \stdClass();
-        $obj->actionLogs = [];
+        $itemsPerPage = $request->input('itemsPerPagepost', 25);
 
-        $campaignIds = Campaign::where('company_id', $request->company->id)->pluck('id');
-
-        $itemsPerPage = $request->input('itemsPerPage', 1);
-
-        $fields = $request->input('fields', 'campaign_id,status,reason');
-
-        $paginator = ActionLog::select(explode(',', $fields))->whereIn('campaign_id', $campaignIds)
-            ->orderBy('id', 'desc')
+        $paginator = DB::table('action_logs')
+            ->select('campaigns.name as campaign', 'campaigns.slug', 'status', 'reason', 'ip', 'ref_id', 'action_logs.created_at', 'action_logs.updated_at')
+            ->join('campaigns', 'campaigns.id', '=', 'action_logs.campaign_id')
+            ->where(['campaigns.company_id' => $request->company->id])
+            ->where(function ($query) use ($request) {
+                if ($request->has('slug')) {
+                    $query->where('campaigns.slug', $request->slug);
+                }
+                if ($request->has('name')) {
+                    $query->where('campaigns.name', $request->name);
+                }
+                if ($request->has('fromDate')) {
+                    $query->whereDate('action_logs.created_at', '>=', $request->fromDate);
+                }
+                if ($request->has('toDate')) {
+                    $query->whereDate('action_logs.created_at', '<', $request->toDate);
+                }
+            })
+            ->orderBy('action_logs.id', 'desc')
             ->paginate($itemsPerPage, ['*'], 'pageNo');
-
 
         return new CustomResource([
             'data' => $paginator->items(),
