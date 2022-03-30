@@ -58,9 +58,9 @@ class RunCampaignController extends Controller
             $mongo_id = $this->mongo->collection('run_campaign_data')->insertOne($data);
         }
 
-        $log= ActionLog::find($actionLog->id);
-        $log->mongo_id=$mongo_id;
-        $log->save();
+
+        $actionLog->mongo_id=$mongo_id;
+        $actionLog->save();
 
         // JobService
         \JOB::processRunCampaign($actionLog);
