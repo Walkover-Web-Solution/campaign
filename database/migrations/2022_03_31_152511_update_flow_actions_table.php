@@ -16,7 +16,7 @@ class UpdateFlowActionsTable extends Migration
         Schema::table('flow_actions', function (Blueprint $table) {
             $table->string('name');
             $table->json('style');
-            $table->json('module_type');
+            $table->json('module_data');
             $table->renameColumn('linked_id', 'channel_id');
         });
     }

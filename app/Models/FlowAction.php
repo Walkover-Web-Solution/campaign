@@ -10,16 +10,21 @@ class FlowAction extends Model
     use HasFactory;
 
     protected $fillable = [
+        'name',
         'campaign_id',
-        'linked_id',
+        'channel_id',
         'linked_type',
         'is_condition',
         'parent_id',
-        'configurations'
+        'configurations',
+        'style',
+        'module_data'
     ];
     protected $casts = array(
         'is_condition' => 'boolean',
-        'configurations' => 'object'
+        'configurations' => 'object',
+        'style' => 'object',
+        'module_data' => 'object'
     );
     protected $hidden = array(
         'created_at',

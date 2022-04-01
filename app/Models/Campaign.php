@@ -18,12 +18,16 @@ class Campaign extends Model
         'is_active',
         'configurations',
         'meta',
-        'slug'
+        'slug',
+        'style',
+        'module_data'
     ];
 
     protected $casts = array(
         'meta' => 'object',
         'configurations' => 'object',
+        'style' => 'json',
+        'module_data' => 'json'
     );
 
 
