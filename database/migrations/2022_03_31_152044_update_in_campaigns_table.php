@@ -15,9 +15,7 @@ class UpdateInCampaignsTable extends Migration
     {
         Schema::table('campaigns', function (Blueprint $table) {
             $table->json('style');
-            $table->json('module_type');
-
-
+            $table->json('module_data');
         });
     }
 
@@ -28,8 +26,9 @@ class UpdateInCampaignsTable extends Migration
      */
     public function down()
     {
-        Schema::table('Campaigns', function (Blueprint $table) {
-            //
+        Schema::table('campaigns', function (Blueprint $table) {
+            $table->json('style');
+            $table->json('module_data');
         });
     }
 }
