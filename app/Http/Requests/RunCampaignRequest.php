@@ -53,18 +53,41 @@ class RunCampaignRequest extends FormRequest
         // make validation for every channel id
         collect($channelIds)->map(function ($channelId) use ($obj) {
             $channelType = ChannelType::where('id', $channelId)->first();
-
+            $channelCategory = $this->getChannelCategory($channelType);
             // validations for is_required taken from conigurations->mapping array
             $mapping = collect($channelType->configurations['mapping']);
-            $mapping->each(function ($map) use ($obj) {
+            $mapping->each(function ($map) use ($obj, $channelCategory) {
+
                 if ($map['is_required']) {
-                    $obj->validationArray['data.' . $map['name']] = $map['is_array'] ? 'required | array' : 'required';
+                    $obj->validationArray['data.' . $channelCategory . '.' . $map['name']] = $map['is_array'] ? 'required | array' : 'required';
                 } else {
-                    $obj->validationArray['data.' . $map['name']] = $map['is_array'] ? 'array' : '';
+                    $obj->validationArray['data.' . $channelCategory . '.' . $map['name']] = $map['is_array'] ? 'array' : '';
                 }
                 // $obj->validationArray['data.' . $map['name']] = ($map['is_required'] ? 'required | ' : '') . ($map['is_array'] ? 'array' : ''); //($map['is_array'] ? 'required|array' : 'required') : '';
             });
         });
         return ($obj->validationArray);
+    }
+
+    private function getChannelCategory(ChannelType $channel)
+    {
+        # This function will return category of channel type as a string
+        switch ($channel->id) {
+            case 1:
+                return "emails";
+                break;
+            case 2:
+                return "mobiles";
+                break;
+            case 3:
+                return "mobile";
+                break;
+            case 4:
+                return "mobiles";
+                break;
+            case 5:
+                return "mobiles";
+                break;
+        }
     }
 }
