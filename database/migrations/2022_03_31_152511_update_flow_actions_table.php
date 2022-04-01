@@ -17,6 +17,7 @@ class UpdateFlowActionsTable extends Migration
             $table->string('name');
             $table->json('style');
             $table->json('module_type');
+            $table->renameColumn('linked_id', 'channel_id');
         });
     }
 
@@ -28,7 +29,10 @@ class UpdateFlowActionsTable extends Migration
     public function down()
     {
         Schema::table('flow_actions', function (Blueprint $table) {
-            //
+            $table->string('name');
+            $table->json('style');
+            $table->json('module_type');
+            $table->renameColumn('linked_id', 'channel_id');
         });
     }
 }

@@ -18,8 +18,10 @@ class TestingController extends Controller
      */
     public function index(Request $request)
     {
-        $action= ActionLog::find(124);
-        dd($action);
+        //  getFlows($request);
+        // $action= ActionLog::find(124);
+        // dd($action);
+        getCampaign(1);
     }
 
     public function encodeData(Request $request)
