@@ -63,7 +63,7 @@ class TokensController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => ['required', 'string', 'min:3', 'max:50', 'alpha_dash', Rule::unique('tokens', 'name')->where(function ($query)  use ($request) {
+            'name' => ['required', 'string', 'min:3', 'max:50', Rule::unique('tokens', 'name')->where(function ($query)  use ($request) {
                 return $query->where('company_id', $request->company->id);
             })]
         ]);
@@ -118,7 +118,10 @@ class TokensController extends Controller
     {
         $input = $request->validated();
         if ($token->is_primary) {
-            return new CustomResource(["message" => "Can not update default token"]);
+            if(isset($input->is_primary)){
+                unset($input->is_primary);
+            }
+            // return new CustomResource(["message" => "Can not update default token"]);
         }
         $token->update($input);
         return new CustomResource($token);
@@ -136,7 +139,7 @@ class TokensController extends Controller
             throw new \Exception("Unauthorized", 1);
         }
         if ($token->is_primary) {
-            return new CustomResource(["message" => "Can not delete default token"]);
+            return new CustomResource(["message" => "Can not delete default token"],true);
         }
         $token->delete();
         return new CustomResource(['message' => "Delete successfully"]);

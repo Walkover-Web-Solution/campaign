@@ -25,7 +25,7 @@ class UpdateTokenRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['nullable', 'string', 'min:3', 'max:50', 'alpha_dash', Rule::unique('tokens', 'name')->where(function ($query) {
+            'name' => ['nullable', 'string', 'min:3', 'max:50', Rule::unique('tokens', 'name')->where(function ($query) {
                 return $query->where('company_id', $this->company->id);
             })->ignore($this->token->id)],
             'is_active' => 'nullable|boolean',

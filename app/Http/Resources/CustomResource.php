@@ -12,12 +12,16 @@ class CustomResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
-    public function toArray($request)
+    public function toArray($request, $hasError = false)
     {
+        $status = "success";
+        if($hasError){
+            $status = "error";
+        }
         return [
             'data'=> parent::toArray($request),
-            'status'=>'success',
-            'hasError'=>false,
+            'status'=>$status,
+            'hasError'=>$hasError,
             'errors'=>[]
         ];        
     }
