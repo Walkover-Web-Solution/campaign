@@ -18,6 +18,7 @@ class UpdateFlowActionsTable extends Migration
             $table->json('style');
             $table->json('module_data');
             $table->renameColumn('linked_id', 'channel_id');
+            $table->dropColumn(['parent_id', 'is_condition', 'linked_type']);
         });
     }
 
