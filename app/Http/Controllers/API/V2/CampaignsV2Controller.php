@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V2;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateCampaignV2Request;
 use App\Http\Resources\CustomResource;
+use App\Models\Campaign;
 use Illuminate\Http\Request;
 
 class CampaignsV2Controller extends Controller
@@ -45,10 +46,10 @@ class CampaignsV2Controller extends Controller
 
         if (!empty($input['modules'])) {
             $data = getFlows($input['modules']);
-        }
 
-        // create flowactions  with campaign
-        $campaign->flowActions()->createMany($data);
+            // create flowactions  with campaign
+            $campaign->flowActions()->createMany($data);
+        }
 
         return new CustomResource($campaign);
     }
@@ -59,9 +60,9 @@ class CampaignsV2Controller extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Campaign $campaign)
     {
-        //
+        return new CustomResource(getCampaign($campaign->id));
     }
 
     /**

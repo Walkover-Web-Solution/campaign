@@ -61,16 +61,14 @@ function getFlows($modules)
 
 function getCampaign($campid)
 {
-    $data = new \stdClass();
-    $campaign = Campaign::where('id', $campid)->first();
-    $data->id = $campaign['id'];
-    $data->name = $campaign['name'];
-    $data->style = $campaign['style'];
-    $data->module_data = $campaign['module_data'];
-    $data->modules = [];
-    $flow = FlowAction::where('campaign_id', $campid)->get();
+    $campaign = Campaign::select('id', 'name', 'style', 'module_data')->where('id', $campid)->first();
+    // $campaign->modules = [];
 
-    $modules = collect($flow)->map(function ($val, $key) use ($data) {
+    $data = new \stdClass();
+    $data->modules = [];
+
+    $flow = FlowAction::where('campaign_id', $campid)->get();
+    collect($flow)->map(function ($val) use ($data) {
         $channel = ChannelType::where('id', $val['channel_id'])->pluck('name')->first();
         if (empty($data->modules[$channel]))
             $data->modules[$channel] = [];
@@ -80,8 +78,8 @@ function getCampaign($campid)
         $temp->style = $val['style'];
         $temp->module_data = $val['module_data'];
         array_push($data->modules[$channel], $temp);
-        // return $temp;
     });
-    // $data->modules = $modules;
-    dd($data);
+    $campaign->modules = $data->modules;
+
+    return ($campaign);
 }

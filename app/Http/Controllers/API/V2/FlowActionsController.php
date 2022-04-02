@@ -39,22 +39,7 @@ class FlowActionsController extends Controller
     public function store(CreateFlowActionsRequest $request)
     {
         $input = $request->validated();
-        $data = collect($input['modules'])->map(function ($module, $key) use ($request) {
-            $channel_id = ChannelType::where('name', $key)->pluck('id')->first();
-            return collect($module)->map(function ($flow) use ($channel_id, $request) {
-                $flowAction = [
-                    'name' => $flow['name'],
-                    "channel_id" => $channel_id,
-                    'configurations' => '[]',
-                    "linked_type" => "tt",
-                    "parent_id" => -1,
-                    'is_condition' => false,
-                    'style' => $flow['style'],
-                    'module_data' => $flow['module_data']
-                ];
-                return $request->campaign->flowActions()->create($flowAction);
-            });
-        });
+        $data = $request->campaign->flowActions()->create($input);
         return new CustomResource($data);
     }
 
