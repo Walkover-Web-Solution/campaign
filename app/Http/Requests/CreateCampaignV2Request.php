@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Campaign;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CreateCampaignV2Request extends FormRequest
 {
@@ -23,9 +25,25 @@ class CreateCampaignV2Request extends FormRequest
      */
     public function rules()
     {
-        return [
-            //
+        $validationArray = [
+            'name' => ['required', 'string', 'min:3', 'max:50', Rule::unique('campaigns', 'name')->where(function ($query) {
+                return $query->where('company_id', $this->company->id);
+            })],
+            'modules' => 'array',
         ];
+
+        // if flow_action is set then only fields are required (cause flow_action is not required above)
+        // if (isset(request()->modules)) {
+        //     $additionalRules = [
+        //         'modules.*.name' => ['required', 'string', 'min:3', 'max:50', Rule::unique('flowActions', 'name')->where(function ($query) {
+        //             return $query->where('campaign_id', $this->company->id);
+        //         })],
+        //         'modules.*.style' => 'required|array',
+        //         'modules.*.module_data' => 'required|array'
+        //     ];
+        //     $validationArray = $validationArray + $additionalRules;
+        // }
+        return $validationArray;
     }
 
     public function validated()
@@ -37,17 +55,15 @@ class CreateCampaignV2Request extends FormRequest
             ]);
         }
 
-
-        if (isset($this['flow_action']))
-            $flow_action = $this->flow_action;
-
+        if (isset($this->modules))
+            $modules = $this->modules;
         return array(
             'name' => $this->name,
             'configurations' => empty($this->configurations) ? [] : $this->configurations,
             'meta' => [],
             'style' => $this->style,
             'module_data' => $this->module_data,
-            'flow_action' => empty($flow_action) ? [] : $flow_action,
+            'modules' => empty($modules) ? [] : $modules,
             'token_id' => $token->id,
             'user_id' => $this->user->id,
             'is_active' => true

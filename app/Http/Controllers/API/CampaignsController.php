@@ -95,16 +95,6 @@ class CampaignsController extends Controller
         return new CustomResource($campaign);
     }
 
-    public function storeV2(CreateCampaignV2Request $request)
-    {
-        //validating request
-        $input = $request->validated();
-
-        // create campaign with the company assoication
-        $campaign = $request->company->campaigns()->create($input);
-        return new CustomResource($campaign);
-    }
-
     /**
      * Display the specified resource.
      *

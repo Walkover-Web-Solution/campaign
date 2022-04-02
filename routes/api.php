@@ -9,6 +9,7 @@ use App\Http\Controllers\API\IPTypesController;
 use App\Http\Controllers\API\TokensController;
 use App\Http\Controllers\TestingController;
 use App\Http\Controllers\API\TemplatesController;
+use App\Http\Controllers\API\V2\CampaignsV2Controller;
 use App\Http\Controllers\API\V2\FlowActionsController;
 use App\Http\Controllers\ConditionsController;
 use Database\Seeders\ConditionTableSeeder;
@@ -56,6 +57,6 @@ Route::get('/campaigns/{slug}/fields', [CampaignsController::class, 'getFields']
 Route::get('/campaigns/{slug}/snippets', [CampaignsController::class, 'getSnippets']);
 
 
-Route::post('/v2/campaigns', [CampaignsController::class, 'storeV2']);
+Route::resource('/v2/campaigns', CampaignsV2Controller::class);
 
 Route::resource('/v2/{slug}/flowActions', FlowActionsController::class);

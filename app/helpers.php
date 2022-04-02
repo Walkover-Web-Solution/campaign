@@ -42,20 +42,21 @@ function JWTDecode($value)
 
 function getFlows($modules)
 {
-
-    $data = collect($modules)->map(function ($arr) {
-        $obj = new \stdClass();
-        $obj->ar = [];
-        collect($arr)->map(function ($flow, $key) use ($obj) {
-            $temp = new \stdClass();
-            $temp->name = $flow['name'];
-            $temp->style = $flow['style'];
-            $temp->module_data = $flow['module_data'];
+    $obj = new \stdClass();
+    $obj->ar = [];
+    collect($modules)->map(function ($arr, $key) use ($obj) {
+        $channelId = ChannelType::where('name', $key)->pluck('id')->first();
+        collect($arr)->map(function ($flow, $key) use ($obj, $channelId) {
+            $temp = [];
+            $temp['channel_id'] = $channelId;
+            $temp['name'] = $flow['name'];
+            $temp['configurations'] = '[]';
+            $temp['style'] = $flow['style'];
+            $temp['module_data'] = $flow['module_data'];
             array_push($obj->ar, $temp);
         });
-        return ($obj->ar);
     });
-    return $data;
+    return $obj->ar;
 }
 
 function getCampaign($campid)
