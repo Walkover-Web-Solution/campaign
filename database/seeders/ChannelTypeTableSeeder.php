@@ -187,7 +187,6 @@ class ChannelTypeTableSeeder extends Seeder
                         array(
                             "name" => "mobile",
                             "type" => 'list',
-                            "is_required" => true,
                             "label" => 'Mobile',
                             "regex" => "",
                             "source" => "",

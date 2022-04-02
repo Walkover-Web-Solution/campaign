@@ -58,14 +58,20 @@ class RunCampaignRequest extends FormRequest
             $mapping = collect($channelType->configurations['mapping']);
             $mapping->each(function ($map) use ($obj, $channelCategory) {
 
-                if ($map['is_required']) {
-                    $obj->validationArray['data.' . $channelCategory . '.' . $map['name']] = $map['is_array'] ? 'required | array' : 'required';
+                if ($channelCategory == 'mobiles') {
+                    if ($map['is_required'])
+                        $obj->validationArray['data.' . $channelCategory . '.*.' . $map['name']] = 'required';
                 } else {
-                    $obj->validationArray['data.' . $channelCategory . '.' . $map['name']] = $map['is_array'] ? 'array' : '';
+                    if ($map['is_required']) {
+                        $obj->validationArray['data.' . $channelCategory . '.' . $map['name']] = $map['is_array'] ? 'required | array' : 'required';
+                    } else {
+                        $obj->validationArray['data.' . $channelCategory . '.' . $map['name']] = $map['is_array'] ? 'array' : '';
+                    }
                 }
                 // $obj->validationArray['data.' . $map['name']] = ($map['is_required'] ? 'required | ' : '') . ($map['is_array'] ? 'array' : ''); //($map['is_array'] ? 'required|array' : 'required') : '';
             });
         });
+        
         return ($obj->validationArray);
     }
 

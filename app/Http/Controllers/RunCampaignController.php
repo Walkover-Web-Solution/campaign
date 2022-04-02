@@ -38,7 +38,7 @@ class RunCampaignController extends Controller
 
         // insert data in ActionLogs table
         $actionLogData = [
-            "no_of_records" => $flow_action->linked_id == 1 ? count($request->data['to']) : ($flow_action->linked_id == 3 ? 1 : count($request->data['mobiles'])),
+            "no_of_records" => $flow_action->linked_id == 1 ? count($request->data['emails']['to']) : ($flow_action->linked_id == 3 ? 1 : count($request->data['mobiles']['mobiles'])),
             "ip" => request()->ip(),
             "status" => "",
             "reason" => "",
@@ -51,7 +51,7 @@ class RunCampaignController extends Controller
 
         if ($request->filled('data')) {
             $data = [
-                'action_log_id'=>$actionLog->id,
+                'action_log_id' => $actionLog->id,
                 'data' => $request->data
             ];
             // insert into mongo
@@ -59,7 +59,7 @@ class RunCampaignController extends Controller
         }
 
 
-        $actionLog->mongo_id=$mongo_id;
+        $actionLog->mongo_id = $mongo_id;
         $actionLog->save();
 
         // JobService
