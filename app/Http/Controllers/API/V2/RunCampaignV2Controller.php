@@ -21,9 +21,11 @@ class RunCampaignV2Controller extends Controller
     {
         $campaign = $request->campaign;
         $flow_action = FlowAction::where('id', $campaign->module_data['op_start'])->where('campaign_id', $campaign->id)->first();
+        if(empty($flow_action)){
+            return new CustomResource(['message' => 'Invalid campaign action']);
+        }
 
         // get 'from' data from flowAction configurations if not passed with body
-        // dd($request->data['emails']['from']);
         if (empty($request->data['emails']['from'])) {
             $from['from'] = $flow_action->configurations->from;
             $request->data = array_merge($request->data, $from);
