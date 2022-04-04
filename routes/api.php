@@ -63,6 +63,8 @@ Route::get('/logs', [ActionLogsController::class, 'index']);
 
 Route::resource('/v2/campaigns', CampaignsV2Controller::class);
 
+Route::post('/v2/campaigns/{slug}/copy', [CampaignsV2Controller::class, 'copy']);
+
 Route::resource('/v2/{slug}/flowActions', FlowActionsController::class);
 
 Route::post('/v2/campaigns/{slug}/run', [RunCampaignV2Controller::class, 'run']);
