@@ -71,13 +71,14 @@ function getCampaign($campid)
     collect($flow)->map(function ($val) use ($data) {
         $channel = ChannelType::where('id', $val['channel_id'])->pluck('name')->first();
         if (empty($data->modules[$channel]))
-            $data->modules[$channel] = [];
+            $data->modules[$channel] = new \stdClass;
         $temp = new \stdClass();
         $temp->id = $val['id'];
         $temp->name = $val['name'];
         $temp->style = $val['style'];
         $temp->module_data = $val['module_data'];
-        array_push($data->modules[$channel], $temp);
+        $flow_key = $val['id'];
+        $data->modules[$channel]->$flow_key = $temp;
     });
     $campaign->modules = $data->modules;
 
