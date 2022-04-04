@@ -34,7 +34,7 @@ Route::get('/testing', [TestingController::class, 'index'])->withoutMiddleware('
 
 Route::post('/register', [AuthController::class, 'register']);
 
-Route::resource('/campaigns', CampaignsController::class);
+// Route::resource('/campaigns', CampaignsController::class);
 
 Route::resource('/tokens/{token}/ips', CompanyTokenIPsController::class);
 
@@ -61,8 +61,8 @@ Route::get('/campaigns/{slug}/snippets', [CampaignsController::class, 'getSnippe
 Route::get('/logs', [ActionLogsController::class, 'index']);
 
 
-Route::resource('/v2/campaigns', CampaignsV2Controller::class);
+Route::resource('/campaigns', CampaignsV2Controller::class);
 
-Route::resource('/v2/{slug}/flowActions', FlowActionsController::class);
+Route::resource('/{slug}/flowActions', FlowActionsController::class);
 
 Route::post('/v2/campaigns/{slug}/run', [RunCampaignV2Controller::class, 'run']);

@@ -16,9 +16,44 @@ class CampaignsV2Controller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $itemsPerPage = $request->input('itemsPerPage', 25);
+
+        $fields = $request->input('fields', 'id,name,is_active,slug');
+
+
+        $paginator = Campaign::select(explode(',', $fields))->where('company_id', $request->company->id)
+            ->where(function ($query) use ($request) {
+                if ($request->has('name')) {
+                    $query->where('name', 'like', '%' . $request->name . '%');
+                }
+                // if ($request->flow_action->has('linked_id')) {
+                //     $query->where('linked_id', $request->flow_action->linked_id);
+                // }
+
+                if ($request->has('is_active')) {
+                    $query->where('is_active', (bool)$request->is_active);
+                }
+                if ($request->has('token_id')) {
+                    $query->where('token_id', $request->token_id);
+                }
+                if ($request->has('slug')) {
+                    $query->where('slug', $request->slug);
+                }
+            })
+            ->orderBy('id', 'desc')
+            ->paginate($itemsPerPage, ['*'], 'pageNo');
+
+
+        return new CustomResource([
+            'data' => $paginator->items(),
+            'itemsPerPage' => $itemsPerPage,
+            'pageNo' => $paginator->currentPage(),
+            'pageNumber' => $paginator->currentPage(),
+            'totalEntityCount' => $request->company->campaigns()->count(),
+            'totalPageCount' => ceil($paginator->total() / $paginator->perPage())
+        ]);
     }
 
     /**
