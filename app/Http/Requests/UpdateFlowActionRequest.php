@@ -33,13 +33,12 @@ class UpdateFlowActionRequest extends FormRequest
     public function rules()
     {
         $validationArray =  [
-            'name' => ['nullable', 'string', 'min:3', 'max:50', Rule::unique('flow_actions', 'name')->where(function ($query) {
-                return $query->where('campaign_id', $this->campaign->id);
-            })->ignore($this->flowAction->id)],
+            'name' => 'nullable|regex:/^[a-zA-Z0-9-_]+$/',
             'channel_id' => 'nullable|numeric',
             'style' => 'nullable|array',
             'module_data' => 'nullable|array',
-            'configurations' => 'nullable|array'
+            'configurations' => 'nullable|array',
+            'template' => 'nullable|array'
         ];
         return $validationArray;
     }

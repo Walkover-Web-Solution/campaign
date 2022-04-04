@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateFlowActionsRequest;
 use App\Http\Requests\UpdateFlowActionRequest;
 use App\Http\Resources\CustomResource;
+use App\Models\Campaign;
 use App\Models\ChannelType;
 use App\Models\FlowAction;
+use App\Models\TemplateDetail;
 use Illuminate\Http\Request;
 
 class FlowActionsController extends Controller
@@ -41,8 +43,23 @@ class FlowActionsController extends Controller
     public function store(CreateFlowActionsRequest $request)
     {
         $input = $request->validated();
-        $data = $request->campaign->flowActions()->create($input);
-        return new CustomResource($data);
+
+        //create flowAction
+        $flowAction = $request->campaign->flowActions()->create($input);
+
+        //create Template
+        if (isset(request()->template))
+            $template = $flowAction->template()->create($input['template']);
+
+        // $input['template']['content'] = 'dummy content';
+
+        //check if its details present in TemplateDetail table, if not create one
+        // $template_detail = TemplateDetail::where('template_id', $template->template_id)->first();
+        // if (empty($template_detail)) {
+        //     $temp_det = $template->templateDetails()->create($input['template']);
+        // }
+
+        return new CustomResource($flowAction);
     }
 
     /**
@@ -78,6 +95,11 @@ class FlowActionsController extends Controller
     {
         $input = $request->validated();
         $flowAction->update($input);
+
+        if (isset($input['template'])) {
+            $flowAction->template()->update($input['template']);
+        }
+
         return new CustomResource($flowAction);
     }
 
@@ -87,8 +109,35 @@ class FlowActionsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $slug, FlowAction $flowAction)
     {
-        //
+        $campaign = Campaign::where('slug', $slug)->where('company_id', $request->company->id)->first();
+        if (empty($campaign)) {
+            return new CustomResource(['message' => "Not Found"]);
+        }
+
+        //delete template related to this flowAction
+        $flowAction->template()->delete();
+
+        if (isset($request->parent_data)) {
+            collect($request->parent_data)->map(function ($parent) {
+                $parentFlow = FlowAction::where('id', $parent['module_id'])->first();
+                if (!empty($parentFlow)) {
+                    //fetch previous module_data
+                    $module_data = $parentFlow->module_data;
+
+                    //modify it
+                    $op_type = $parent['op_type'];
+                    $module_data->$op_type = null;
+
+                    //saved to db back
+                    $parentFlow->module_data = $module_data;
+                    $parentFlow->save();
+                }
+            });
+        }
+        $flowAction->delete();
+
+        return new CustomResource(['message' => "Delete FlowAction successfully"]);
     }
 }
