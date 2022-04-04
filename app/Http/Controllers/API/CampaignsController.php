@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateCampaignRequest;
+use App\Http\Requests\CreateCampaignV2Request;
 use App\Http\Requests\GetFieldsRequest;
 use App\Http\Requests\UpdateCampaignRequest;
 use App\Http\Resources\CustomResource;
@@ -85,8 +86,6 @@ class CampaignsController extends Controller
 
         // create campaign with the company assoication
         $campaign = $request->company->campaigns()->create($input);
-
-        $parent_id = null;
 
         if (isset($input['flow_action'])) {
             $this->createFlowAction($campaign, $input);

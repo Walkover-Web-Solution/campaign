@@ -1,40 +1,23 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API\V2;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\CreateFlowActionsRequest;
 use App\Http\Resources\CustomResource;
-use App\Models\ActionLog;
+use App\Models\ChannelType;
 use Illuminate\Http\Request;
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
-use Illuminate\Bus\Dispatcher;
 
-class TestingController extends Controller
+class FlowActionsController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        //  getFlows($request);
-        // $action= ActionLog::find(124);
-        // dd($action);
-        getCampaign(1);
-    }
-
-    public function encodeData(Request $request)
-    {
-        if (request()->header('testerKey') != 'testerKey') {
-            return new CustomResource(["message" => 'invalid request']);
-        }
-        try {
-            $input = $request->all();
-            return new CustomResource(["authorization" => JWTEncode($input)]);
-        } catch (\Exception $e) {
-            return new CustomResource(["message" => $e->getMessage()]);
-        }
+        //
     }
 
     /**
@@ -53,9 +36,11 @@ class TestingController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateFlowActionsRequest $request)
     {
-        //
+        $input = $request->validated();
+        $data = $request->campaign->flowActions()->create($input);
+        return new CustomResource($data);
     }
 
     /**

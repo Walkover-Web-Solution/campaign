@@ -1,40 +1,23 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API\V2;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\CreateCampaignV2Request;
 use App\Http\Resources\CustomResource;
-use App\Models\ActionLog;
+use App\Models\Campaign;
 use Illuminate\Http\Request;
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
-use Illuminate\Bus\Dispatcher;
 
-class TestingController extends Controller
+class CampaignsV2Controller extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        //  getFlows($request);
-        // $action= ActionLog::find(124);
-        // dd($action);
-        getCampaign(1);
-    }
-
-    public function encodeData(Request $request)
-    {
-        if (request()->header('testerKey') != 'testerKey') {
-            return new CustomResource(["message" => 'invalid request']);
-        }
-        try {
-            $input = $request->all();
-            return new CustomResource(["authorization" => JWTEncode($input)]);
-        } catch (\Exception $e) {
-            return new CustomResource(["message" => $e->getMessage()]);
-        }
+        //
     }
 
     /**
@@ -53,9 +36,22 @@ class TestingController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateCampaignV2Request $request)
     {
-        //
+        //validating request
+        $input = $request->validated();
+
+        // create campaign with the company assoication
+        $campaign = $request->company->campaigns()->create($input);
+
+        if (!empty($input['modules'])) {
+            $data = getFlows($input['modules']);
+
+            // create flowactions  with campaign
+            $campaign->flowActions()->createMany($data);
+        }
+
+        return new CustomResource($campaign);
     }
 
     /**
@@ -64,9 +60,9 @@ class TestingController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Campaign $campaign)
     {
-        //
+        return new CustomResource(getCampaign($campaign->id));
     }
 
     /**

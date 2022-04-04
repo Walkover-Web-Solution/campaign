@@ -18,5 +18,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ChannelTypeTableSeeder::class);
         $this->call(IPTypeTableSeeder::class);
         $this->call(ConditionTableSeeder::class);
+        $this->call(ChannelConditionTableSeeder::class);
     }
 }
