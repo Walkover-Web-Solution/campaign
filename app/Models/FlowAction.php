@@ -29,7 +29,7 @@ class FlowAction extends Model
     protected $hidden = array(
         'created_at',
         'updated_at',
-        'parent_id'
+        'channel_id'
     );
 
 

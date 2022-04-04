@@ -33,14 +33,26 @@ class CreateFlowActionsRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'name' => ['required', 'string', 'min:3', 'max:50', Rule::unique('flow_actions', 'name')->where(function ($query) {
-                return $query->where('campaign_id', $this->campaign->id);
-            })],
+        $validationArray =  [
+            'name' => 'required|string|regex:/^[a-zA-Z0-9-_]+$/',
             'channel_id' => 'required|numeric',
             'style' => 'required|array',
-            'module_data' => 'required|array'
+            'module_data' => 'required|array',
+            'configurations.from.email' => 'required_if:channel_id,1|array|string',
+            'template' => 'array'
         ];
+
+        if (isset(request()->template)) {
+            $additionalRules = [
+                'template.template_id' => 'required|regex:/^[a-zA-Z0-9-_]+$/',
+                'template.name' => 'nullable|string',
+                'template.variables' => 'nullable|array',
+                'template.meta' => 'nullable'
+            ];
+            $validationArray = $validationArray + $additionalRules;
+        }
+
+        return $validationArray;
     }
 
     public function validated()
@@ -52,12 +64,17 @@ class CreateFlowActionsRequest extends FormRequest
             ]);
         }
 
+        if (isset($this->template)) {
+            $template = $this->template;
+        }
+
         return array(
             'name' => $this->name,
             'channel_id' => $this->channel_id,
             'style' => $this->style,
             'module_data' => $this->module_data,
             'configurations' => empty($this->configurations) ? [] : $this->configurations,
+            'template' => $template,
             'token_id' => $token->id,
             'user_id' => $this->user->id,
             'is_active' => true
