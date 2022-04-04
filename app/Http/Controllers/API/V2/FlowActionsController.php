@@ -4,8 +4,10 @@ namespace App\Http\Controllers\API\V2;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateFlowActionsRequest;
+use App\Http\Requests\UpdateFlowActionRequest;
 use App\Http\Resources\CustomResource;
 use App\Models\ChannelType;
+use App\Models\FlowAction;
 use Illuminate\Http\Request;
 
 class FlowActionsController extends Controller
@@ -72,9 +74,11 @@ class FlowActionsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateFlowActionRequest $request, $slug, FlowAction $flowAction)
     {
-        //
+        $input = $request->validated();
+        $flowAction->update($input);
+        return new CustomResource($flowAction);
     }
 
     /**
