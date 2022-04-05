@@ -74,7 +74,10 @@ class Campaign extends Model
             }
 
             if(empty($campaign->module_data)){
-                $campaign->module_data = array();
+                $campaign->module_data = array(
+                    "op_start"=>null,
+                    "op_start_type"=>null
+                );
             }
         });
     }

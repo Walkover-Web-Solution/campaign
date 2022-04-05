@@ -32,6 +32,32 @@ class FlowAction extends Model
         'channel_id'
     );
 
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($flowAction) {
+
+            // Adding default values for style in case if it is null
+            if(empty($flowAction->style)){
+                $flowAction->style = array(
+                    "x"=>0,
+                    "y"=>0,
+                    "width"=>150,
+                    "height"=>100
+                );
+            }
+
+            if(empty($flowAction->module_data)){
+                $flowAction->module_data = array(
+                    "op_success"=>null,
+                    "op_success_type"=>null
+                );
+            }
+
+        });
+    }
+
 
     /**
      * Get the actionLog that owns the FlowAction
