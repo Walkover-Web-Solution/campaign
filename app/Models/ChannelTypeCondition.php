@@ -5,8 +5,9 @@ namespace App\Models;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class ChannelCondition extends Model
+class ChannelTypeCondition extends Pivot
 {
     use HasFactory;
 
@@ -17,16 +18,6 @@ class ChannelCondition extends Model
 
     protected $hidden = array(
         'created_at',
-        'updated_at',
+        'updated_at'
     );
-
-    public function channel()
-    {
-        return $this->belongsTo(Channel::class, 'channel_id');
-    }
-
-    public function condition()
-    {
-        return $this->belongsTo(Condition::class, 'condition_id');
-    }
 }

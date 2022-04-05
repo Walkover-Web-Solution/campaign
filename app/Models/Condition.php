@@ -24,6 +24,7 @@ class Condition extends Model
     protected $hidden = array(
         'created_at',
         'updated_at',
+        'pivot'
     );
 
     /**
@@ -34,8 +35,8 @@ class Condition extends Model
         return $this->morphMany(FlowAction::class, 'linked');
     }
 
-    public function channelConditions()
+    public function channel()
     {
-        return $this->hasMany(ChannelCondition::class);
+        return $this->belongsToMany(ChannelType::class)->using(ChannelTypeCondition::class);
     }
 }
