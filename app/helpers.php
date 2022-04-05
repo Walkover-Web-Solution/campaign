@@ -77,6 +77,7 @@ function getCampaign($campid)
         $temp->name = $val['name'];
         $temp->style = $val['style'];
         $temp->module_data = $val['module_data'];
+        $temp->configurations = $val['configurations'];
         $flow_key = $val['id'];
         $data->modules[$channel]->$flow_key = $temp;
     });

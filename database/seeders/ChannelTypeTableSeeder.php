@@ -29,7 +29,8 @@ class ChannelTypeTableSeeder extends Seeder
                             "source" => "",
                             "sourceFieldLabel" => "name",
                             "sourceFieldValue" => "name",
-                            "is_required" => true
+                            "is_required" => true,
+                            "value"=>""
                         ),
                         array(
                             "name" => "domain",
@@ -39,28 +40,30 @@ class ChannelTypeTableSeeder extends Seeder
                             "source" => "domains?is_enabled=1&status_id=2",
                             "sourceFieldLabel" => "name",
                             "sourceFieldValue" => "name",
-                            "is_required" => true
+                            "is_required" => true,
+                            "value"=>""
                         ),
                         array(
                             "name" => "from_email_name",
                             "type" => 'text',
                             "label" => 'From Email Name',
-                            "regex" => "",
+                            "regex" => '[A-Za-z\d\s]',
                             "source" => "",
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
                             "is_required" => true,
-                            "ui_visible" => true
+                            "value"=>""
                         ),
                         array(
                             "name" => "from_email",
                             "type" => 'text',
                             "label" => 'From Email',
-                            "regex" => "",
+                            "regex" => "[A-Za-z\d]",
                             "source" => "",
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
-                            "is_required" => true
+                            "is_required" => true,
+                            "value"=>""
                         ),
                         array(
                             "name" => "cc",
@@ -70,7 +73,8 @@ class ChannelTypeTableSeeder extends Seeder
                             "source" => "",
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
-                            "is_required" => false
+                            "is_required" => false,
+                            "value"=>""
                         ),
                         array(
                             "name" => "bcc",
@@ -80,7 +84,8 @@ class ChannelTypeTableSeeder extends Seeder
                             "source" => "",
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
-                            "is_required" => false
+                            "is_required" => false,
+                            "value"=>""
                         )
                     ),
                     "mapping" => array(
