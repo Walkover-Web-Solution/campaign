@@ -28,6 +28,8 @@ class CreateCampaignRequest extends FormRequest
             'name' => ['required', 'string', 'min:3', 'max:50', Rule::unique('campaigns', 'name')->where(function ($query) {
                 return $query->where('company_id', $this->company->id);
             })],
+            'style' => 'required',
+            'module_data' => 'required'
         ];
         return $validationArray;
     }

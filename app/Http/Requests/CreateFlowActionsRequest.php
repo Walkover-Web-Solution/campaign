@@ -74,7 +74,7 @@ class CreateFlowActionsRequest extends FormRequest
             'style' => $this->style,
             'module_data' => $this->module_data,
             'configurations' => empty($this->configurations) ? [] : $this->configurations,
-            'template' => $template,
+            'template' => empty($template)? [] : $template,
             'token_id' => $token->id,
             'user_id' => $this->user->id,
             'is_active' => true
