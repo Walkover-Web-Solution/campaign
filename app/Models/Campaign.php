@@ -64,6 +64,18 @@ class Campaign extends Model
                 }
                 $i++;
             }
+            if(empty($campaign->style)){
+                $campaign->style = array(
+                    "x"=>0,
+                    "y"=>0,
+                    "width"=>150,
+                    "height"=>100
+                );
+            }
+
+            if(empty($campaign->module_data)){
+                $campaign->module_data = array();
+            }
         });
     }
 
