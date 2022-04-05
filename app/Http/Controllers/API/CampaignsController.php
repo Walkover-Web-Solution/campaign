@@ -164,11 +164,13 @@ class CampaignsController extends Controller
 
             // inserting template variables
             $template = $channel->template()->first();
-            $varaibles = collect($template->variables);
-            $varaibles->map(function ($var) use ($obj) {
-                array_push($obj->variables, $var);
-            });
-            $obj->variables = array_unique($obj->variables);
+            if (!empty($template)) {
+                $varaibles = collect($template->variables);
+                $varaibles->map(function ($var) use ($obj) {
+                    array_push($obj->variables, $var);
+                });
+                $obj->variables = array_unique($obj->variables);
+            }
 
             // inserting channel configurations->mapping
             $channelType = ChannelType::where('id', $channel->channel_id)->first();
@@ -178,7 +180,11 @@ class CampaignsController extends Controller
                     array_push($obj->mapping, $map);
             });
         });
-        return (new CustomResource(['mapping' => $obj->mapping, 'variables' => $obj->variables]));
+        if (empty($obj->variables)) {
+            unset($obj->variables);
+        }
+        
+        return (new CustomResource((array)$obj));
     }
 
     public function getSnippets(GetFieldsRequest $request)
@@ -241,13 +247,15 @@ class CampaignsController extends Controller
 
             // inserting template variables
             $template = $channel->template()->first();
-            $varaibles = collect($template->variables);
-            $varaibles->map(function ($var) use ($obj) {
-                if (!in_array($var, $obj->variables)) {
-                    $obj->variables['var' . $obj->inc] = $var;
-                    $obj->inc++;
-                }
-            });
+            if (!empty($template)) {
+                $varaibles = collect($template->variables);
+                $varaibles->map(function ($var) use ($obj) {
+                    if (!in_array($var, $obj->variables)) {
+                        $obj->variables['var' . $obj->inc] = $var;
+                        $obj->inc++;
+                    }
+                });
+            }
         });
 
         $obj->snippets['requestBody']['data'] = array_merge($obj->snippets['requestBody']['data'], $obj->variables);
