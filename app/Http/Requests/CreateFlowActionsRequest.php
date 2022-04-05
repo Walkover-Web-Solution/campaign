@@ -38,11 +38,7 @@ class CreateFlowActionsRequest extends FormRequest
             'channel_id' => 'required|numeric',
             'style' => 'required|array',
             'module_data' => 'required|array',
-<<<<<<< HEAD
             'configurations' => 'required|array',
-=======
-            'configurations.from.email' => 'required_if:channel_id,1|string',
->>>>>>> moreapi
             'template' => 'array'
         ];
 
