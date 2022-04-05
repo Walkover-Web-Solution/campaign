@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CopyCampaignRequest;
 use App\Http\Requests\CreateCampaignRequest;
 use App\Http\Requests\CreateCampaignV2Request;
 use App\Http\Requests\GetFieldsRequest;
@@ -253,5 +254,55 @@ class CampaignsController extends Controller
 
         $obj->snippets['requestBody']['data'] = array_merge($obj->snippets['requestBody']['data'], $obj->variables);
         return new CustomResource($obj->snippets);
+    }
+
+
+    /**
+     * Copy the whole campaign.
+     */
+    public function copy(CopyCampaignRequest $request)
+    {
+        // fetch old campaign
+        $oldCampaign = $request->campaign->makeVisible(['user_id', 'company_id', 'token_id', 'meta']);
+        $campData = $oldCampaign->toArray();
+        $campData['name'] = $request->name;
+        //create new campaign
+        $campaign = $request->company->campaigns()->create($campData);
+
+        $obj = new \stdClass();
+        $obj->pair = [];
+        $obj->dd = [];
+
+        // create new flow actions for new copied campaign, and make map for previoud and new flowactions ids.
+        collect($oldCampaign->flowActions()->get())->map(function ($action) use ($obj, $campaign) {
+            $key = $action->id;
+            $flow = $campaign->flowActions()->create($action->makeVisible(['channel_id'])->toArray());
+            $obj->pair[$key] = $flow->id;
+        });
+
+        // change ids in campaign module data according to the map created in above loop
+        $module_data = $campaign->module_data;
+        $item = $module_data['op_start'];
+        if (!empty($obj->pair[$item])) {
+            $module_data['op_start'] = $obj->pair[$item];
+            $campaign->module_data = $module_data;
+            $campaign->save();
+        }
+
+        //change ids in flowactions module data according to the map created in above loop
+        collect($oldCampaign->flowActions()->get())->map(function ($action) use ($obj) {
+            $module_data = $action->module_data;
+            collect($module_data)->map(function ($item, $key) use ($obj, $module_data) {
+                if (\Str::startsWith($key, 'op')) {
+                    if (!empty($obj->pair[$item]))
+                        $module_data->$key = $obj->pair[$item];
+                }
+            });
+            $flowAction = FlowAction::where('id', $obj->pair[$action->id])->first();
+            $flowAction->module_data = $module_data;
+            $flowAction->save();
+        });
+
+        return new CustomResource($campaign);
     }
 }
