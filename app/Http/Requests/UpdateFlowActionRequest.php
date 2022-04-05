@@ -33,12 +33,12 @@ class UpdateFlowActionRequest extends FormRequest
     public function rules()
     {
         $validationArray =  [
-            'name' => 'nullable|regex:/^[a-zA-Z0-9-_]+$/',
-            'channel_id' => 'nullable|numeric',
-            'style' => 'nullable|array',
-            'module_data' => 'nullable|array',
-            'configurations' => 'nullable|array',
-            'template' => 'nullable|array'
+            'name' => 'regex:/^[a-zA-Z0-9-_]+$/',
+            'channel_id' => 'numeric',
+            'style' => 'array',
+            'module_data' => 'array',
+            'configurations' => 'array',
+            'template' => 'array'
         ];
         return $validationArray;
     }
