@@ -42,9 +42,8 @@ class RunCampaignRequest extends FormRequest
     public function rules()
     {
         // get all channel ids from flow actions attached to given campaign
-        $channelIds = FlowAction::where('linked_type', 'App\Models\ChannelType')
-            ->where('campaign_id', $this->campaign->id)
-            ->pluck('linked_id')
+        $channelIds = FlowAction::where('campaign_id', $this->campaign->id)
+            ->pluck('channel_id')
             ->toArray();
 
         $obj = new \stdClass();
@@ -71,7 +70,7 @@ class RunCampaignRequest extends FormRequest
                 // $obj->validationArray['data.' . $map['name']] = ($map['is_required'] ? 'required | ' : '') . ($map['is_array'] ? 'array' : ''); //($map['is_array'] ? 'required|array' : 'required') : '';
             });
         });
-        
+
         return ($obj->validationArray);
     }
 

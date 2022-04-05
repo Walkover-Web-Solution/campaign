@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\RunCampaignRequest;
 use App\Http\Resources\CustomResource;
 use App\Libs\MongoDBLib;
-use App\Models\ActionLog;
+use App\Models\FlowAction;
 
 class RunCampaignController extends Controller
 {
@@ -18,27 +18,30 @@ class RunCampaignController extends Controller
     public function run(RunCampaignRequest $request)
     {
         $campaign = $request->campaign;
-        $flow_action = $campaign->flowActions()->where('parent_id', null)->first();
+        $flow_action = FlowAction::where('id', $campaign->module_data['op_start'])->where('campaign_id', $campaign->id)->first();
+        if(empty($flow_action)){
+            return new CustomResource(['message' => 'Invalid campaign action']);
+        }
 
         // get 'from' data from flowAction configurations if not passed with body
-        if (empty($request->data['from'])) {
+        if (empty($request->data['emails']['from'])) {
             $from['from'] = $flow_action->configurations->from;
             $request->data = array_merge($request->data, $from);
         }
         // get 'cc' data from flowAction configurations if cc field is not there in request body, but pass empty if key-with-no-data is there
-        if (!isset($request->data['cc'])) {
+        if (!isset($request->data['emails']['cc'])) {
             $cc['cc'] = $flow_action->configurations->cc;
             $request->data = array_merge($request->data, $cc);
         }
         // get 'bcc' data from flowAction configurations if cc field is not there in request body, but pass empty if key-with-no-data is there
-        if (!isset($request->data['bcc'])) {
+        if (!isset($request->data['emails']['bcc'])) {
             $bcc['bcc'] = $flow_action->configurations->bcc;
             $request->data = array_merge($request->data, $bcc);
         }
 
         // insert data in ActionLogs table
         $actionLogData = [
-            "no_of_records" => $flow_action->linked_id == 1 ? count($request->data['emails']['to']) : ($flow_action->linked_id == 3 ? 1 : count($request->data['mobiles']['mobiles'])),
+            "no_of_records" => $flow_action->channel_id == 1 ? count($request->data['emails']['to']) : ($flow_action->channel_id == 3 ? 1 : count($request->data['mobiles'])),
             "ip" => request()->ip(),
             "status" => "",
             "reason" => "",

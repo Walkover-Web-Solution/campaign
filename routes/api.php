@@ -11,7 +11,7 @@ use App\Http\Controllers\API\TokensController;
 use App\Http\Controllers\TestingController;
 use App\Http\Controllers\API\TemplatesController;
 use App\Http\Controllers\API\V2\CampaignsV2Controller;
-use App\Http\Controllers\API\V2\FlowActionsController;
+use App\Http\Controllers\API\FlowActionsController;
 use App\Http\Controllers\API\V2\RunCampaignV2Controller;
 use App\Http\Controllers\ConditionsController;
 use Database\Seeders\ConditionTableSeeder;
@@ -34,7 +34,7 @@ Route::get('/testing', [TestingController::class, 'index'])->withoutMiddleware('
 
 Route::post('/register', [AuthController::class, 'register']);
 
-// Route::resource('/campaigns', CampaignsController::class);
+Route::resource('/campaigns', CampaignsController::class);
 
 Route::resource('/tokens/{token}/ips', CompanyTokenIPsController::class);
 
@@ -61,8 +61,8 @@ Route::get('/campaigns/{slug}/snippets', [CampaignsController::class, 'getSnippe
 Route::get('/logs', [ActionLogsController::class, 'index']);
 
 
-Route::resource('/campaigns', CampaignsV2Controller::class);
+//Route::resource('/campaigns', CampaignsV2Controller::class);
 
 Route::resource('/{slug}/flowActions', FlowActionsController::class);
 
-Route::post('/v2/campaigns/{slug}/run', [RunCampaignV2Controller::class, 'run']);
+Route::post('/campaigns/{slug}/run', [RunCampaignV2Controller::class, 'run']);

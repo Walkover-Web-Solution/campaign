@@ -35,10 +35,6 @@ class CampaignsController extends Controller
                 if ($request->has('name')) {
                     $query->where('name', 'like', '%' . $request->name . '%');
                 }
-                // if ($request->flow_action->has('linked_id')) {
-                //     $query->where('linked_id', $request->flow_action->linked_id);
-                // }
-
                 if ($request->has('is_active')) {
                     $query->where('is_active', (bool)$request->is_active);
                 }
@@ -87,11 +83,6 @@ class CampaignsController extends Controller
         // create campaign with the company assoication
         $campaign = $request->company->campaigns()->create($input);
 
-        if (isset($input['flow_action'])) {
-            $this->createFlowAction($campaign, $input);
-        }
-
-
         return new CustomResource($campaign);
     }
 
@@ -101,18 +92,9 @@ class CampaignsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, Campaign $campaign)
+    public function show(Campaign $campaign)
     {
-        if ($campaign->company_id == $request->company->id) {
-
-            $campaign["token"] = $campaign->token()->first();
-            $campaign["flow_actions"] = $campaign->flowActions()
-                ->with(['template'])->get();
-
-            return new CustomResource($campaign);
-        }
-
-        return new CustomResource(['message' => 'Campaign Not Found']);
+        return new CustomResource(getCampaign($campaign->id));
     }
 
     /**
@@ -136,73 +118,10 @@ class CampaignsController extends Controller
     public function update(UpdateCampaignRequest $request, Campaign $campaign)
     {
         $input = $request->validated();
+
         $campaign->update($input);
 
-        if (isset($input['flow_action'])) {
-
-            // delete all templates attachted to every flowactions of this campaign
-            $campaign->flowActions()->get()->map(function ($item) {
-                $item->template()->delete();
-            });
-
-            // delete all flow actions related to this campaign
-            $campaign->flowActions()->delete();
-
-            $this->createFlowAction($campaign, $input);
-        }
         return new CustomResource($campaign);
-    }
-
-    private function createFlowAction(Campaign $campaign, $input)
-    {
-        $obj = new \stdClass();
-        $obj->parent_id = null;
-        //taking each element of flow_action array and perform action individually
-        collect($input['flow_action'])->map(function ($action) use ($obj, $campaign) {
-            $action['configurations'] = empty($action['configurations']) ? [] : $action['configurations'];
-
-            //set parent id to previously created flow_action and if first set to null
-            $action['parent_id'] = $obj->parent_id;
-
-            //create flow_action with created campaign
-            $flow_action = $campaign->flowActions()->create($action);
-
-            //check if type is channel or condition and set is_condition to true if condition
-            if ($action['type'] == 'channel') {
-                $linked = ChannelType::where('id', $action['linked_id'])->first();
-            } else if ($action['type'] == 'condition') {
-                $flow_action->is_condition = true;
-                $linked = Condition::where('id', $action['linked_id'])->first();
-            }
-            //link flow_action to the respected linked Model
-            $linked->flowActions()->save($flow_action);
-
-            $flow_action->save();
-            //set parent_id to created flow_action for use of next iteration
-            $obj->parent_id = $flow_action->id;
-
-            //check only if flow action is channel then only create template
-            if ($action['type'] == 'channel') {
-
-                //set variables and content to the template array
-                $template = $action['template'];
-                if (!isset($template['variables'])) {
-                    $template['variables'] = [];
-                }
-                $template['content'] = 'dummy content';
-                $template['channel_type_id'] = $flow_action->linked_id;
-
-                //create Template
-                $tmp = $flow_action->template()->create($template);
-                //check if its details present in TemplateDetail table, if not create one
-                $template_detail = TemplateDetail::where('template_id', $tmp->template_id)
-                    ->where('channel_type_id', $flow_action->linked_id)
-                    ->first();
-                if (empty($template_detail)) {
-                    $temp_det = $tmp->templateDetails()->create($template);
-                }
-            }
-        });
     }
 
     /**

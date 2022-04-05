@@ -14,9 +14,14 @@ class UpdateCampaignRequest extends FormRequest
      */
     public function authorize()
     {
-        if ($this->route('campaign')->company_id != $this->company->id) {
+        $campaign = $this->route('campaign');
+        if (empty($campaign)) {
             return false;
         }
+        $this->merge([
+            'campaign' => $campaign
+        ]);
+
         return true;
     }
 
@@ -27,33 +32,22 @@ class UpdateCampaignRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        $validationArray =  [
             'name' => ['nullable', 'string', 'min:3', 'max:50', Rule::unique('campaigns', 'name')->where(function ($query) {
                 return $query->where('company_id', $this->company->id);
             })->ignore($this->campaign->id)],
+            'style' => 'nullable|array',
+            'module_data' => 'nullable|array',
             'token_id' => ['nullable', Rule::exists('tokens', 'id')->where(function ($query) {
                 $query->where('company_id', $this->company->id);
             })],
-            'flow_action' => 'nullable|array',
-            'is_active' => 'nullable',
-            'flow_action.*.template' => 'nullable|array',
-            'flow_action.*.template.template_id' => 'nullable|regex:/^[a-zA-Z0-9-_]+$/',
-            'flow_action.*.template.name' => 'nullable|string',
-            'flow_action.*.template.content' => 'nullable',
-            'flow_action.*.template.variables' => 'nullable|array',
-            'flow_action.*.template.meta' => 'nullable'
         ];
+        return $validationArray;
     }
 
     public function validated()
     {
         $input = $this->validator->validated();
-
-        if (isset($this->flow_action)) {
-            $input['flow_action'] = $this->flow_action;
-        } else {
-            $input['flow_action'] = [];
-        }
 
         if (isset($this->configurations)) {
             $input['configurations'] = $this->configurations;
