@@ -25,19 +25,28 @@ class ChannelType extends Model
     );
 
     // This function executed when channel type model initiated
-    protected static function booted(){
+    protected static function booted()
+    {
         static::addGlobalScope('only_email_sms', function (Builder $builder) {
-            $emailType=1;$sms=2;$otp=3;$whatsapp=4;$voice=5;
-            $builder->whereIn('id',[$emailType,$sms]);
+            $emailType = 1;
+            $sms = 2;
+            $otp = 3;
+            $whatsapp = 4;
+            $voice = 5;
+            $builder->whereIn('id', [$emailType, $sms]);
         });
-        
     }
 
-   /**
+    /**
      * Get all of the post's flowActions.
-    */
+     */
     public function flowActions()
     {
         return $this->morphMany(FlowAction::class, 'linked');
+    }
+
+    public function channelConditions()
+    {
+        return $this->hasMany(ChannelCondition::class,'channel_id');
     }
 }
