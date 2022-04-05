@@ -9,14 +9,9 @@ use App\Http\Controllers\API\CompanyTokenIPsController;
 use App\Http\Controllers\API\IPTypesController;
 use App\Http\Controllers\API\TokensController;
 use App\Http\Controllers\TestingController;
-use App\Http\Controllers\API\TemplatesController;
-use App\Http\Controllers\API\V2\CampaignsV2Controller;
 use App\Http\Controllers\API\FlowActionsController;
-use App\Http\Controllers\API\V2\RunCampaignV2Controller;
 use App\Http\Controllers\ConditionsController;
-use Database\Seeders\ConditionTableSeeder;
 use App\Http\Controllers\RunCampaignController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -62,9 +57,4 @@ Route::post('/campaigns/{slug}/copy', [CampaignsController::class, 'copy']);
 
 Route::get('/logs', [ActionLogsController::class, 'index']);
 
-
-//Route::resource('/campaigns', CampaignsV2Controller::class);
-
 Route::resource('/{slug}/flowActions', FlowActionsController::class);
-
-Route::post('/campaigns/{slug}/run', [RunCampaignV2Controller::class, 'run']);
