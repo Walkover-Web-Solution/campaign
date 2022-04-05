@@ -58,12 +58,13 @@ Route::get('/campaigns/{slug}/fields', [CampaignsController::class, 'getFields']
 
 Route::get('/campaigns/{slug}/snippets', [CampaignsController::class, 'getSnippets']);
 
+Route::post('/campaigns/{slug}/copy', [CampaignsController::class, 'copy']);
+
 Route::get('/logs', [ActionLogsController::class, 'index']);
 
 
 Route::resource('/v2/campaigns', CampaignsV2Controller::class);
 
-Route::post('/v2/campaigns/{slug}/copy', [CampaignsV2Controller::class, 'copy']);
 
 Route::resource('/v2/{slug}/flowActions', FlowActionsController::class);
 

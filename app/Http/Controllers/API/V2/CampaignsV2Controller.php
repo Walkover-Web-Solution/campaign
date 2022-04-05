@@ -120,40 +120,4 @@ class CampaignsV2Controller extends Controller
         return new CustomResource(['message' => "Delete Campaign successfully"]);
     }
 
-    /**
-     * Copy the whole campaign.
-     */
-    public function copy(CopyCampaignRequest $request)
-    {
-        // fetch old campaign
-        $oldCampaign = $request->campaign->makeVisible(['user_id', 'company_id', 'token_id', 'meta']);
-        $campData = $oldCampaign->toArray();
-        $campData['name'] = $request->name;
-        //create new campaign
-        $campaign = $request->company->campaigns()->create($campData);
-
-        $obj = new \stdClass();
-        $obj->pair = [];
-        $obj->dd = [];
-        collect($oldCampaign->flowActions()->get())->map(function ($action) use ($obj, $campaign) {
-            $key = $action->id;
-            $flow = $campaign->flowActions()->create($action->makeVisible(['channel_id'])->toArray());
-            $obj->pair[$key] = $flow->id;
-        });
-        collect($oldCampaign->flowActions()->get())->map(function ($action) use ($obj) {
-            $module_data = $action->module_data;
-            collect($module_data)->map(function ($item, $key) use ($obj, $module_data) {
-                if (\Str::startsWith($key, 'op')) {
-                    if (!empty($obj->pair[$item]))
-                        $module_data->$key = $obj->pair[$item];
-                }
-            });
-            $flowAction = FlowAction::where('id', $obj->pair[$action->id]);
-            $flowAction->module_data = $module_data;
-            $flowAction->save();
-        });
-
-
-        //
-    }
 };
