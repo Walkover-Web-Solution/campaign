@@ -154,8 +154,7 @@ class CampaignsController extends Controller
     public function getFields(GetFieldsRequest $request)
     {
         // get all channel ids from flow actions attached to given campaign
-        $flowAction = FlowAction::where('linked_type', 'App\Models\ChannelType')
-            ->where('campaign_id', $request->campaign->id)->get();
+        $flowAction = FlowAction::where('campaign_id', $request->campaign->id)->get();
 
         $obj = new \stdClass();
         $obj->mapping = [];
@@ -172,7 +171,7 @@ class CampaignsController extends Controller
             $obj->variables = array_unique($obj->variables);
 
             // inserting channel configurations->mapping
-            $channelType = ChannelType::where('id', $channel->linked_id)->first();
+            $channelType = ChannelType::where('id', $channel->channel_id)->first();
             $mapping = collect($channelType->configurations['mapping']);
             $mapping->map(function ($map) use ($obj) {
                 if (!in_array($map, $obj->mapping))
@@ -212,8 +211,7 @@ class CampaignsController extends Controller
         ];
 
         // get all channel ids from flow actions attached to given campaign
-        $flowAction = FlowAction::where('linked_type', 'App\Models\ChannelType')
-            ->where('campaign_id', $request->campaign->id)->get();
+        $flowAction = FlowAction::where('campaign_id', $request->campaign->id)->get();
 
         $obj = new \stdClass();
         $obj->snippets = [];
@@ -233,9 +231,9 @@ class CampaignsController extends Controller
             $email = 1;
             $otp = 3;
             // according to channel type get data from sampleData
-            if ($channel->linked_id == $email) {
+            if ($channel->channel_id == $email) {
                 $obj->snippets['requestBody']['data']['emails'] = $sampleData['emails'];
-            } else if ($channel->linked_id == $otp) {
+            } else if ($channel->channel_id == $otp) {
                 $obj->snippets['requestBody']['data']['mobile'] = $sampleData['mobile'];
             } else {
                 $obj->snippets['requestBody']['data']['mobiles'] = $sampleData['mobiles'];

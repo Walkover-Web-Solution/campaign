@@ -61,9 +61,8 @@ function getFlows($modules)
 
 function getCampaign($campid)
 {
-    $campaign = Campaign::select('id', 'name', 'style', 'module_data')->where('id', $campid)->first();
-    // $campaign->modules = [];
-
+    $campaign = Campaign::select('id', 'name', 'style', 'module_data', 'token_id')->where('id', $campid)->first();
+    $campaign->token = $campaign->token()->get(['name', 'token'])->first();
     $data = new \stdClass();
     $data->modules = [];
 
@@ -78,6 +77,7 @@ function getCampaign($campid)
         $temp->style = $val['style'];
         $temp->module_data = $val['module_data'];
         $temp->configurations = $val['configurations'];
+        $temp->template = $val->template()->first();
         $flow_key = $val['id'];
         $data->modules[$channel]->$flow_key = $temp;
     });

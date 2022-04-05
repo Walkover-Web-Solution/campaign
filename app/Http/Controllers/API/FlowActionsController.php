@@ -120,8 +120,8 @@ class FlowActionsController extends Controller
         $flowAction->template()->delete();
 
         if (isset($request->parent_data)) {
-            collect($request->parent_data)->map(function ($parent) {
-                $parentFlow = FlowAction::where('id', $parent['module_id'])->first();
+            collect($request->parent_data)->map(function ($parent, $campaign) {
+                $parentFlow = FlowAction::where('id', $parent['module_id'])->where('campaign_id', $campaign->id)->first();
                 if (!empty($parentFlow)) {
                     //fetch previous module_data
                     $module_data = $parentFlow->module_data;
