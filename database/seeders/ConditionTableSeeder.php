@@ -24,9 +24,14 @@ class ConditionTableSeeder extends Seeder
          */
         $conditionsArr = [
             [
-                'name' => 'Wait',
-                'is_boolean' => false,
-                'wait_to_fail' => false
+                'name' => 'Success',
+                'is_boolean' => true,
+                'wait_to_fail' => true
+            ],
+            [
+                'name' => 'Failure',
+                'is_boolean' => true,
+                'wait_to_fail' => true
             ],
             [
                 'name' => 'Read',
@@ -34,9 +39,14 @@ class ConditionTableSeeder extends Seeder
                 'wait_to_fail' => true
             ],
             [
-                'name' => 'Delivered',
+                'name' => 'Unread',
                 'is_boolean' => true,
                 'wait_to_fail' => true
+            ],
+            [
+                'name' => 'Wait',
+                'is_boolean' => false,
+                'wait_to_fail' => false
             ]
         ];
 

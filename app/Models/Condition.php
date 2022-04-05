@@ -28,9 +28,14 @@ class Condition extends Model
 
     /**
      * Get all of the post's flowActions.
-    */
+     */
     public function flowActions()
     {
         return $this->morphMany(FlowAction::class, 'linked');
+    }
+
+    public function channelConditions()
+    {
+        return $this->hasMany(ChannelCondition::class);
     }
 }
