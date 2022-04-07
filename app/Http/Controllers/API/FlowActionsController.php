@@ -113,7 +113,7 @@ class FlowActionsController extends Controller
     {
         $campaign = Campaign::where('slug', $slug)->where('company_id', $request->company->id)->first();
         if (empty($campaign)) {
-            return new CustomResource(['message' => "Not Found"]);
+            return new CustomResource(['message' => "Campaign Not Found."]);
         }
 
         //delete template related to this flowAction
@@ -138,6 +138,6 @@ class FlowActionsController extends Controller
         }
         $flowAction->delete();
 
-        return new CustomResource(['message' => "Delete FlowAction successfully"]);
+        return new CustomResource(['message' => "Flowaction Deleted Successfully."]);
     }
 }
