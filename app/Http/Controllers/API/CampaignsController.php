@@ -183,7 +183,7 @@ class CampaignsController extends Controller
         if (empty($obj->variables)) {
             unset($obj->variables);
         }
-        
+
         return (new CustomResource((array)$obj));
     }
 
@@ -309,6 +309,7 @@ class CampaignsController extends Controller
             $flowAction->save();
         });
 
-        return new CustomResource($campaign);
+        // return new CustomResource($campaign);
+        return new CustomResource(["message" => "Campaign Copied Successfully."]);
     }
 }
