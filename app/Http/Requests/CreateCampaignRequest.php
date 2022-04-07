@@ -43,6 +43,12 @@ class CreateCampaignRequest extends FormRequest
             ]);
         }
 
+        if (isset($this->module_data)) {
+            if (($this->module_data['op_start']) != null) {
+                return false;
+            }
+        }
+
         if (isset($this->modules))
             $modules = $this->modules;
         return array(

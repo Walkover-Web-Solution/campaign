@@ -81,6 +81,10 @@ class CampaignsController extends Controller
         //validating request
         $input = $request->validated();
 
+        if (!$input) {
+            return new CustomResource(["message" => "Invalid Campaign Request"], true);
+        }
+
         // create campaign with the company assoication
         $campaign = $request->company->campaigns()->create($input);
 
@@ -119,6 +123,10 @@ class CampaignsController extends Controller
     public function update(UpdateCampaignRequest $request, Campaign $campaign)
     {
         $input = $request->validated();
+
+        if (!$input) {
+            return new CustomResource(["message" => "Module Data doesn't Belongs to Campaign"], true);
+        }
 
         $campaign->update($input);
 

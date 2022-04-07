@@ -64,19 +64,19 @@ class Campaign extends Model
                 }
                 $i++;
             }
-            if(empty($campaign->style)){
+            if (empty($campaign->style)) {
                 $campaign->style = array(
-                    "x"=>0,
-                    "y"=>0,
-                    "width"=>150,
-                    "height"=>100
+                    "x" => 0,
+                    "y" => 0,
+                    "width" => 150,
+                    "height" => 100
                 );
             }
 
-            if(empty($campaign->module_data)){
+            if (empty($campaign->module_data)) {
                 $campaign->module_data = array(
-                    "op_start"=>null,
-                    "op_start_type"=>null
+                    "op_start" => null,
+                    "op_start_type" => null
                 );
             }
         });
@@ -141,7 +141,7 @@ class Campaign extends Model
             if (empty($company))
                 throw new Exception();
         } catch (\Exception $e) {
-            return new CustomResource(["message" => "Unauthorized"]);
+            return new CustomResource(["message" => "Unauthorized"], true);
         }
         return Campaign::where('company_id', $company->id)->where('slug', $value)->first();
     }

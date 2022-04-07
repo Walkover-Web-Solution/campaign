@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Campaign;
+use App\Models\ChannelType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -42,4 +43,9 @@ class UpdateFlowActionRequest extends FormRequest
         ];
         return $validationArray;
     }
+
+    // public function validated()
+    // {
+        
+    // }
 }

@@ -44,6 +44,10 @@ class FlowActionsController extends Controller
     {
         $input = $request->validated();
 
+        if (!$input) {
+            return new CustomResource(["message" => "Module Data doesn't Belongs to Campaign"], true);
+        }
+
         //create flowAction
         $flowAction = $request->campaign->flowActions()->create($input);
 
@@ -94,6 +98,26 @@ class FlowActionsController extends Controller
     public function update(UpdateFlowActionRequest $request, $slug, FlowAction $flowAction)
     {
         $input = $request->validated();
+
+        // validate if any id from module data belongs to this campaign or not
+        if (isset($request->module_data)) {
+            $obj = new \stdClass();
+            $obj->flag = false;
+            $conditions = ChannelType::where('id', $request->flowAction->channel_id)->first()->conditions()->pluck('name');
+            $conditions->map(function ($item) use ($obj, $request) {
+                $key = 'op_' . strtolower($item);
+                if (isset($request->module_data[$key]) &&  $request->module_data[$key] != null) {
+                    $flow = $request->campaign->flowActions()->where('id', $request->module_data[$key])->first();
+                    if (empty($flow)) {
+                        $obj->flag = true;
+                        return $key;
+                    }
+                }
+            });
+            if ($obj->flag)
+                return new CustomResource(["message" => "Module Data doesn't Belongs to Campaign"], true);
+        }
+
         $flowAction->update($input);
 
         if (isset($input['template'])) {

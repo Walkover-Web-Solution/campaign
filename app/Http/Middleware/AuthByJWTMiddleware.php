@@ -37,14 +37,14 @@ class AuthByJWTMiddleware
             // get company whose ref_id matches with the company's id found in key
             $company = Company::where('ref_id', $res->company->id)->first();
             if (empty($company)) {
-                $response = new CustomResource(["message" => "invalid request"]);
+                $response = new CustomResource(["message" => "invalid request"], true);
                 return response()->json($response, 404);
             }
 
             // get user whose company matches with the company passed in key
             $user = User::where('company_id', $company->id)->first();
             if (empty($user)) {
-                $response = new CustomResource(["message" => "invalid request"]);
+                $response = new CustomResource(["message" => "invalid request"], true);
                 return response()->json($response, 404);
             }
 

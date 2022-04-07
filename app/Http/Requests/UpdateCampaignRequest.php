@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\FlowAction;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -71,6 +72,16 @@ class UpdateCampaignRequest extends FormRequest
         if (empty($this->token_id)) {
             $input['token_id'] = $this->campaign->token_id;
         }
+
+        if (isset($this->module_data)) {
+            if (($this->module_data['op_start']) != null) {
+                $flow = $this->campaign->flowActions()->where('id', $this->module_data['op_start'])->first();
+                if (empty($flow)) {
+                    return false;
+                }
+            }
+        }
+
         return $input;
     }
 }

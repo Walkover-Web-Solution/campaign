@@ -59,17 +59,17 @@ class AuthByAuthkeyOrTokenMiddleware
 
             $company = Company::where('ref_id', $res->company->id)->first();
             if (empty($company)) {
-                $response = new CustomResource(["message" => "invalid request"]);
+                $response = new CustomResource(["message" => "invalid request"], true);
                 return response()->json($response, 404);
             }
 
             $campaign = $company->campaigns()->where('slug', $request->slug)->first();
             if (empty($campaign)) {
-                $response = new CustomResource(["message" => "Invalid Campaign"]);
+                $response = new CustomResource(["message" => "Invalid Campaign"], true);
                 return response()->json($response, 404);
             }
             if (!$company->campaigns()->where('id', $campaign->id)->exists()) {
-                $response = new CustomResource(["message" => "User not Authorized"]);
+                $response = new CustomResource(["message" => "User not Authorized"], true);
                 return response()->json($response, 404);
             }
         } else {
@@ -79,7 +79,7 @@ class AuthByAuthkeyOrTokenMiddleware
             $token = Token::where('token', $request->header('token'))->first();
 
             if (empty($token)) {
-                $response = new CustomResource(["message" => "User not Authorized"]);
+                $response = new CustomResource(["message" => "User not Authorized"], true);
                 return response()->json($response, 404);
             }
 
@@ -92,12 +92,12 @@ class AuthByAuthkeyOrTokenMiddleware
 
             $campaign = $token->company->campaigns()->where('slug', $request->slug)->first();
             if (empty($campaign)) {
-                $response = new CustomResource(["message" => "Invalid Campaign"]);
+                $response = new CustomResource(["message" => "Invalid Campaign"], true);
                 return response()->json($response, 404);
             }
 
             if ($campaign->token_id != $token->id) {
-                $response = new CustomResource(["message" => "User not Authorized"]);
+                $response = new CustomResource(["message" => "User not Authorized"], true);
                 return response()->json($response, 404);
             }
         }
@@ -122,13 +122,13 @@ class AuthByAuthkeyOrTokenMiddleware
         $tokenIP = $token->ips()->where('ip', $ip)->first();
         if (!empty($tokenIP)) {
             if ($tokenIP->ip_type_id == $blackListIPType) {
-                $response = new CustomResource(["message" => "Your IP is blocked"]);
+                $response = new CustomResource(["message" => "Your IP is blocked"], true);
                 return response()->json($response, 404);
             }
 
             if ($tokenIP->ip_type_id == $temporaryBlockedIPType) {
                 if (time() < strtotime(ISTToGMT($tokenIP->expires_at))) {
-                    $response = new CustomResource(["message" => $ip . " is blocked temporary"]);
+                    $response = new CustomResource(["message" => $ip . " is blocked temporary"], true);
                     return response()->json($response, 404);
                 } else {
                     $tokenIP->delete();
