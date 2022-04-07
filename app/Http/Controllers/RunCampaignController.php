@@ -39,6 +39,9 @@ class RunCampaignController extends Controller
             $request->data = array_merge($request->data, $bcc);
         }
 
+        // generating random key with time stamp for mongo requestId
+        $reqId = preg_replace('/\s+/', '', now()) . '_' . md5(uniqid(rand(), true));
+
         // insert data in ActionLogs table
         $actionLogData = [
             "no_of_records" => $flow_action->channel_id == 1 ? count($request->data['emails']['to']) : ($flow_action->channel_id == 3 ? 1 : count($request->data['mobiles'])),
@@ -47,28 +50,19 @@ class RunCampaignController extends Controller
             "reason" => "",
             "ref_id" => "",
             "flow_action_id" => $flow_action->id,
-            "mongo_id" => ""
+            "mongo_id" => $reqId
         ];
         $actionLog = $campaign->actionLogs()->create($actionLogData);
 
 
         if ($request->filled('data')) {
             $data = [
-                'requestId' => $actionLog->id,
+                'requestId' => $actionLog->mongo_id,
                 'data' => $request->data
             ];
             // insert into mongo
             $mongoId = $this->mongo->collection('run_campaign_data')->insertOne($data);
-
-            // update requestId to created mongoId's alpha numeric key
-            $ii = '$oid';
-            $mongo_id = (json_decode(json_encode($mongoId))->$ii);
-            $this->mongo->collection('run_campaign_data')->update(["requestId" => $actionLog->id], ["requestId" => $mongo_id]);
         }
-
-
-        $actionLog->mongo_id = $mongo_id;
-        $actionLog->save();
 
         // JobService
         \JOB::processRunCampaign($actionLog);
