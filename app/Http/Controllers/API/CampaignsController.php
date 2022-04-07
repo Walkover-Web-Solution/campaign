@@ -148,7 +148,7 @@ class CampaignsController extends Controller
 
         // delete this campaign
         $campaign->delete();
-        return new CustomResource(['message' => "Delete Campaign successfully"]);
+        return new CustomResource(['message' => "Campaign Deleted Successfully."]);
     }
 
     public function getFields(GetFieldsRequest $request)
