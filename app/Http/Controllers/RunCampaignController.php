@@ -25,18 +25,21 @@ class RunCampaignController extends Controller
 
         // get 'from' data from flowAction configurations if not passed with body
         if (empty($request->data['emails']['from'])) {
-            $from['from'] = $flow_action->configurations->from;
-            $request->data = array_merge($request->data, $from);
+            $temp = $request->data;
+            $temp['emails']['from'] = $flow_action->configurations->from;
+            $request->data = array_merge($request->data, $temp);
         }
         // get 'cc' data from flowAction configurations if cc field is not there in request body, but pass empty if key-with-no-data is there
         if (!isset($request->data['emails']['cc'])) {
-            $cc['cc'] = $flow_action->configurations->cc;
-            $request->data = array_merge($request->data, $cc);
+            $temp = $request->data;
+            $temp['emails']['cc'] = $flow_action->configurations->cc;
+            $request->data = array_merge($request->data, $temp);
         }
         // get 'bcc' data from flowAction configurations if cc field is not there in request body, but pass empty if key-with-no-data is there
         if (!isset($request->data['emails']['bcc'])) {
-            $bcc['bcc'] = $flow_action->configurations->bcc;
-            $request->data = array_merge($request->data, $bcc);
+            $temp = $request->data;
+            $temp['emails']['bcc'] = $flow_action->configurations->bcc;
+            $request->data = array_merge($request->data, $temp);
         }
 
         // generating random key with time stamp for mongo requestId
