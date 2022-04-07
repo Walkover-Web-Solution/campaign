@@ -19,7 +19,7 @@ class RunCampaignController extends Controller
     {
         $campaign = $request->campaign;
         $flow_action = FlowAction::where('id', $campaign->module_data['op_start'])->where('campaign_id', $campaign->id)->first();
-        if(empty($flow_action)){
+        if (empty($flow_action)) {
             return new CustomResource(['message' => 'Invalid campaign action']);
         }
 
@@ -43,7 +43,7 @@ class RunCampaignController extends Controller
         $actionLogData = [
             "no_of_records" => $flow_action->channel_id == 1 ? count($request->data['emails']['to']) : ($flow_action->channel_id == 3 ? 1 : count($request->data['mobiles'])),
             "ip" => request()->ip(),
-            "status" => "",
+            "status" => "pending",
             "reason" => "",
             "ref_id" => "",
             "flow_action_id" => $flow_action->id,
@@ -54,11 +54,16 @@ class RunCampaignController extends Controller
 
         if ($request->filled('data')) {
             $data = [
-                'action_log_id' => $actionLog->id,
+                'requestId' => $actionLog->id,
                 'data' => $request->data
             ];
             // insert into mongo
-            $mongo_id = $this->mongo->collection('run_campaign_data')->insertOne($data);
+            $mongoId = $this->mongo->collection('run_campaign_data')->insertOne($data);
+
+            // update requestId to created mongoId's alpha numeric key
+            $ii = '$oid';
+            $mongo_id = (json_decode(json_encode($mongoId))->$ii);
+            $this->mongo->collection('run_campaign_data')->update(["requestId" => $actionLog->id], ["requestId" => $mongo_id]);
         }
 
 
