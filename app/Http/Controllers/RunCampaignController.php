@@ -43,7 +43,7 @@ class RunCampaignController extends Controller
         $actionLogData = [
             "no_of_records" => $flow_action->channel_id == 1 ? count($request->data['emails']['to']) : ($flow_action->channel_id == 3 ? 1 : count($request->data['mobiles'])),
             "ip" => request()->ip(),
-            "status" => "",
+            "status" => "pending",
             "reason" => "",
             "ref_id" => "",
             "flow_action_id" => $flow_action->id,
