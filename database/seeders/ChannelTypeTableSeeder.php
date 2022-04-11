@@ -24,13 +24,15 @@ class ChannelTypeTableSeeder extends Seeder
                             "type" => "dropdown",
                             "template" => array(
                                 "name" => "",
-                                "template_id" => ""
+                                "template_id" => "",
+                                "slug"=>""
                             ),
                             "source" => "",
                             "sourceFieldLabel" => "name",
                             "sourceFieldValue" => "name",
                             "is_required" => true,
-                            "value"=>""
+                            "value"=>"",
+                            "variables"=>[]
                         ),
                         array(
                             "name" => "from_email",
