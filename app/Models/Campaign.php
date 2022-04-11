@@ -133,6 +133,14 @@ class Campaign extends Model
         return $this->hasMany(CampaignReport::class, 'campaign_id');
     }
 
+    /**
+     * Get all of the campaignLogs for the Campaign
+     */
+    public function campaignLogs()
+    {
+        return $this->hasMany(CampaignLog::class);
+    }
+
     public function resolveRouteBinding($value, $field = null)
     {
         try {

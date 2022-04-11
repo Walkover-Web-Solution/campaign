@@ -230,7 +230,6 @@ class CampaignsController extends Controller
         $obj = new \stdClass();
         $obj->snippets = [];
         $obj->variables = [];
-        $obj->inc = 1;
 
         // make validation for every channel id
         collect($flowAction)->map(function ($channel) use ($obj, $sampleData, $request) {
@@ -259,8 +258,7 @@ class CampaignsController extends Controller
                 $varaibles = collect($template->variables);
                 $varaibles->map(function ($var) use ($obj) {
                     if (!in_array($var, $obj->variables)) {
-                        $obj->variables['var' . $obj->inc] = $var;
-                        $obj->inc++;
+                        $obj->variables[$var] = $var;
                     }
                 });
             }
