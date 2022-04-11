@@ -33,6 +33,29 @@ class ChannelTypeTableSeeder extends Seeder
                             "value"=>""
                         ),
                         array(
+                            "name" => "from_email",
+                            "type" => 'text',
+                            "label" => 'From Email',
+                            "regex" => "[A-Za-z\d]",
+                            "source" => "",
+                            "sourceFieldLabel" => "",
+                            "sourceFieldValue" => "",
+                            "is_required" => true,
+                            "value"=>"",
+                            "placeholder"=>"You can email that will be shown to recipient."
+                        ),
+                        array(
+                            "name" => "only_string",
+                            "type" => 'text',
+                            "label" => '@',
+                            "regex" => "",
+                            "source" => "",
+                            "sourceFieldLabel" => "",
+                            "sourceFieldValue" => "",
+                            "is_required" => false,
+                            "value"=>""
+                        ),
+                        array(
                             "name" => "domain",
                             "type" => 'dropdown',
                             "label" => 'Select  Domain',
@@ -52,19 +75,10 @@ class ChannelTypeTableSeeder extends Seeder
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
                             "is_required" => true,
-                            "value"=>""
+                            "value"=>"",
+                            "placeholder"=>"You can define name that will be shown to recipient."
                         ),
-                        array(
-                            "name" => "from_email",
-                            "type" => 'text',
-                            "label" => 'From Email',
-                            "regex" => "[A-Za-z\d]",
-                            "source" => "",
-                            "sourceFieldLabel" => "",
-                            "sourceFieldValue" => "",
-                            "is_required" => true,
-                            "value"=>""
-                        ),
+                        
                         array(
                             "name" => "cc",
                             "type" => 'list',
