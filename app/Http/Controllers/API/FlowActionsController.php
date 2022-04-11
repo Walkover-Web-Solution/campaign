@@ -52,16 +52,12 @@ class FlowActionsController extends Controller
         $flowAction = $request->campaign->flowActions()->create($input);
 
         //create Template
-        if (isset(request()->template))
+        if (!empty($input['template'])) {
             $template = $flowAction->template()->create($input['template']);
+        }
 
-        // $input['template']['content'] = 'dummy content';
-
-        //check if its details present in TemplateDetail table, if not create one
-        // $template_detail = TemplateDetail::where('template_id', $template->template_id)->first();
-        // if (empty($template_detail)) {
-        //     $temp_det = $template->templateDetails()->create($input['template']);
-        // }
+        $flowAction->is_completed = validateFlow($flowAction);
+        $flowAction->save();
 
         return new CustomResource($flowAction);
     }
@@ -120,9 +116,27 @@ class FlowActionsController extends Controller
 
         $flowAction->update($input);
 
-        if (isset($input['template'])) {
-            $flowAction->template()->update($input['template']);
+        $obj = collect($input['configurations'])->where('name', 'template')->first();
+        $template = null;
+        if (!empty($obj['template']['template_id'])) {
+            $template = $obj['template'];
+            $template['variables'] = $obj['variables'];
+            if (empty($flowAction->template)) {
+                $flowAction->template()->create($template);
+            } else {
+                $flowAction->template->template_id = $template['template_id'];
+                $flowAction->template->variables = $template['variables'];
+                $flowAction->template->save();
+            }
+        } else {
+            if (!empty($flowAction->template)) {
+                $flowAction->template->delete();
+            }
         }
+
+        //validate if is_completed
+        $flowAction->is_completed = validateFlow($flowAction);
+        $flowAction->save();
 
         return new CustomResource($flowAction);
     }

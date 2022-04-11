@@ -18,7 +18,8 @@ class FlowAction extends Model
         'parent_id',
         'configurations',
         'style',
-        'module_data'
+        'module_data',
+        'is_completed'
     ];
     protected $casts = array(
         'is_condition' => 'boolean',
@@ -29,7 +30,8 @@ class FlowAction extends Model
     protected $hidden = array(
         'created_at',
         'updated_at',
-        'channel_id'
+        'channel_id',
+        'is_completed'
     );
 
     public static function boot()

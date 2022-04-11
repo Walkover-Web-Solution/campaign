@@ -84,8 +84,11 @@ class CreateFlowActionsRequest extends FormRequest
                 return false;
         }
 
-        if (isset($this->template)) {
-            $template = $this->template;
+        $obj = collect($this->configurations)->where('name', 'template')->first();
+        $template = null;
+        if (!empty($obj['template']['template_id'])) {
+            $template = $obj['template'];
+            $template['variables'] = $obj['variables'];
         }
 
         return array(
@@ -97,7 +100,8 @@ class CreateFlowActionsRequest extends FormRequest
             'template' => empty($template) ? [] : $template,
             'token_id' => $token->id,
             'user_id' => $this->user->id,
-            'is_active' => true
+            'is_active' => true,
+            'is_completed' => false
         );
     }
 }
