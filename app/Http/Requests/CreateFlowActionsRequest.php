@@ -35,7 +35,7 @@ class CreateFlowActionsRequest extends FormRequest
     public function rules()
     {
         $validationArray =  [
-            'name' => 'required|string|regex:/^[a-zA-Z0-9-_]+$/',
+            'name' => 'required|string|min:3|max:50|regex:/^[a-zA-Z0-9-_]+$/',
             'channel_id' => 'required|exists:channel_types,id',
             'style' => 'array',
             'module_data' => 'array',
