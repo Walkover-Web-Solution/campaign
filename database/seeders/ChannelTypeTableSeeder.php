@@ -207,7 +207,18 @@ class ChannelTypeTableSeeder extends Seeder
             [
                 "name" => "whatsapp",
                 "configurations" => array(
-                    "fields" => array(),
+                    "fields" => array(
+                        array(
+                            "name"=>"integrated_number",
+                            "label" => "Integrated number",
+                            "type" => "dropdown",
+                            "source" => "",
+                            "sourceFieldLabel" => "name",
+                            "sourceFieldValue" => "name",
+                            "is_required" => true,
+                            "value"=>""
+                        )
+                    ),
                     "mapping" => array(
                         array(
                             "name" => "mobiles",
