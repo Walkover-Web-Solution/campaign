@@ -116,21 +116,23 @@ class FlowActionsController extends Controller
 
         $flowAction->update($input);
 
-        $obj = collect($input['configurations'])->where('name', 'template')->first();
-        $template = null;
-        if (!empty($obj['template']['template_id'])) {
-            $template = $obj['template'];
-            $template['variables'] = $obj['variables'];
-            if (empty($flowAction->template)) {
-                $flowAction->template()->create($template);
+        if (isset($input['configurations'])) {
+            $obj = collect($input['configurations'])->where('name', 'template')->first();
+            $template = null;
+            if (!empty($obj['template']['template_id'])) {
+                $template = $obj['template'];
+                $template['variables'] = $obj['variables'];
+                if (empty($flowAction->template)) {
+                    $flowAction->template()->create($template);
+                } else {
+                    $flowAction->template->template_id = $template['template_id'];
+                    $flowAction->template->variables = $template['variables'];
+                    $flowAction->template->save();
+                }
             } else {
-                $flowAction->template->template_id = $template['template_id'];
-                $flowAction->template->variables = $template['variables'];
-                $flowAction->template->save();
-            }
-        } else {
-            if (!empty($flowAction->template)) {
-                $flowAction->template->delete();
+                if (!empty($flowAction->template)) {
+                    $flowAction->template->delete();
+                }
             }
         }
 
