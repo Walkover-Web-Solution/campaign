@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddReportMongoColumnToActionLogsTable extends Migration
+class AddReportMongoAndUidColumnToActionLogsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -16,6 +16,7 @@ class AddReportMongoColumnToActionLogsTable extends Migration
         Schema::table('action_logs', function (Blueprint $table) {
             $table->string('mongo_id')->change();
             $table->string('report_mongo')->nullable();
+            $table->string('uid');
         });
     }
 
@@ -29,6 +30,7 @@ class AddReportMongoColumnToActionLogsTable extends Migration
         Schema::table('action_logs', function (Blueprint $table) {
             $table->string('mongo_id')->change();
             $table->string('report_mongo')->nullable();
+            $table->string('uid');
         });
     }
 }
