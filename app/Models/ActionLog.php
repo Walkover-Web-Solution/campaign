@@ -17,6 +17,7 @@ class ActionLog extends Model
         'ref_id',
         'flow_action_id',
         'mongo_id',
+        'uid',
         'created_at',
         'updated_at'
     ];

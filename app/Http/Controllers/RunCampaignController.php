@@ -23,24 +23,8 @@ class RunCampaignController extends Controller
             return new CustomResource(['message' => 'Invalid campaign action']);
         }
 
-        // // get 'from' data from flowAction configurations if not passed with body
-        // if (empty($request->data['emails']['from'])) {
-        //     $temp = $request->data;
-        //     $temp['emails']['from'] = $flow_action->configurations->from;
-        //     $request->data = array_merge($request->data, $temp);
-        // }
-        // // get 'cc' data from flowAction configurations if cc field is not there in request body, but pass empty if key-with-no-data is there
-        // if (!isset($request->data['emails']['cc'])) {
-        //     $temp = $request->data;
-        //     $temp['emails']['cc'] = $flow_action->configurations->cc;
-        //     $request->data = array_merge($request->data, $temp);
-        // }
-        // // get 'bcc' data from flowAction configurations if cc field is not there in request body, but pass empty if key-with-no-data is there
-        // if (!isset($request->data['emails']['bcc'])) {
-        //     $temp = $request->data;
-        //     $temp['emails']['bcc'] = $flow_action->configurations->bcc;
-        //     $request->data = array_merge($request->data, $temp);
-        // }
+        // creating campaign log
+        $campaignLog = $campaign->campaignLogs()->create();
 
         // generating random key with time stamp for mongo requestId
         $reqId = preg_replace('/\s+/', '', now()) . '_' . md5(uniqid(rand(), true));
@@ -53,7 +37,8 @@ class RunCampaignController extends Controller
             "reason" => "",
             "ref_id" => "",
             "flow_action_id" => $flow_action->id,
-            "mongo_id" => $reqId
+            "mongo_id" => $reqId,
+            'uid' => $campaignLog->id
         ];
         $actionLog = $campaign->actionLogs()->create($actionLogData);
 
