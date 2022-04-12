@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Libs\JobLib;
-use App\Models\FlowAction;
 
 /**
  * Class JobService
@@ -17,30 +16,21 @@ class JobService
         $this->lib = $lib;
     }
 
-    public function processRunCampaign($actionLog)
+    public function processRunCampaign($campLog)
     {
         // setting object to be send with job
         $input = new \stdClass();
-        $input->action_log_id = $actionLog->id;
+        $input->campaignLogId = $campLog->id;
+        $count=$campLog->no_of_records;
 
-        // get linked id from flow action to name the queue
-        $flow_action = FlowAction::where('id', $actionLog->flow_action_id)->first();
-        switch ($flow_action->channel_id) {
-            case 1:
-                $queue = 'run_email_campaigns';
-                break;
-            case 2:
-                $queue = 'run_sms_campaigns';
-                break;
-            case 3:
-                $queue = 'run_otp_campaigns';
-                break;
-            case 4:
-                $queue = 'run_whastapp_campaigns';
-                break;
-            case 5:
-                $queue = 'run_voice_campaigns';
-                break;
+        if($count<=1000){
+            $queue = '1k_data_queue';
+        }
+        else if($count<=10000){
+            $queue = '10k_data_queue';
+        }
+        else{
+            $queue = 'bulk_data_queue';
         }
         $this->lib->enqueue($queue, $input);
     }

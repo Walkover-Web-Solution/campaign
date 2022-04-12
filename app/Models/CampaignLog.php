@@ -12,7 +12,9 @@ class CampaignLog extends Model
     protected $fillable = [
         'campaign_id',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'no_of_records',
+        'mongo_uid'
     ];
 
     protected $hidden = [
