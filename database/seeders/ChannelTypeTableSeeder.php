@@ -126,17 +126,6 @@ class ChannelTypeTableSeeder extends Seeder
                             "sourceFieldValue" => "",
                             "is_required" => false,
                             "is_array" => true
-                        ),
-                        array(
-                            "name" => "variables",
-                            "type" => 'list',
-                            "label" => '',
-                            "regex" => "",
-                            "source" => "",
-                            "sourceFieldLabel" => "",
-                            "sourceFieldValue" => "",
-                            "is_required" => false,
-                            "is_array" => true
                         )
                     )
 
@@ -172,17 +161,6 @@ class ChannelTypeTableSeeder extends Seeder
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
                             "is_required" => true,
-                            "is_array" => true
-                        ),
-                        array(
-                            "name" => "variables",
-                            "type" => 'list',
-                            "label" => '',
-                            "regex" => "",
-                            "source" => "",
-                            "sourceFieldLabel" => "",
-                            "sourceFieldValue" => "",
-                            "is_required" => false,
                             "is_array" => true
                         )
                     )
