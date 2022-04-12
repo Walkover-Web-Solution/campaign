@@ -223,6 +223,95 @@ class CampaignsController extends Controller
                 "mobiles" => "1234567890"
             )
         ];
+        $sampleData = [
+            "sendTo" => array(
+                array(
+                    "to" => array(
+                        array(
+                            "name" => "paresh",
+                            "email" => "paresh@whozaat.com",
+                            "mobile" => "917223854594"
+                        ),
+                        array(
+                            "name" => "prasuk",
+                            "email" => "prasuk@whozaat.com",
+                            "mobile" => "917223854594"
+                        )
+                    ),
+                    "cc" => array(
+                        array(
+                            "name" => "ravi",
+                            "email" => "ravisoni@walkover.in",
+                            "mobile" => "917828405888"
+                        ),
+                        array(
+                            "name" => "extra",
+                            "email" => "extra@whozaat.com",
+                            "mobile" => "910000000000"
+                        )
+                    ),
+                    "bcc" => array(
+                        array(
+                            "name" => "Kanishk ",
+                            "email" => "Kanishk@whozaat.com",
+                            "mobile" => "919893340296"
+                        ),
+                        array(
+                            "name" => "extra1",
+                            "email" => "extra1@whozaat.com",
+                            "mobile" => "911111111111"
+                        )
+                    ),
+                    "variables" => array(
+                        "subject" => "Happy birthday",
+                        "country" => "India"
+                    )
+                ),
+                array(
+                    "to" => array(
+                        array(
+                            "name" => "paresh",
+                            "email" => "paresh@whozaat.com",
+                            "mobile" => "917223854594"
+                        ),
+                        array(
+                            "name" => "prasuk",
+                            "email" => "prasuk@whozaat.com",
+                            "mobile" => "917223854594"
+                        )
+                    ),
+                    "cc" => array(
+                        array(
+                            "name" => "ravi",
+                            "email" => "ravisoni@walkover.in",
+                            "mobile" => "917828405888"
+                        ),
+                        array(
+                            "name" => "extra",
+                            "email" => "extra@whozaat.com",
+                            "mobile" => "910000000000"
+                        )
+                    ),
+                    "bcc" => array(
+                        array(
+                            "name" => "Kanishk ",
+                            "email" => "Kanishk@whozaat.com",
+                            "mobile" => "919893340296"
+                        ),
+                        array(
+                            "name" => "extra1",
+                            "email" => "extra1@whozaat.com",
+                            "mobile" => "911111111111"
+                        )
+                    ),
+                    "variables" => array(
+                        "subject" => "Happy birthday",
+                        "country" => "USA"
+                    )
+                )
+            )
+        ];
+        return new CustomResource($sampleData);
 
         // get all channel ids from flow actions attached to given campaign
         $flowAction = FlowAction::where('campaign_id', $request->campaign->id)->get();
