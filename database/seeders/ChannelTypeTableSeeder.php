@@ -58,6 +58,17 @@ class ChannelTypeTableSeeder extends Seeder
                             "value"=>""
                         ),
                         array(
+                            "name" => "parent_domain",
+                            "type" => 'dropdown',
+                            "label" => 'Select Parent Domain',
+                            "regex" => "",
+                            "source" => "",
+                            "sourceFieldLabel" => "",
+                            "sourceFieldValue" => "",
+                            "is_required" => true,
+                            "value"=>""
+                        ),
+                        array(
                             "name" => "from_email_name",
                             "type" => 'text',
                             "label" => 'From Email Name',
