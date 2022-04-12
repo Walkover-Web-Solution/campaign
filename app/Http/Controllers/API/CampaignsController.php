@@ -173,8 +173,8 @@ class CampaignsController extends Controller
             // inserting template variables
             $template = $channel->template()->first();
             if (!empty($template)) {
-                $varaibles = collect($template->variables);
-                $varaibles->map(function ($var) use ($obj) {
+                $variables = collect($template->variables);
+                $variables->map(function ($var) use ($obj) {
                     array_push($obj->variables, $var);
                 });
                 $obj->variables = array_unique($obj->variables);
@@ -197,163 +197,63 @@ class CampaignsController extends Controller
 
     public function getSnippets(GetFieldsRequest $request)
     {
-        $sampleData = [
-            "mobiles" => array(
-                array(
-                    "mobiles" => "1234567890"
-                ), array(
-                    "mobiles" => "1234567890"
-                )
-            ),
-            "emails" => array(
-                "to" => array(
-                    array("name" => "name", "email" => "name@email.com"),
-                    array("name" => "name2", "email" => "name2@email.com")
-                ),
-                "cc" => array(
-                    array("email" => "name@email.com"),
-                    array("email" => "name2@email.com")
-                ),
-                "bcc" => array(
-                    array("email" => "name@email.com"),
-                    array("email" => "name2@email.com")
-                ),
-            ),
-            "mobile" =>  array(
-                "mobiles" => "1234567890"
-            )
-        ];
-        $sampleData = [
-            "sendTo" => array(
-                array(
-                    "to" => array(
-                        array(
-                            "name" => "paresh",
-                            "email" => "paresh@whozaat.com",
-                            "mobile" => "917223854594"
-                        ),
-                        array(
-                            "name" => "prasuk",
-                            "email" => "prasuk@whozaat.com",
-                            "mobile" => "917223854594"
-                        )
-                    ),
-                    "cc" => array(
-                        array(
-                            "name" => "ravi",
-                            "email" => "ravisoni@walkover.in",
-                            "mobile" => "917828405888"
-                        ),
-                        array(
-                            "name" => "extra",
-                            "email" => "extra@whozaat.com",
-                            "mobile" => "910000000000"
-                        )
-                    ),
-                    "bcc" => array(
-                        array(
-                            "name" => "Kanishk ",
-                            "email" => "Kanishk@whozaat.com",
-                            "mobile" => "919893340296"
-                        ),
-                        array(
-                            "name" => "extra1",
-                            "email" => "extra1@whozaat.com",
-                            "mobile" => "911111111111"
-                        )
-                    ),
-                    "variables" => array(
-                        "subject" => "Happy birthday",
-                        "country" => "India"
-                    )
-                ),
-                array(
-                    "to" => array(
-                        array(
-                            "name" => "paresh",
-                            "email" => "paresh@whozaat.com",
-                            "mobile" => "917223854594"
-                        ),
-                        array(
-                            "name" => "prasuk",
-                            "email" => "prasuk@whozaat.com",
-                            "mobile" => "917223854594"
-                        )
-                    ),
-                    "cc" => array(
-                        array(
-                            "name" => "ravi",
-                            "email" => "ravisoni@walkover.in",
-                            "mobile" => "917828405888"
-                        ),
-                        array(
-                            "name" => "extra",
-                            "email" => "extra@whozaat.com",
-                            "mobile" => "910000000000"
-                        )
-                    ),
-                    "bcc" => array(
-                        array(
-                            "name" => "Kanishk ",
-                            "email" => "Kanishk@whozaat.com",
-                            "mobile" => "919893340296"
-                        ),
-                        array(
-                            "name" => "extra1",
-                            "email" => "extra1@whozaat.com",
-                            "mobile" => "911111111111"
-                        )
-                    ),
-                    "variables" => array(
-                        "subject" => "Happy birthday",
-                        "country" => "USA"
-                    )
-                )
-            )
-        ];
-        return new CustomResource($sampleData);
-
-        // get all channel ids from flow actions attached to given campaign
-        $flowAction = FlowAction::where('campaign_id', $request->campaign->id)->get();
+        $flowActions = $request->campaign->flowActions()->get();
+        if (empty($flowActions->toArray())) {
+            return new CustomResource(['message' => 'No Actions Found!'], true);
+        }
 
         $obj = new \stdClass();
         $obj->snippets = [];
         $obj->variables = [];
+        $obj->ob = [];
+        $obj->isEmail = false;
 
-        // make validation for every channel id
-        collect($flowAction)->map(function ($channel) use ($obj, $sampleData, $request) {
+        // endpoint
+        $obj->snippets['endpoint'] = env('SNIPPET_HOST_URL') . $request->campaign->slug . '/run';
 
-            $obj->snippets['endpoint'] = env('SNIPPET_HOST_URL') . $request->campaign->slug . '/run';
+        //token
+        $token = $request->campaign->token()->first();
+        $obj->snippets['header'] = array(
+            "token" => $token->token
+        );
 
-            $token = $request->campaign->token()->first();
-            $obj->snippets['header'] = array(
-                "token" => $token->token
-            );
+        // get all channel ids from flow actions attached to given campaign
+        $flowActions = collect($flowActions);
+        $channelIds = $flowActions->pluck('channel_id')->unique();
 
-            $email = 1;
-            $otp = 3;
-            // according to channel type get data from sampleData
-            if ($channel->channel_id == $email) {
-                $obj->snippets['requestBody']['data']['emails'] = $sampleData['emails'];
-            } else if ($channel->channel_id == $otp) {
-                $obj->snippets['requestBody']['data']['mobile'] = $sampleData['mobile'];
-            } else {
-                $obj->snippets['requestBody']['data']['mobiles'] = $sampleData['mobiles'];
-            }
-
-            // inserting template variables
-            $template = $channel->template()->first();
-            if (!empty($template)) {
-                $varaibles = collect($template->variables);
-                $varaibles->map(function ($var) use ($obj) {
-                    if (!in_array($var, $obj->variables)) {
-                        $obj->variables[$var] = $var;
+        // create object of name,email,mobile according to channelIds
+        collect($channelIds)->each(function ($channelId) use ($obj) {
+            switch ($channelId) {
+                case 1: {
+                        $obj->ob['name'] = 'name';
+                        $obj->ob['email'] = 'name@email.com';
+                        $obj->isEmail = true;
+                        break;
                     }
-                });
+                default: {
+                        $obj->ob['mobile'] = '911234567890';
+                    }
             }
         });
 
-        $obj->snippets['requestBody']['data'] = array_merge($obj->snippets['requestBody']['data'], $obj->variables);
+        // get all variables of this campaign
+        $variables = [];
+        $variableArray = $request->campaign->variables()->pluck('variables')->toArray();
+        foreach ($variableArray as $variable) {
+            $variables = array_unique(array_merge($variables, $variable));
+        }
+        collect($variables)->each(function ($variable) use ($obj) {
+            $obj->variables[$variable] = $variable;
+        });
+
+        // creating snippet requestBody according to object created above
+        $obj->snippets['requestBody']['sendTo'][0] = ['to' => [$obj->ob], 'cc' => [$obj->ob], 'bcc' => [$obj->ob]];
+        if (!$obj->isEmail) {
+            unset($obj->snippets['requestBody']['sendTo'][0]['cc']);
+            unset($obj->snippets['requestBody']['sendTo'][0]['bcc']);
+        }
+
+        $obj->snippets['requestBody']['sendTo'][0] = array_merge($obj->snippets['requestBody']['sendTo'][0], ['variables' => $obj->variables]);
         return new CustomResource($obj->snippets);
     }
 
