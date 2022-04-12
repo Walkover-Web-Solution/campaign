@@ -55,7 +55,7 @@ class RunCampaignController extends Controller
         // JobService
         \JOB::processRunCampaign($actionLog);
 
-        return new CustomResource(['message' => 'Executed Successfully']);
+        return new CustomResource(['message' => 'Your request has been queued successfully.']);
     }
 
     public function dryRun()
