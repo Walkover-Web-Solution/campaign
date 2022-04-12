@@ -58,8 +58,10 @@ class RunCampaignController extends Controller
         return new CustomResource(['message' => 'Executed Successfully']);
     }
 
-    public function dryRun()
+    public function dryRun(RunCampaignRequest $request)
     {
-        //
+        $mappings = ["hello"];
+        $request->merge(["mapping" => $mappings]);
+        $this->run($request);
     }
 }
