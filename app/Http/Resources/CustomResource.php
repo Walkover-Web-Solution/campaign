@@ -23,14 +23,16 @@ class CustomResource extends JsonResource
     public function toArray($request)
     {
         $status = "success";
+        $errors = [];
         if ($this->hasError) {
             $status = "error";
+            $errors += parent::toArray($request);
         }
         return [
             'data' => parent::toArray($request),
             'status' => $status,
             'hasError' => $this->hasError,
-            'errors' => []
+            'errors' => $errors
         ];
     }
 }

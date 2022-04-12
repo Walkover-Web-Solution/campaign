@@ -56,8 +56,8 @@ class FlowActionsController extends Controller
             $template = $flowAction->template()->create($input['template']);
         }
 
-        $flowAction->is_completed = validateFlow($flowAction);
-        $flowAction->save();
+        // $flowAction->is_completed = validateFlow($flowAction);
+        // $flowAction->save();
 
         return new CustomResource($flowAction);
     }

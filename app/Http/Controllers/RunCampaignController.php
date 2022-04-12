@@ -17,21 +17,31 @@ class RunCampaignController extends Controller
 
     public function run(RunCampaignRequest $request)
     {
+        $validate = $request->validated();
+        if (!$validate) {
+            return new CustomResource(['message' => 'Incomplete Campaign'], true);
+        }
+
         $campaign = $request->campaign;
         $flow_action = FlowAction::where('id', $campaign->module_data['op_start'])->where('campaign_id', $campaign->id)->first();
         if (empty($flow_action)) {
-            return new CustomResource(['message' => 'Invalid campaign action']);
+            return new CustomResource(['message' => 'Invalid campaign action'], true);
         }
 
         // creating campaign log
         $campaignLog = $campaign->campaignLogs()->create();
+
+        //count total number of records
+        $count = collect($request->data)->map(function ($item) {
+            return count($item['sendTo']);
+        })->toArray();
 
         // generating random key with time stamp for mongo requestId
         $reqId = preg_replace('/\s+/', '', now()) . '_' . md5(uniqid(rand(), true));
 
         // insert data in ActionLogs table
         $actionLogData = [
-            "no_of_records" => $flow_action->channel_id == 1 ? count($request->data['emails']['to']) : ($flow_action->channel_id == 3 ? 1 : count($request->data['mobiles'])),
+            "no_of_records" => array_sum($count),
             "ip" => request()->ip(),
             "status" => "pending",
             "reason" => "",
@@ -40,6 +50,7 @@ class RunCampaignController extends Controller
             "mongo_id" => $reqId,
             'uid' => $campaignLog->id
         ];
+
         $actionLog = $campaign->actionLogs()->create($actionLogData);
 
 
