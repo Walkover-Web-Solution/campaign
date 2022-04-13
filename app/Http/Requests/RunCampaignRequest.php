@@ -41,37 +41,17 @@ class RunCampaignRequest extends FormRequest
      */
     public function rules()
     {
-        // get all channel ids from flow actions attached to given campaign
-        $channelIds = FlowAction::where('campaign_id', $this->campaign->id)
-            ->pluck('channel_id')
-            ->toArray();
+        return [];
+    }
 
+    public function validated()
+    {
         $obj = new \stdClass();
-        $obj->validationArray = [];
-
-        // make validation for every channel id
-        collect($channelIds)->map(function ($channelId) use ($obj) {
-            $channelType = ChannelType::where('id', $channelId)->first();
-            $channelCategory = $this->getChannelCategory($channelType);
-            // validations for is_required taken from conigurations->mapping array
-            $mapping = collect($channelType->configurations['mapping']);
-            $mapping->each(function ($map) use ($obj, $channelCategory) {
-
-                if ($channelCategory == 'mobiles') {
-                    if ($map['is_required'])
-                        $obj->validationArray['data.' . $channelCategory . '.*.' . $map['name']] = 'required';
-                } else {
-                    if ($map['is_required']) {
-                        $obj->validationArray['data.' . $channelCategory . '.' . $map['name']] = $map['is_array'] ? 'required | array' : 'required';
-                    } else {
-                        $obj->validationArray['data.' . $channelCategory . '.' . $map['name']] = $map['is_array'] ? 'array' : '';
-                    }
-                }
-                // $obj->validationArray['data.' . $map['name']] = ($map['is_required'] ? 'required | ' : '') . ($map['is_array'] ? 'array' : ''); //($map['is_array'] ? 'required|array' : 'required') : '';
-            });
-        });
-
-        return ($obj->validationArray);
+        $obj->flag = true;
+        $flowActionsCount = $this->campaign->flowActions()->where('is_completed',false)->count();
+        if($flowActionsCount > 0)
+            return false;
+        return $obj->flag;
     }
 
     private function getChannelCategory(ChannelType $channel)
@@ -79,7 +59,7 @@ class RunCampaignRequest extends FormRequest
         # This function will return category of channel type as a string
         switch ($channel->id) {
             case 1:
-                return "emails";
+                return "email";
                 break;
             case 2:
                 return "mobiles";
