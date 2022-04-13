@@ -141,6 +141,14 @@ class Campaign extends Model
         return $this->hasMany(CampaignLog::class);
     }
 
+    /**
+     * Get all of the variables from template of all flowActions for the Campaign
+     */
+    public function variables()
+    {
+        return $this->hasManyThrough(Template::class, FlowAction::class);
+    }
+
     public function resolveRouteBinding($value, $field = null)
     {
         try {

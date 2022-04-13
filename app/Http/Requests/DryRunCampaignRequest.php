@@ -3,12 +3,9 @@
 namespace App\Http\Requests;
 
 use App\Models\Campaign;
-use App\Models\ChannelType;
-use App\Models\FlowAction;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class RunCampaignRequest extends FormRequest
+class DryRunCampaignRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -41,7 +38,17 @@ class RunCampaignRequest extends FormRequest
      */
     public function rules()
     {
-        return [];
+        $validaArray = [
+            'data' => 'array'
+        ];
+
+        if (!empty($this->data)) {
+            $validaArray += [
+                'data.*.value' => 'required',
+            ];
+        }
+
+        return $validaArray;
     }
 
     public function validated()
