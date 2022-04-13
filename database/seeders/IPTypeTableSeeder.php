@@ -16,7 +16,7 @@ class IPTypeTableSeeder extends Seeder
     {
         IpType::firstOrCreate(['name' => 'Whitelist IP']);
         IPType::firstOrCreate(['name' => 'Blacklist IP']);
-        IPType::firstOrCreate(['name' => 'Temporary Blocked  IP']);
+        IPType::firstOrCreate(['name' => 'Temporarily Blocked IP']);
         IPType::firstOrCreate(['name' => 'None']);
     }
 }
