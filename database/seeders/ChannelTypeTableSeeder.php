@@ -25,14 +25,14 @@ class ChannelTypeTableSeeder extends Seeder
                             "template" => array(
                                 "name" => "",
                                 "template_id" => "",
-                                "slug"=>""
+                                "slug" => ""
                             ),
                             "source" => "",
                             "sourceFieldLabel" => "name",
                             "sourceFieldValue" => "name",
                             "is_required" => true,
-                            "value"=>"",
-                            "variables"=>[]
+                            "value" => "",
+                            "variables" => []
                         ),
                         array(
                             "name" => "from_email",
@@ -43,8 +43,8 @@ class ChannelTypeTableSeeder extends Seeder
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
                             "is_required" => true,
-                            "value"=>"",
-                            "placeholder"=>"You can email that will be shown to recipient."
+                            "value" => "",
+                            "placeholder" => "You can email that will be shown to recipient."
                         ),
                         array(
                             "name" => "domain",
@@ -55,7 +55,7 @@ class ChannelTypeTableSeeder extends Seeder
                             "sourceFieldLabel" => "name",
                             "sourceFieldValue" => "name",
                             "is_required" => true,
-                            "value"=>""
+                            "value" => ""
                         ),
                         array(
                             "name" => "parent_domain",
@@ -66,7 +66,7 @@ class ChannelTypeTableSeeder extends Seeder
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
                             "is_required" => true,
-                            "value"=>""
+                            "value" => ""
                         ),
                         array(
                             "name" => "from_email_name",
@@ -77,10 +77,10 @@ class ChannelTypeTableSeeder extends Seeder
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
                             "is_required" => true,
-                            "value"=>"",
-                            "placeholder"=>"You can define name that will be shown to recipient."
+                            "value" => "",
+                            "placeholder" => "You can define name that will be shown to recipient."
                         ),
-                        
+
                         array(
                             "name" => "cc",
                             "type" => 'list',
@@ -90,7 +90,7 @@ class ChannelTypeTableSeeder extends Seeder
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
                             "is_required" => false,
-                            "value"=>""
+                            "value" => ""
                         ),
                         array(
                             "name" => "bcc",
@@ -101,7 +101,7 @@ class ChannelTypeTableSeeder extends Seeder
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
                             "is_required" => false,
-                            "value"=>""
+                            "value" => ""
                         )
                     ),
                     "mapping" => array(
@@ -157,7 +157,7 @@ class ChannelTypeTableSeeder extends Seeder
                             "sourceFieldLabel" => "name",
                             "sourceFieldValue" => "name",
                             "is_required" => true,
-                            "variables"=>[]
+                            "variables" => []
                         )
 
                     ),
@@ -204,14 +204,14 @@ class ChannelTypeTableSeeder extends Seeder
                 "configurations" => array(
                     "fields" => array(
                         array(
-                            "name"=>"integrated_number",
+                            "name" => "integrated_number",
                             "label" => "Integrated number",
                             "type" => "dropdown",
                             "source" => "",
                             "sourceFieldLabel" => "name",
                             "sourceFieldValue" => "name",
                             "is_required" => true,
-                            "value"=>""
+                            "value" => ""
                         )
                     ),
                     "mapping" => array(
@@ -253,12 +253,19 @@ class ChannelTypeTableSeeder extends Seeder
             ],
         ];
 
-        collect($channelTypes)->map(function ($channelType) {
-            $channelTypeObj = ChannelType::where('name', $channelType['name'])->first();
-            if (empty($channelTypeObj)) {
-                ChannelType::create($channelType);
-            } else {
-                $channelTypeObj->update($channelType);
+        $emailType = "Email";
+        $sms = "SMS";
+        $otp = "OTP";
+        $whatsapp = "whatsapp";
+        $voice = "voice";
+        collect($channelTypes)->map(function ($channelType) use ($emailType, $sms) {
+            if ($channelType['name'] == $emailType || $channelType['name'] == $sms) {
+                $channelTypeObj = ChannelType::where('name', $channelType['name'])->first();
+                if (empty($channelTypeObj)) {
+                    ChannelType::create($channelType);
+                } else {
+                    $channelTypeObj->update($channelType);
+                }
             }
         });
     }

@@ -30,8 +30,7 @@ class FlowAction extends Model
     protected $hidden = array(
         'created_at',
         'updated_at',
-        'channel_id',
-        'is_completed'
+        'channel_id'
     );
 
     public static function boot()
@@ -41,22 +40,21 @@ class FlowAction extends Model
         static::creating(function ($flowAction) {
 
             // Adding default values for style in case if it is null
-            if(empty($flowAction->style)){
+            if (empty($flowAction->style)) {
                 $flowAction->style = array(
-                    "x"=>0,
-                    "y"=>0,
-                    "width"=>150,
-                    "height"=>100
+                    "x" => 0,
+                    "y" => 0,
+                    "width" => 150,
+                    "height" => 100
                 );
             }
 
-            if(empty($flowAction->module_data)){
+            if (empty($flowAction->module_data)) {
                 $flowAction->module_data = array(
-                    "op_success"=>null,
-                    "op_success_type"=>null
+                    "op_success" => null,
+                    "op_success_type" => null
                 );
             }
-
         });
     }
 
