@@ -27,36 +27,28 @@ class RunCampaignController extends Controller
         if (empty($flow_action)) {
             return new CustomResource(['message' => 'Invalid campaign action'], true);
         }
-
-        // creating campaign log
-        $campaignLog = $campaign->campaignLogs()->create();
-
-        //count total number of records
-        $count = collect($request->data)->map(function ($item) {
-            return count($item['sendTo']);
-        })->toArray();
-
+        $countEmail = collect($request->data['sendTo'])->map(function ($item) {
+            $count = count(collect($item['to'])->pluck('email')) + count(collect($item['cc'])->pluck('email')) + count(collect($item['bcc'])->pluck('email'));
+            return ($count);
+        });
+        $countMobile = collect($request->data['sendTo'])->map(function ($item) {
+            $count = count(collect($item['to'])->pluck('mobile')) + count(collect($item['cc'])->pluck('mobile')) + count(collect($item['bcc'])->pluck('mobile'));
+            return ($count);
+        });
         // generating random key with time stamp for mongo requestId
         $reqId = preg_replace('/\s+/', '', now()) . '_' . md5(uniqid(rand(), true));
 
-        // insert data in ActionLogs table
-        $actionLogData = [
-            "no_of_records" => array_sum($count),
-            "ip" => request()->ip(),
-            "status" => "pending",
-            "reason" => "",
-            "ref_id" => "",
-            "flow_action_id" => $flow_action->id,
-            "mongo_id" => $reqId,
-            'uid' => $campaignLog->id
+        // creating campaign log
+        $logs = [
+            "sms_records" => array_sum($countMobile->toArray()),
+            "email_records" => array_sum($countEmail->toArray()),
+            "mongo_uid"=>$reqId
         ];
-
-        $actionLog = $campaign->actionLogs()->create($actionLogData);
-
+        $campaignLog = $campaign->campaignLogs()->create($logs);
 
         if ($request->filled('data')) {
             $data = [
-                'requestId' => $actionLog->mongo_id,
+                'requestId' => $campaignLog->mongo_uid,
                 'data' => $request->data
             ];
             // insert into mongo
@@ -64,7 +56,7 @@ class RunCampaignController extends Controller
         }
 
         // JobService
-        \JOB::processRunCampaign($actionLog);
+        \JOB::processRunCampaign($campaignLog);
 
         return new CustomResource(['message' => 'Your request has been queued successfully.']);
     }
