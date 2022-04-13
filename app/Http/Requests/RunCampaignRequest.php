@@ -48,12 +48,9 @@ class RunCampaignRequest extends FormRequest
     {
         $obj = new \stdClass();
         $obj->flag = true;
-        $flowActions = $this->campaign->flowActions()->get();
-        $flowActions->each(function ($flowAction) use ($obj) {
-            if ($flowAction->is_completed) {
-                $obj->flag = false;
-            }
-        });
+        $flowActionsCount = $this->campaign->flowActions()->where('is_completed',false)->count();
+        if($flowActionsCount > 0)
+            return false;
         return $obj->flag;
     }
 

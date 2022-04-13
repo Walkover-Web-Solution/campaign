@@ -18,7 +18,7 @@ class RunCampaignController extends Controller
     public function run(RunCampaignRequest $request)
     {
         $validate = $request->validated();
-        if ($validate) {
+        if (!$validate) {
             return new CustomResource(['message' => 'Incomplete Campaign'], true);
         }
 
