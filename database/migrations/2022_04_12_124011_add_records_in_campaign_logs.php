@@ -14,7 +14,8 @@ class AddRecordsInCampaignLogs extends Migration
     public function up()
     {
         Schema::table('campaign_logs', function (Blueprint $table) {
-            $table->integer('no_of_records');
+            $table->bigInteger('sms_records');
+            $table->bigInteger('email_records');
             $table->string("mongo_uid");
         });
     }
@@ -27,7 +28,8 @@ class AddRecordsInCampaignLogs extends Migration
     public function down()
     {
         Schema::table('campaign_logs', function (Blueprint $table) {
-            $table->integer('no_of_records');
+            $table->bigInteger('sms_records');
+            $table->bigInteger('email_records');
             $table->string("mongo_uid");
         });
     }

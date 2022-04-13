@@ -13,7 +13,8 @@ class CampaignLog extends Model
         'campaign_id',
         'created_at',
         'updated_at',
-        'no_of_records',
+        'sms_records',
+        'email_records',
         'mongo_uid'
     ];
 

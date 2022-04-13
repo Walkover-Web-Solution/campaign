@@ -22,18 +22,21 @@ class RunCampaignController extends Controller
         if (empty($flow_action)) {
             return new CustomResource(['message' => 'Invalid campaign action']);
         }
-        $count = collect($request->data['sendTo'])->map(function ($item) {
-            $countEmail = count(collect($item['to'])->pluck('email')) + count(collect($item['cc'])->pluck('email')) + count(collect($item['bcc'])->pluck('email'));
-            $countMobile = count(collect($item['to'])->pluck('mobile')) + count(collect($item['cc'])->pluck('mobile')) + count(collect($item['bcc'])->pluck('mobile'));
-            return ($countEmail + $countMobile);
+        $countEmail = collect($request->data['sendTo'])->map(function ($item) {
+            $count = count(collect($item['to'])->pluck('email')) + count(collect($item['cc'])->pluck('email')) + count(collect($item['bcc'])->pluck('email'));
+            return ($count);
         });
-
+        $countMobile = collect($request->data['sendTo'])->map(function ($item) {
+            $count = count(collect($item['to'])->pluck('mobile')) + count(collect($item['cc'])->pluck('mobile')) + count(collect($item['bcc'])->pluck('mobile'));
+            return ($count);
+        });
         // generating random key with time stamp for mongo requestId
         $reqId = preg_replace('/\s+/', '', now()) . '_' . md5(uniqid(rand(), true));
 
         // creating campaign log
         $logs = [
-            "no_of_records" => array_sum($count->toArray()),
+            "sms_records" => array_sum($countMobile->toArray()),
+            "email_records" => array_sum($countEmail->toArray()),
             "mongo_uid"=>$reqId
         ];
         $campaignLog = $campaign->campaignLogs()->create($logs);
