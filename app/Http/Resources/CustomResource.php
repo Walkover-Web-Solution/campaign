@@ -22,6 +22,7 @@ class CustomResource extends JsonResource
      */
     public function toArray($request)
     {
+        $errors = [];
         $status = "success";
         $errors = [];
         if ($this->hasError) {
