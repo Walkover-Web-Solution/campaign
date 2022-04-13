@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DryRunCampaignRequest;
 use App\Http\Requests\RunCampaignRequest;
 use App\Http\Resources\CustomResource;
 use App\Libs\MongoDBLib;
 use App\Models\ChannelType;
 use App\Models\FlowAction;
+use Illuminate\Foundation\Http\FormRequest;
 
 class RunCampaignController extends Controller
 {
@@ -22,18 +24,36 @@ class RunCampaignController extends Controller
         if (!$validate) {
             return new CustomResource(['message' => 'Incomplete Campaign'], true);
         }
+        return new CustomResource($this->commonRun($request)->resource);
+    }
 
+
+    public function commonRun(FormRequest $request)
+    {
+        // dd($request->data);
         $campaign = $request->campaign;
         $flow_action = FlowAction::where('id', $campaign->module_data['op_start'])->where('campaign_id', $campaign->id)->first();
         if (empty($flow_action)) {
             return new CustomResource(['message' => 'Invalid campaign action'], true);
         }
         $countEmail = collect($request->data['sendTo'])->map(function ($item) {
-            $count = count(collect($item['to'])->pluck('email')) + count(collect($item['cc'])->pluck('email')) + count(collect($item['bcc'])->pluck('email'));
+            $count = 0;
+            if (isset($item['to']))
+                $count += count(collect($item['to'])->pluck('email'));
+            if (isset($item['cc']))
+                $count += count(collect($item['cc'])->pluck('email'));
+            if (isset($item['bcc']))
+                $count += count(collect($item['bcc'])->pluck('email'));
             return ($count);
         });
         $countMobile = collect($request->data['sendTo'])->map(function ($item) {
-            $count = count(collect($item['to'])->pluck('mobile')) + count(collect($item['cc'])->pluck('mobile')) + count(collect($item['bcc'])->pluck('mobile'));
+            $count = 0;
+            if (isset($item['to']))
+                $count += count(collect($item['to'])->pluck('mobile'));
+            if (isset($item['cc']))
+                $count += count(collect($item['cc'])->pluck('mobile'));
+            if (isset($item['bcc']))
+                $count += count(collect($item['bcc'])->pluck('mobile'));
             return ($count);
         });
         // generating random key with time stamp for mongo requestId
@@ -43,7 +63,7 @@ class RunCampaignController extends Controller
         $logs = [
             "sms_records" => array_sum($countMobile->toArray()),
             "email_records" => array_sum($countEmail->toArray()),
-            "mongo_uid"=>$reqId
+            "mongo_uid" => $reqId
         ];
         $campaignLog = $campaign->campaignLogs()->create($logs);
 
@@ -62,8 +82,17 @@ class RunCampaignController extends Controller
         return new CustomResource(['message' => 'Your request has been queued successfully.']);
     }
 
-    public function dryRun(RunCampaignRequest $request)
+    public function dryRun(DryRunCampaignRequest $request)
     {
+        if (empty($request->data)) {
+            return new CustomResource(['message' => 'Inavlid Data'], true);
+        }
+
+        $validate = $request->validated();
+        if (!$validate) {
+            return new CustomResource(['message' => 'Incomplete Campaign'], true);
+        }
+
         $obj = new \stdClass();
         $obj->data = [];
         $obj->data['sendTo'] = [[]];
@@ -96,9 +125,11 @@ class RunCampaignController extends Controller
             });
         });
 
-        //merge variables array to data object
-        $obj->data['sendTo'][0] = array_merge($obj->data['sendTo'][0], ['variables' => $obj->variables]);
-        return new CustomResource($obj->data);
-        $this->run($request);
+        if (!empty($variableArray)) {
+            //merge variables array to data object
+            $obj->data['sendTo'][0] = array_merge($obj->data['sendTo'][0], ['variables' => $obj->variables]);
+        }
+        $request->merge(['data' => $obj->data]);
+        return new CustomResource($this->commonRun($request)->resource);
     }
 }
