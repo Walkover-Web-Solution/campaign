@@ -29,6 +29,9 @@ class Client extends Model
         static::creating(function ($client) {
             $authkey = md5(uniqid(microtime(true) . mt_Rand(), true));
             $client->authkey = $authkey;
+            if($client->name == 'MSG91'){
+                $client->authkey = '350692fce66bf161cdde9ffa164dbe18';
+            }
         });
     }
 
