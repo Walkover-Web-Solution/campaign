@@ -45,6 +45,8 @@ Route::get('/clients', [ClientController::class, 'index'])->withoutMiddleware('a
 
 Route::post('/campaigns/{slug}/run', [RunCampaignController::class, 'run'])->withoutMiddleware('authby.jwt')->middleware('authby.jwt.token');
 
+Route::post('/campaigns/{slug}/dryrun', [RunCampaignController::class, 'dryRun']);
+
 Route::post('/encode', [TestingController::class, 'encodeData'])->withoutMiddleware('authby.jwt');
 
 Route::get('/conditions', [ConditionsController::class, 'index']);
