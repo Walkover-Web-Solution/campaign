@@ -247,13 +247,13 @@ class CampaignsController extends Controller
         });
 
         // creating snippet requestBody according to object created above
-        $obj->snippets['requestBody']['sendTo'][0] = ['to' => [$obj->ob], 'cc' => [$obj->ob], 'bcc' => [$obj->ob]];
+        $obj->snippets['requestBody']['data']['sendTo'][0] = ['to' => [$obj->ob], 'cc' => [$obj->ob], 'bcc' => [$obj->ob]];
         if (!$obj->isEmail) {
-            unset($obj->snippets['requestBody']['sendTo'][0]['cc']);
-            unset($obj->snippets['requestBody']['sendTo'][0]['bcc']);
+            unset($obj->snippets['requestBody']['data']['sendTo'][0]['cc']);
+            unset($obj->snippets['requestBody']['data']['sendTo'][0]['bcc']);
         }
 
-        $obj->snippets['requestBody']['sendTo'][0] = array_merge($obj->snippets['requestBody']['sendTo'][0], ['variables' => $obj->variables]);
+        $obj->snippets['requestBody']['data']['sendTo'][0] = array_merge($obj->snippets['requestBody']['data']['sendTo'][0], ['variables' => $obj->variables]);
         return new CustomResource($obj->snippets);
     }
 
