@@ -161,6 +161,14 @@ class FlowActionsController extends Controller
 
         if (isset($request->parent_data)) {
             collect($request->parent_data)->map(function ($parent) use ($campaign) {
+                if($parent['op_type'] == "op_start"){
+                    $campaign->module_data = array(
+                        "op_start" => null,
+                        "op_start_type" => null
+                    );
+                    $campaign->update();
+                }
+                else {
                 $parentFlow = FlowAction::where('id', $parent['module_id'])->where('campaign_id', $campaign->id)->first();
                 if (!empty($parentFlow)) {
                     //fetch previous module_data
@@ -174,6 +182,7 @@ class FlowActionsController extends Controller
                     $parentFlow->module_data = $module_data;
                     $parentFlow->save();
                 }
+            }
             });
         }
         $flowAction->delete();
