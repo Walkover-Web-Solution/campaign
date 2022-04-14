@@ -8,6 +8,7 @@ use App\Http\Resources\CustomResource;
 use App\Libs\MongoDBLib;
 use App\Models\ChannelType;
 use App\Models\FlowAction;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -61,7 +62,7 @@ class RunCampaignController extends Controller
             return ($count);
         });
         // generating random key with time stamp for mongo requestId
-        $reqId = preg_replace('/\s+/', '', now()) . '_' . md5(uniqid(rand(), true));
+        $reqId = preg_replace('/\s+/', '', Carbon::now()->timestamp) . '_' . md5(uniqid(rand(), true));
 
         // creating campaign log
         $logs = [

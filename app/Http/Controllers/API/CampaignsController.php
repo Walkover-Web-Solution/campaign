@@ -162,35 +162,30 @@ class CampaignsController extends Controller
     public function getFields(GetFieldsRequest $request)
     {
         // get all channel ids from flow actions attached to given campaign
-        $flowAction = FlowAction::where('campaign_id', $request->campaign->id)->get();
+        $channelIds = $request->campaign->flowActions()->pluck('channel_id');
 
         $obj = new \stdClass();
         $obj->mapping = [];
-        $obj->variables = [];
-        // make validation for every channel id
-        collect($flowAction)->map(function ($channel) use ($obj) {
 
-            // inserting template variables
-            $template = $channel->template()->first();
-            if (!empty($template)) {
-                $variables = collect($template->variables);
-                $variables->map(function ($var) use ($obj) {
-                    array_push($obj->variables, $var);
-                });
-                $obj->variables = array_unique($obj->variables);
-            }
-
-            // inserting channel configurations->mapping
-            $channelType = ChannelType::where('id', $channel->channel_id)->first();
-            $mapping = collect($channelType->configurations['mapping']);
-            $mapping->map(function ($map) use ($obj) {
-                if (!in_array($map, $obj->mapping))
-                    array_push($obj->mapping, $map);
-            });
-        });
-        if (empty($obj->variables)) {
-            unset($obj->variables);
+        //get variables
+        $variables = [];
+        $variableArray = $request->campaign->variables()->pluck('variables')->toArray();
+        foreach ($variableArray as $variable) {
+            $variables = array_unique(array_merge($variables, $variable));
         }
+        if (!empty($variables))
+            collect($variables)->each(function ($variable) use ($obj) {
+                $obj->variables[$variable] = $variable;
+            });
+
+        // make validation for every channel id
+        collect($channelIds)->each(function ($channelId) use ($obj) {
+            // inserting channel configurations->mapping
+            $mapping = ChannelType::where('id', $channelId)->pluck('configurations')->first()['mapping'];
+            $obj->mapping = array_merge($obj->mapping, $mapping);
+        });
+
+        $obj->mapping = collect($obj->mapping)->unique()->toArray();
 
         return (new CustomResource((array)$obj));
     }
