@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Resources\CustomResource;
 use App\Models\Campaign;
 use App\Models\ChannelType;
 use App\Models\FlowAction;
@@ -44,25 +45,22 @@ class RunCampaignRequest extends FormRequest
         return [];
     }
 
-    private function getChannelCategory(ChannelType $channel)
+    public function validated()
     {
-        # This function will return category of channel type as a string
-        switch ($channel->id) {
-            case 1:
-                return "emails";
-                break;
-            case 2:
-                return "mobiles";
-                break;
-            case 3:
-                return "mobile";
-                break;
-            case 4:
-                return "mobiles";
-                break;
-            case 5:
-                return "mobiles";
-                break;
-        }
+
+
+        $totalCount = collect($this->data['sendTo'])->map(function ($item) {
+            $maxRequest = 1000;
+            $count = count(collect($item['to'])) + count(collect($item['cc'])) + count(collect($item['bcc']));
+            if ($count >= $maxRequest)
+
+                if ($count > $maxRequest) {
+                    return 0;
+                }
+            return 1;
+        })->toArray();
+        if (in_array(0, $totalCount))
+            return false;
+        return true;
     }
 }

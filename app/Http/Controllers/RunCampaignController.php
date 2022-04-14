@@ -17,6 +17,9 @@ class RunCampaignController extends Controller
 
     public function run(RunCampaignRequest $request)
     {
+        if (!($request->validated()))
+            return new CustomResource(["message" => "data limit exceeded (max 1000) "]);
+
         $campaign = $request->campaign;
         $flow_action = FlowAction::where('id', $campaign->module_data['op_start'])->where('campaign_id', $campaign->id)->first();
         if (empty($flow_action)) {
@@ -37,7 +40,7 @@ class RunCampaignController extends Controller
         $logs = [
             "sms_records" => array_sum($countMobile->toArray()),
             "email_records" => array_sum($countEmail->toArray()),
-            "mongo_uid"=>$reqId
+            "mongo_uid" => $reqId
         ];
         $campaignLog = $campaign->campaignLogs()->create($logs);
 
