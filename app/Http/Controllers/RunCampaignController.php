@@ -79,13 +79,13 @@ class RunCampaignController extends Controller
         // JobService
         \JOB::processRunCampaign($campaignLog);
 
-        return new CustomResource(['message' => 'Your request has been queued successfully.']);
+        return new CustomResource(['message' => 'Your request has been queued successfully.','request_id' => $campaignLog->mongo_uid]);
     }
 
     public function dryRun(DryRunCampaignRequest $request)
     {
         if (empty($request->data)) {
-            return new CustomResource(['message' => 'Inavlid Data'], true);
+            return new CustomResource(['message' => 'Invalid Data'], true);
         }
 
         $validate = $request->validated();
