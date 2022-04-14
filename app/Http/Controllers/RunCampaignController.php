@@ -8,6 +8,7 @@ use App\Http\Resources\CustomResource;
 use App\Libs\MongoDBLib;
 use App\Models\ChannelType;
 use App\Models\FlowAction;
+use Exception;
 use Illuminate\Foundation\Http\FormRequest;
 
 class RunCampaignController extends Controller
@@ -82,7 +83,7 @@ class RunCampaignController extends Controller
         // JobService
         \JOB::processRunCampaign($campaignLog);
 
-        return new CustomResource(['message' => 'Your request has been queued successfully.','request_id' => $campaignLog->mongo_uid]);
+        return new CustomResource(['message' => 'Your request has been queued successfully.', 'request_id' => $campaignLog->mongo_uid]);
     }
 
     public function dryRun(DryRunCampaignRequest $request)
@@ -103,13 +104,17 @@ class RunCampaignController extends Controller
 
         //get variables for this campaign
         $variables = [];
-        $variableArray = $request->campaign->variables()->pluck('variables')->toArray();
-        foreach ($variableArray as $variable) {
-            $variables = array_unique(array_merge($variables, $variable));
+        $variableArray = [];
+        try {
+            $variableArray = $request->campaign->variables()->pluck('variables')->toArray();
+            foreach ($variableArray as $variable) {
+                $variables = array_unique(array_merge($variables, $variable));
+            }
+            collect($variables)->each(function ($variable) use ($obj) {
+                $obj->variables[$variable] = $variable;
+            });
+        } catch (Exception $ex) {
         }
-        collect($variables)->each(function ($variable) use ($obj) {
-            $obj->variables[$variable] = $variable;
-        });
 
         //convert this body to new run request body
         collect($request->data)->each(function ($ob) use ($obj) {

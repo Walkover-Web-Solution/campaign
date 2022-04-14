@@ -55,22 +55,23 @@ class RunCampaignRequest extends FormRequest
         $flowActionsCount = $this->campaign->flowActions()->where('is_completed', false)->count();
         if ($flowActionsCount > 0)
             return false;
+        
+        return $obj->flag;
 
+        // if (!isset($this->data['sendTo']))
+        //     return false;
+        // $totalCount = collect($this->data['sendTo'])->map(function ($item) {
+        //     $maxRequest = 1000;
+        //     $count = count(collect($item['to'])) + count(collect($item['cc'])) + count(collect($item['bcc']));
+        //     if ($count >= $maxRequest)
 
-        if (!isset($this->data['sendTo']))
-            return false;
-        $totalCount = collect($this->data['sendTo'])->map(function ($item) {
-            $maxRequest = 1000;
-            $count = count(collect($item['to'])) + count(collect($item['cc'])) + count(collect($item['bcc']));
-            if ($count >= $maxRequest)
-
-                if ($count > $maxRequest) {
-                    return 0;
-                }
-            return 1;
-        })->toArray();
-        if (in_array(0, $totalCount))
-            return false;
-        return true;
+        //         if ($count > $maxRequest) {
+        //             return 0;
+        //         }
+        //     return 1;
+        // })->toArray();
+        // if (in_array(0, $totalCount))
+        //     return false;
+        // return true;
     }
 }
