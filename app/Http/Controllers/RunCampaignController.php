@@ -31,6 +31,9 @@ class RunCampaignController extends Controller
     public function commonRun(FormRequest $request)
     {
         // dd($request->data);
+        if (!($request->validated()))
+            return new CustomResource(["message" => "Data limit should not exceeded more than 1000."]);
+
         $campaign = $request->campaign;
         $flow_action = FlowAction::where('id', $campaign->module_data['op_start'])->where('campaign_id', $campaign->id)->first();
         if (empty($flow_action)) {
@@ -79,13 +82,13 @@ class RunCampaignController extends Controller
         // JobService
         \JOB::processRunCampaign($campaignLog);
 
-        return new CustomResource(['message' => 'Your request has been queued successfully.']);
+        return new CustomResource(['message' => 'Your request has been queued successfully.','request_id' => $campaignLog->mongo_uid]);
     }
 
     public function dryRun(DryRunCampaignRequest $request)
     {
         if (empty($request->data)) {
-            return new CustomResource(['message' => 'Inavlid Data'], true);
+            return new CustomResource(['message' => 'Invalid Data'], true);
         }
 
         $validate = $request->validated();
