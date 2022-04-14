@@ -161,18 +161,26 @@ class FlowActionsController extends Controller
 
         if (isset($request->parent_data)) {
             collect($request->parent_data)->map(function ($parent) use ($campaign) {
-                $parentFlow = FlowAction::where('id', $parent['module_id'])->where('campaign_id', $campaign->id)->first();
-                if (!empty($parentFlow)) {
-                    //fetch previous module_data
-                    $module_data = $parentFlow->module_data;
+                if ($parent['op_type'] == "op_start") {
+                    $campaign->module_data = array(
+                        "op_start" => null,
+                        "op_start_type" => null
+                    );
+                    $campaign->update();
+                } else {
+                    $parentFlow = FlowAction::where('id', $parent['module_id'])->where('campaign_id', $campaign->id)->first();
+                    if (!empty($parentFlow)) {
+                        //fetch previous module_data
+                        $module_data = $parentFlow->module_data;
 
-                    //modify it
-                    $op_type = $parent['op_type'];
-                    $module_data->$op_type = null;
+                        //modify it
+                        $op_type = $parent['op_type'];
+                        $module_data->$op_type = null;
 
-                    //saved to db back
-                    $parentFlow->module_data = $module_data;
-                    $parentFlow->save();
+                        //saved to db back
+                        $parentFlow->module_data = $module_data;
+                        $parentFlow->save();
+                    }
                 }
             });
         }
