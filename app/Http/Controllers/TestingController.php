@@ -24,6 +24,9 @@ class TestingController extends Controller
         getCampaign(1);
     }
 
+    public function getActionLogFromCampaignRequest()
+    {}
+
     public function encodeData(Request $request)
     {
         if (request()->header('testerKey') != 'testerKey') {
