@@ -78,6 +78,7 @@ function getCampaign($campid)
         $temp->module_data = $val['module_data'];
         $temp->configurations = $val['configurations'];
         $temp->template = $val->template()->first();
+        $temp->is_completed = $val['is_completed'];
         $flow_key = $val['id'];
         $data->modules[$channel]->$flow_key = $temp;
     });
