@@ -32,7 +32,6 @@ class RunCampaignController extends Controller
 
     public function commonRun(FormRequest $request)
     {
-        // dd($request->data);
         if (!($request->validated()))
             return new CustomResource(["message" => "Data limit should not exceeded more than 1000."]);
 
