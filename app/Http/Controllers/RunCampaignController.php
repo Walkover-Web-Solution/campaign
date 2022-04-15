@@ -8,6 +8,8 @@ use App\Http\Resources\CustomResource;
 use App\Libs\MongoDBLib;
 use App\Models\ChannelType;
 use App\Models\FlowAction;
+use Carbon\Carbon;
+use Exception;
 use Illuminate\Foundation\Http\FormRequest;
 
 class RunCampaignController extends Controller
@@ -30,6 +32,9 @@ class RunCampaignController extends Controller
 
     public function commonRun(FormRequest $request)
     {
+        if (!($request->validated()))
+            return new CustomResource(["message" => "Data limit should not exceeded more than 1000."]);
+
         $campaign = $request->campaign;
         $flow_action = FlowAction::where('id', $campaign->module_data['op_start'])->where('campaign_id', $campaign->id)->first();
         if (empty($flow_action)) {
@@ -56,7 +61,7 @@ class RunCampaignController extends Controller
             return ($count);
         });
         // generating random key with time stamp for mongo requestId
-        $reqId = preg_replace('/\s+/', '', now()) . '_' . md5(uniqid(rand(), true));
+        $reqId = preg_replace('/\s+/', '', Carbon::now()->timestamp) . '_' . md5(uniqid(rand(), true));
 
         // creating campaign log
         $logs = [
@@ -78,13 +83,13 @@ class RunCampaignController extends Controller
         // JobService
         \JOB::processRunCampaign($campaignLog);
 
-        return new CustomResource(['message' => 'Your request has been queued successfully.']);
+        return new CustomResource(['message' => 'Your request has been queued successfully.', 'request_id' => $campaignLog->mongo_uid]);
     }
 
     public function dryRun(DryRunCampaignRequest $request)
     {
         if (empty($request->data)) {
-            return new CustomResource(['message' => 'Inavlid Data'], true);
+            return new CustomResource(['message' => 'Invalid Data'], true);
         }
 
         $validate = $request->validated();
@@ -99,13 +104,17 @@ class RunCampaignController extends Controller
 
         //get variables for this campaign
         $variables = [];
-        $variableArray = $request->campaign->variables()->pluck('variables')->toArray();
-        foreach ($variableArray as $variable) {
-            $variables = array_unique(array_merge($variables, $variable));
+        $variableArray = [];
+        try {
+            $variableArray = $request->campaign->variables()->pluck('variables')->toArray();
+            foreach ($variableArray as $variable) {
+                $variables = array_unique(array_merge($variables, $variable));
+            }
+            collect($variables)->each(function ($variable) use ($obj) {
+                $obj->variables[$variable] = $variable;
+            });
+        } catch (Exception $ex) {
         }
-        collect($variables)->each(function ($variable) use ($obj) {
-            $obj->variables[$variable] = $variable;
-        });
 
         //convert this body to new run request body
         collect($request->data)->each(function ($ob) use ($obj) {
