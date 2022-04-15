@@ -13,15 +13,26 @@ class CampaignLog extends Model
         'campaign_id',
         'created_at',
         'updated_at',
-        'sms_records',
-        'email_records',
-        'mongo_uid'
+        'mongo_uid',
+        'no_of_contacts',
+        'status'
     ];
 
     protected $hidden = [
         'created_at',
         'updated_at'
     ];
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($campaignLog) {
+            if (empty($campaignLog->status)) {
+                $campaignLog->status = 'Running';
+            }
+        });
+    }
 
     public function campaign()
     {
