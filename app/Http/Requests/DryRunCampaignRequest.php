@@ -38,17 +38,11 @@ class DryRunCampaignRequest extends FormRequest
      */
     public function rules()
     {
-        $validaArray = [
+        $validationArray = [
             'data' => 'array'
         ];
 
-        if (!empty($this->data)) {
-            $validaArray += [
-                'data.*.value' => 'required',
-            ];
-        }
-
-        return $validaArray;
+        return $validationArray;
     }
 
     public function validated()

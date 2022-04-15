@@ -30,7 +30,6 @@ class RunCampaignController extends Controller
 
     public function commonRun(FormRequest $request)
     {
-        // dd($request->data);
         $campaign = $request->campaign;
         $flow_action = FlowAction::where('id', $campaign->module_data['op_start'])->where('campaign_id', $campaign->id)->first();
         if (empty($flow_action)) {
