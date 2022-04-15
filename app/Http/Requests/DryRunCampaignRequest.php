@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Campaign;
+use App\Models\ChannelType;
 use Illuminate\Foundation\Http\FormRequest;
 
 class DryRunCampaignRequest extends FormRequest
@@ -40,6 +41,23 @@ class DryRunCampaignRequest extends FormRequest
     {
         $validationArray = [
             'data' => 'array'
+        ];
+
+        $obj = new \stdClass();
+        $obj->reqNames = [];
+        //get all unique channelIds of this campaign
+        $channelIds = $this->campaign->flowActions()->pluck('channel_id')->unique();
+        $channelIds->map(function ($channelId) use ($obj) {
+            $reqNames = collect(ChannelType::where('id', $channelId)
+                ->pluck('configurations')->first()['mapping'])->where('is_required', true)->pluck('name')->toArray();
+            $obj->reqNames  = array_merge($obj->reqNames, $reqNames);
+        });
+
+        $nameList = implode(',', $obj->reqNames);
+
+
+        $validationArray += [
+            'data.*.value' => 'required_if:data.*.name,' . $nameList
         ];
 
         return $validationArray;
