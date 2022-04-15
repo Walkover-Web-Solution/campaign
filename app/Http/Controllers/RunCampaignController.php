@@ -40,33 +40,24 @@ class RunCampaignController extends Controller
         if (empty($flow_action)) {
             return new CustomResource(['message' => 'Invalid campaign action'], true);
         }
-        $countEmail = collect($request->data['sendTo'])->map(function ($item) {
+
+        $no_of_contacts = collect($request->data['sendTo'])->map(function ($item) {
             $count = 0;
             if (isset($item['to']))
-                $count += count(collect($item['to'])->pluck('email'));
+                $count += count($item['to']);
             if (isset($item['cc']))
-                $count += count(collect($item['cc'])->pluck('email'));
+                $count += count($item['cc']);
             if (isset($item['bcc']))
-                $count += count(collect($item['bcc'])->pluck('email'));
+                $count += count($item['bcc']);
             return ($count);
-        });
-        $countMobile = collect($request->data['sendTo'])->map(function ($item) {
-            $count = 0;
-            if (isset($item['to']))
-                $count += count(collect($item['to'])->pluck('mobiles'));
-            if (isset($item['cc']))
-                $count += count(collect($item['cc'])->pluck('mobiles'));
-            if (isset($item['bcc']))
-                $count += count(collect($item['bcc'])->pluck('mobiles'));
-            return ($count);
-        });
+        })->toArray();
+
         // generating random key with time stamp for mongo requestId
         $reqId = preg_replace('/\s+/', '', Carbon::now()->timestamp) . '_' . md5(uniqid(rand(), true));
 
         // creating campaign log
         $logs = [
-            "sms_records" => array_sum($countMobile->toArray()),
-            "email_records" => array_sum($countEmail->toArray()),
+            "no_of_contacts" => array_sum($no_of_contacts),
             "mongo_uid" => $reqId
         ];
         $campaignLog = $campaign->campaignLogs()->create($logs);

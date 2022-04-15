@@ -7,6 +7,7 @@ use App\Models\FlowAction;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Illuminate\Broadcasting\Channel;
+use Illuminate\Support\Facades\Log;
 
 function ISTToGMT($date)
 {
@@ -85,4 +86,45 @@ function getCampaign($campid)
     $campaign->modules = $data->modules;
 
     return ($campaign);
+}
+
+function printLog($message, $data = null, $log = 1)
+{
+    switch ($log) {
+        case 1: {
+                if (empty($data))
+                    Log::debug($message);
+                else
+                    Log::debug($message, $data);
+                break;
+            }
+        case 2: {
+                Log::info($message);
+                break;
+            }
+        case 3: {
+                Log::alert($message);
+                break;
+            }
+        case 4: {
+                Log::notice($message);
+                break;
+            }
+        case 5: {
+                Log::error($message);
+                break;
+            }
+        case 6: {
+                Log::warning($message);
+                break;
+            }
+        case 7: {
+                Log::critical($message);
+                break;
+            }
+        case 8: {
+                Log::emergency($message);
+                break;
+            }
+    }
 }

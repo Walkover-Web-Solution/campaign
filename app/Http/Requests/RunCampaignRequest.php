@@ -32,6 +32,7 @@ class RunCampaignRequest extends FormRequest
         $this->merge([
             'campaign' => $campaign
         ]);
+        printLog("Found campaign to run", 2);
         return true;
     }
 
@@ -55,7 +56,7 @@ class RunCampaignRequest extends FormRequest
         $flowActionsCount = $this->campaign->flowActions()->where('is_completed', false)->count();
         if ($flowActionsCount > 0)
             return false;
-        
+
         return $obj->flag;
 
         // if (!isset($this->data['sendTo']))
