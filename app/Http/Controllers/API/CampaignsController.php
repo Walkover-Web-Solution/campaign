@@ -226,7 +226,7 @@ class CampaignsController extends Controller
                         break;
                     }
                 default: {
-                        $obj->ob['mobile'] = '911234567890';
+                        $obj->ob['mobiles'] = '911234567890';
                     }
             }
         });
