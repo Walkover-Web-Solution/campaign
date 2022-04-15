@@ -54,11 +54,11 @@ class RunCampaignController extends Controller
         $countMobile = collect($request->data['sendTo'])->map(function ($item) {
             $count = 0;
             if (isset($item['to']))
-                $count += count(collect($item['to'])->pluck('mobile'));
+                $count += count(collect($item['to'])->pluck('mobiles'));
             if (isset($item['cc']))
-                $count += count(collect($item['cc'])->pluck('mobile'));
+                $count += count(collect($item['cc'])->pluck('mobiles'));
             if (isset($item['bcc']))
-                $count += count(collect($item['bcc'])->pluck('mobile'));
+                $count += count(collect($item['bcc'])->pluck('mobiles'));
             return ($count);
         });
         // generating random key with time stamp for mongo requestId
@@ -128,9 +128,9 @@ class RunCampaignController extends Controller
             collect($myArr)->each(function ($item) use ($key, $obj) {
                 if (!empty($item))
                     if ($key == 'mobiles')
-                        array_push($obj->data['sendTo'][0]['to'], ['name' => '', 'email' => '', 'mobile' => $item]);
+                        array_push($obj->data['sendTo'][0]['to'], ['name' => '', 'email' => '', 'mobiles' => $item]);
                     else
-                        array_push($obj->data['sendTo'][0][$key], ['name' => '', 'email' => $item, 'mobile' => '']);
+                        array_push($obj->data['sendTo'][0][$key], ['name' => '', 'email' => $item, 'mobiles' => '']);
             });
         });
 
