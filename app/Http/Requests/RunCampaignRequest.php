@@ -32,7 +32,7 @@ class RunCampaignRequest extends FormRequest
         $this->merge([
             'campaign' => $campaign
         ]);
-        printLog("Found campaign to run", 2);
+        // printLog("Found campaign to run id: " . $campaign->id);
         return true;
     }
 
