@@ -92,7 +92,7 @@ class RunCampaignController extends Controller
         $obj->data = [];
         $obj->data['sendTo'] = [[]];
         $obj->data['sendTo'][0]['to'] = [];
-
+        $obj->variables = [];
         //get variables for this campaign
         $variables = [];
         $variableArray = [];
