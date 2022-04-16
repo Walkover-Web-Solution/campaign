@@ -29,8 +29,7 @@ class FlowAction extends Model
     );
     protected $hidden = array(
         'created_at',
-        'updated_at',
-        'channel_id'
+        'updated_at'
     );
 
     public static function boot()
