@@ -17,8 +17,27 @@ class CampaignLogController extends Controller
     public function index(Request $request, $slug)
     {
         $campaignLogs = Campaign::where('slug', $slug)->where('company_id', $request->company->id)->first()
-            ->campaignLogs()->get();
-        return new CustomResource($campaignLogs);
+            ->campaignLogs();
+
+        $itemsPerPage = $request->input('itemsPerPage', 25);
+
+        $paginator = $campaignLogs
+            ->where(function ($query) use ($request) {
+                if ($request->has('status')) {
+                    $query->where('status', $request->status);
+                }
+            })
+            ->orderBy('id', 'desc')
+            ->paginate($itemsPerPage, ['*'], 'pageNo');
+
+        return new CustomResource([
+            'data' => $paginator->items(),
+            'itemsPerPage' => $itemsPerPage,
+            'pageNo' => $paginator->currentPage(),
+            'pageNumber' => $paginator->currentPage(),
+            'totalEntityCount' => $request->company->campaigns()->count(),
+            'totalPageCount' => ceil($paginator->total() / $paginator->perPage())
+        ]);
     }
 
     /**
@@ -50,15 +69,42 @@ class CampaignLogController extends Controller
      */
     public function show(Request $request, $slug, CampaignLog $campaignLog)
     {
+        $itemsPerPage = $request->input('itemsPerPage', 25);
+
         $campaign = Campaign::where('slug', $slug)->where('company_id', $request->company->id)->first();
         if (empty($campaign)) {
             return new CustomResource(['message' => 'Invalid Campaign']);
         }
 
-        //change reason to response
-        $data = $campaign->campaignLogs()->with('actionLogs:id,campaign_log_id,status,reason,ip,ref_id,created_at')->where('id', $campaignLog->id)->get();
+        if ($campaignLog->campaign_id != $campaign->id) {
+            return new CustomResource([
+                'data' => [],
+                'message' => 'No Action Logs Found'
+            ]);
+        }
 
-        return new CustomResource($data);
+        $actionLogs = $campaignLog->actionLogs();
+
+        //change reason to response
+        $paginator = $actionLogs
+            ->select('id', 'campaign_id', 'campaign_log_id', 'status', 'reason', 'ip', 'ref_id', 'no_of_records', 'created_at')
+            ->where(function ($query) use ($request) {
+                if ($request->has('status')) {
+                    $query->where('status', $request->status);
+                }
+            })
+            ->orderBy('id', 'desc')
+            ->paginate($itemsPerPage, ['*'], 'pageNo');
+
+
+        return new CustomResource([
+            'data' => $paginator->items(),
+            'itemsPerPage' => $itemsPerPage,
+            'pageNo' => $paginator->currentPage(),
+            'pageNumber' => $paginator->currentPage(),
+            'totalEntityCount' => $request->company->campaigns()->count(),
+            'totalPageCount' => ceil($paginator->total() / $paginator->perPage())
+        ]);
     }
 
     /**
