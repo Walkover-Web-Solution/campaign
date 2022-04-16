@@ -10,6 +10,7 @@ use App\Http\Controllers\API\IPTypesController;
 use App\Http\Controllers\API\TokensController;
 use App\Http\Controllers\TestingController;
 use App\Http\Controllers\API\FlowActionsController;
+use App\Http\Controllers\CampaignLogController;
 use App\Http\Controllers\ConditionsController;
 use App\Http\Controllers\RunCampaignController;
 use Illuminate\Support\Facades\Route;
@@ -60,3 +61,5 @@ Route::post('/campaigns/{slug}/copy', [CampaignsController::class, 'copy']);
 Route::get('/logs', [ActionLogsController::class, 'index']);
 
 Route::resource('/{slug}/flowActions', FlowActionsController::class);
+
+Route::resource('/{slug}/campaignLogs', CampaignLogController::class);
