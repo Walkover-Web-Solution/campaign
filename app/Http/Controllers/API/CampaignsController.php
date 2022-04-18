@@ -35,7 +35,7 @@ class CampaignsController extends Controller
             ->join('flow_actions', 'flow_actions.campaign_id', '=', 'campaigns.id')
             ->where('company_id', $request->company->id)
             ->where(function ($query) use ($request) {
-                if ($request->has('campaigns.name')) {
+                if ($request->has('name')) {
                     $query->where('campaigns.name', 'like', '%' . $request->name . '%');
                 }
                 if ($request->has('is_active')) {
