@@ -53,7 +53,7 @@ class ChannelTypeTableSeeder extends Seeder
                             "type" => 'dropdown',
                             "label" => 'Select  Domain',
                             "regex" => "",
-                            "source" => "",
+                            "source" => "domains?is_enabled=1&status_id=2",
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
                             "is_required" => true,
