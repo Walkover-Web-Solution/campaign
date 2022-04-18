@@ -34,7 +34,7 @@ class ChannelConditionTableSeeder extends Seeder
             ],
             [
                 'channel_type_id' => $channelMap['Email'],
-                'condition_id' => $conditionsMap['Failure'],
+                'condition_id' => $conditionsMap['Failed'],
             ],
             [
                 'channel_type_id' => $channelMap['Email'],
@@ -50,7 +50,7 @@ class ChannelConditionTableSeeder extends Seeder
             ],
             [
                 'channel_type_id' => $channelMap['SMS'],
-                'condition_id' => $conditionsMap['Failure'],
+                'condition_id' => $conditionsMap['Failed'],
             ]
         ];
 

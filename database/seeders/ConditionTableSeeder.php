@@ -29,7 +29,7 @@ class ConditionTableSeeder extends Seeder
                 'wait_to_fail' => true
             ],
             [
-                'name' => 'Failure',
+                'name' => 'Failed',
                 'is_boolean' => true,
                 'wait_to_fail' => true
             ],
