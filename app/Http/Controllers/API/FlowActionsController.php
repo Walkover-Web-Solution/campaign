@@ -120,10 +120,10 @@ class FlowActionsController extends Controller
             $obj = collect($input['configurations'])->where('name', 'template')->first();
             $template = null;
             if (!empty($obj['template']['template_id'])) {
-                if($flowAction->channel_id == 1)
+                if ($flowAction->channel_id == 1)
                     $obj['template']['template_id'] = $obj['template']['slug'];
                 $template = $obj['template'];
-                $template['variables'] = $obj['variables'];
+                $template['variables'] = isset($obj['variables']) ? $obj['variables'] : [];
                 if (empty($flowAction->template)) {
                     $flowAction->template()->create($template);
                 } else {

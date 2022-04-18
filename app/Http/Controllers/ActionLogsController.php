@@ -19,6 +19,7 @@ class ActionLogsController extends Controller
     {
         $itemsPerPage = $request->input('itemsPerPagepost', 25);
 
+        //change reason to response
         $paginator = DB::table('action_logs')
             ->select('campaigns.name as campaign', 'campaigns.slug', 'status', 'reason', 'ip', 'ref_id', 'action_logs.created_at', 'action_logs.updated_at')
             ->join('campaigns', 'campaigns.id', '=', 'action_logs.campaign_id')
