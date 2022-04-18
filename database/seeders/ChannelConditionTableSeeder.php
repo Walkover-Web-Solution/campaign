@@ -16,7 +16,7 @@ class ChannelConditionTableSeeder extends Seeder
      */
     public function run()
     {
-        $count = ChannelTypeCondition::all()->count();
+        ChannelTypeCondition::truncate();
 
         // get all conditions map of name:id
         $conditions = Condition::select('name', 'id')->get()->toArray();
@@ -54,17 +54,9 @@ class ChannelConditionTableSeeder extends Seeder
             ]
         ];
 
-        if ($count == count($arr)) {
-            return true;
-        }
 
         collect($arr)->map(function ($condition) {
-            $conditionObj = ChannelTypeCondition::where('channel_type_id', $condition['channel_type_id'])->where('condition_id', $condition['condition_id'])->first();
-            if (empty($conditionObj)) {
-                ChannelTypeCondition::create($condition);
-            } else {
-                $conditionObj->update($condition);
-            }
+            ChannelTypeCondition::create($condition);
         });
     }
 }
