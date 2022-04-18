@@ -26,6 +26,9 @@ class CampaignLogController extends Controller
                 if ($request->has('status')) {
                     $query->where('status', $request->status);
                 }
+                if ($request->has('requestId')) {
+                    $query->where('mongo_uid', $request->requestId);
+                }
             })
             ->orderBy('id', 'desc')
             ->paginate($itemsPerPage, ['*'], 'pageNo');
