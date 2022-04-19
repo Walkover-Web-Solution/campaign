@@ -14,7 +14,8 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // \App\Models\User::factory(10)->create();
-        $this->call(ClientTableSeeder::class);
+        // No need to run client seeder for now
+        // $this->call(ClientTableSeeder::class);
         $this->call(ChannelTypeTableSeeder::class);
         $this->call(IPTypeTableSeeder::class);
         $this->call(ConditionTableSeeder::class);
