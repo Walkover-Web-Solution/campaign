@@ -14,6 +14,9 @@ class ChannelTypeTableSeeder extends Seeder
      */
     public function run()
     {
+
+        ChannelType::truncate();
+
         $channelTypes = [
             [
                 "name" => "Email",
@@ -39,6 +42,8 @@ class ChannelTypeTableSeeder extends Seeder
                             "type" => 'text',
                             "label" => 'From Email',
                             "regex" => "^[A-Za-z\d\.]+$",
+                            "min" => 1,
+                            "max" => 50,
                             "source" => "",
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
@@ -52,8 +57,8 @@ class ChannelTypeTableSeeder extends Seeder
                             "label" => 'Select  Domain',
                             "regex" => "",
                             "source" => "domains?is_enabled=1&status_id=2",
-                            "sourceFieldLabel" => "name",
-                            "sourceFieldValue" => "name",
+                            "sourceFieldLabel" => "",
+                            "sourceFieldValue" => "",
                             "is_required" => true,
                             "value" => ""
                         ),
@@ -62,9 +67,9 @@ class ChannelTypeTableSeeder extends Seeder
                             "type" => 'dropdown',
                             "label" => 'Select Parent Domain',
                             "regex" => "",
-                            "source" => "",
-                            "sourceFieldLabel" => "",
-                            "sourceFieldValue" => "",
+                            "source" => "domains?is_enabled=1&status_id=2",
+                            "sourceFieldLabel" => "name",
+                            "sourceFieldValue" => "name",
                             "is_required" => true,
                             "value" => ""
                         ),
@@ -73,6 +78,8 @@ class ChannelTypeTableSeeder extends Seeder
                             "type" => 'text',
                             "label" => 'From Email Name',
                             "regex" => '^[A-Za-z\d\s]+$',
+                            "min" => 1,
+                            "max" => 50,
                             "source" => "",
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
@@ -180,27 +187,7 @@ class ChannelTypeTableSeeder extends Seeder
             ],
 
             [
-                "name" => "OTP",
-                "configurations" => array(
-                    "fields" => array(),
-                    "mapping" => array(
-                        array(
-                            "name" => "mobile",
-                            "type" => 'list',
-                            "label" => 'Mobile',
-                            "regex" => "",
-                            "source" => "",
-                            "sourceFieldLabel" => "",
-                            "sourceFieldValue" => "",
-                            "is_required" => true,
-                            "is_array" => false
-                        )
-                    )
-                )
-            ],
-
-            [
-                "name" => "whatsapp",
+                "name" => "Whatsapp",
                 "configurations" => array(
                     "fields" => array(
                         array(
@@ -232,7 +219,7 @@ class ChannelTypeTableSeeder extends Seeder
             ],
 
             [
-                "name" => "voice",
+                "name" => "Voice",
                 "configurations" => array(
                     "fields" => array(),
                     "mapping" => array(
@@ -253,20 +240,8 @@ class ChannelTypeTableSeeder extends Seeder
             ],
         ];
 
-        $emailType = "Email";
-        $sms = "SMS";
-        $otp = "OTP";
-        $whatsapp = "whatsapp";
-        $voice = "voice";
-        collect($channelTypes)->map(function ($channelType) use ($emailType, $sms) {
-            if ($channelType['name'] == $emailType || $channelType['name'] == $sms) {
-                $channelTypeObj = ChannelType::where('name', $channelType['name'])->first();
-                if (empty($channelTypeObj)) {
-                    ChannelType::create($channelType);
-                } else {
-                    $channelTypeObj->update($channelType);
-                }
-            }
+        collect($channelTypes)->map(function ($channelType) {
+            ChannelType::create($channelType);
         });
     }
 }

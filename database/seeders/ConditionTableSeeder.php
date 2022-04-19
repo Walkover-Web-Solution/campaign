@@ -17,7 +17,7 @@ class ConditionTableSeeder extends Seeder
         /*
          * getting count of rows from db table
          */
-        $conditionsCount = Condition::all()->count();
+        Condition::truncate();
 
         /*
          * creating an array for all the rows 
@@ -29,7 +29,7 @@ class ConditionTableSeeder extends Seeder
                 'wait_to_fail' => true
             ],
             [
-                'name' => 'Failure',
+                'name' => 'Failed',
                 'is_boolean' => true,
                 'wait_to_fail' => true
             ],
@@ -53,20 +53,11 @@ class ConditionTableSeeder extends Seeder
         /*
          * checks if this array has same length with the number of rows in database
          */
-        if ($conditionsCount == count($conditionsArr)) {
-            return true;
-        }
 
         /*
          * checks for every element in array if it is already present and executing query to create if not
          */
-        collect($conditionsArr)->map(function ($condition) {
-            $conditionObj = Condition::where('name', $condition['name'])->first();
-            if (empty($conditionObj)) {
-                Condition::create($condition);
-            } else {
-                $conditionObj->update($condition);
-            }
-        });
+
+        Condition::insert($conditionsArr);
     }
 }

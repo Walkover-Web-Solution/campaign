@@ -11,15 +11,14 @@ class CampaignLog extends Model
 
     protected $fillable = [
         'campaign_id',
-        'created_at',
-        'updated_at',
         'mongo_uid',
         'no_of_contacts',
-        'status'
+        'status',
+        'ip'
     ];
 
     protected $hidden = [
-        'created_at',
+        'mongo_uid',
         'updated_at'
     ];
 
@@ -34,8 +33,15 @@ class CampaignLog extends Model
         });
     }
 
+    // get campaigns
     public function campaign()
     {
         return $this->belongsTo(Campaign::class, 'campaign_id');
+    }
+
+    //get all actionLogs
+    public function actionLogs()
+    {
+        return $this->hasMany(ActionLog::class);
     }
 }

@@ -12,8 +12,8 @@ class ActionLog extends Model
         'campaign_id',
         'no_of_records',
         'status',
-        'reason',
-        'ip',
+        'report_status',
+        'response',
         'ref_id',
         'flow_action_id',
         'mongo_id',
@@ -24,6 +24,7 @@ class ActionLog extends Model
 
     protected $casts = [
         'mongo_id' => 'json',
+        'response' => 'json'
     ];
 
     /**
@@ -48,5 +49,11 @@ class ActionLog extends Model
     public function campaign()
     {
         return $this->belongsTo(Campaign::class, 'campaign_id');
+    }
+
+    // get campaign log
+    public function campaignLog()
+    {
+        return $this->belongsTo(CampaignLog::class, 'campaign_log_id');
     }
 }
