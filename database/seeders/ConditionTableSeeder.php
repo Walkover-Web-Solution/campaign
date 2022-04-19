@@ -57,8 +57,7 @@ class ConditionTableSeeder extends Seeder
         /*
          * checks for every element in array if it is already present and executing query to create if not
          */
-        collect($conditionsArr)->map(function ($condition) {
-            Condition::create($condition);
-        });
+
+        Condition::insert($conditionsArr);
     }
 }

@@ -55,8 +55,6 @@ class ChannelConditionTableSeeder extends Seeder
         ];
 
 
-        collect($arr)->map(function ($condition) {
-            ChannelTypeCondition::create($condition);
-        });
+        ChannelTypeCondition::insert($arr);
     }
 }
