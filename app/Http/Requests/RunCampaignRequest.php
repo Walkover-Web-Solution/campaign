@@ -84,7 +84,10 @@ class RunCampaignRequest extends FormRequest
             return false;
         $totalCount = collect($this->data['sendTo'])->map(function ($item) {
             $maxCount = 1000;
-            $count = count(collect($item['to'])) + count(collect($item['cc'])) + count(collect($item['bcc']));
+            $toCount = isset($item['to'])?count(collect($item['to'])):0;
+            $ccCount = isset($item['cc'])?count(collect($item['cc'])):0;;
+            $bccCount = isset($item['bcc'])?count(collect($item['bcc'])):0;;
+            $count = $toCount+$ccCount+$bccCount;
             if ($count >= $maxCount)
                 if ($count > $maxCount) {
                     return false;
