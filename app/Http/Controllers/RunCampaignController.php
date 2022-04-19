@@ -58,7 +58,8 @@ class RunCampaignController extends Controller
         // creating campaign log
         $logs = [
             "no_of_contacts" => array_sum($no_of_contacts),
-            "mongo_uid" => $reqId
+            "mongo_uid" => $reqId,
+            'ip' => request()->ip()
         ];
         $campaignLog = $campaign->campaignLogs()->create($logs);
 
@@ -118,9 +119,9 @@ class RunCampaignController extends Controller
             collect($myArr)->each(function ($item) use ($key, $obj) {
                 if (!empty($item))
                     if ($key == 'mobiles')
-                        array_push($obj->data['sendTo'][0]['to'], ['name' => '', 'email' => '', 'mobiles' => $item]);
+                        array_push($obj->data['sendTo'][0]['to'], ['name' => null, 'email' => null, 'mobiles' => $item]);
                     else
-                        array_push($obj->data['sendTo'][0][$key], ['name' => '', 'email' => $item, 'mobiles' => '']);
+                        array_push($obj->data['sendTo'][0][$key], ['name' => null, 'email' => $item, 'mobiles' => null]);
             });
         });
 

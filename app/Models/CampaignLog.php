@@ -13,7 +13,8 @@ class CampaignLog extends Model
         'campaign_id',
         'mongo_uid',
         'no_of_contacts',
-        'status'
+        'status',
+        'ip'
     ];
 
     protected $hidden = [
