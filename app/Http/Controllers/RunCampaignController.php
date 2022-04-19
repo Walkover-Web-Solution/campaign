@@ -22,24 +22,13 @@ class RunCampaignController extends Controller
 
     public function run(RunCampaignRequest $request)
     {
-        $validate = $request->validated();
-        if (!$validate) {
-            return new CustomResource(['message' => 'Incomplete Campaign'], true);
-        }
         return new CustomResource($this->commonRun($request)->resource);
     }
 
 
     public function commonRun(FormRequest $request)
     {
-        if (!($request->validated()))
-            return new CustomResource(["message" => "Data limit should not exceeded more than 1000."]);
-
         $campaign = $request->campaign;
-        $flow_action = FlowAction::where('id', $campaign->module_data['op_start'])->where('campaign_id', $campaign->id)->first();
-        if (empty($flow_action)) {
-            return new CustomResource(['message' => 'Invalid campaign action'], true);
-        }
 
         $no_of_contacts = collect($request->data['sendTo'])->map(function ($item) {
             $count = 0;
@@ -80,15 +69,6 @@ class RunCampaignController extends Controller
 
     public function dryRun(DryRunCampaignRequest $request)
     {
-        if (empty($request->data)) {
-            return new CustomResource(['message' => 'Invalid Data'], true);
-        }
-
-        $validate = $request->validated();
-        if (!$validate) {
-            return new CustomResource(['message' => 'Incomplete Campaign'], true);
-        }
-
         $obj = new \stdClass();
         $obj->data = [];
         $obj->data['sendTo'] = [[]];

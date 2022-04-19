@@ -16,6 +16,11 @@ class CampaignLogController extends Controller
      */
     public function index(Request $request, $slug)
     {
+        $campaign = Campaign::where('slug', $slug)->where('company_id', $request->company->id)->first();
+        if (empty($campaign)) {
+            return new CustomResource(['message' => 'Invalid Campaign']);
+        }
+
         $campaignLogs = Campaign::where('slug', $slug)->where('company_id', $request->company->id)->first()
             ->campaignLogs();
 
