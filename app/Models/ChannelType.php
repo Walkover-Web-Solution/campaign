@@ -30,9 +30,8 @@ class ChannelType extends Model
         static::addGlobalScope('only_email_sms', function (Builder $builder) {
             $emailType = 1;
             $sms = 2;
-            $otp = 3;
-            $whatsapp = 4;
-            $voice = 5;
+            $whatsapp = 3;
+            $voice = 4;
             $builder->whereIn('id', [$emailType, $sms]);
         });
     }

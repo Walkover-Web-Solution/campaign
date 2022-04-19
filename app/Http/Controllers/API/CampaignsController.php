@@ -16,6 +16,7 @@ use App\Models\FlowAction;
 use App\Models\TemplateDetail;
 use App\Models\Token;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CampaignsController extends Controller
 {
@@ -28,13 +29,14 @@ class CampaignsController extends Controller
     {
         $itemsPerPage = $request->input('itemsPerPage', 25);
 
-        $fields = $request->input('fields', 'id,name,is_active,slug');
+        $fields = $request->input('fields', 'campaigns.id,campaigns.name,is_active,slug');
 
-
-        $paginator = Campaign::select(explode(',', $fields))->where('company_id', $request->company->id)
+        $campaigns = Campaign::select(explode(',', $fields))
+            ->join('flow_actions', 'flow_actions.campaign_id', '=', 'campaigns.id')
+            ->where('company_id', $request->company->id)
             ->where(function ($query) use ($request) {
                 if ($request->has('name')) {
-                    $query->where('name', 'like', '%' . $request->name . '%');
+                    $query->where('campaigns.name', 'like', '%' . $request->name . '%');
                 }
                 if ($request->has('is_active')) {
                     $query->where('is_active', (bool)$request->is_active);
@@ -45,8 +47,11 @@ class CampaignsController extends Controller
                 if ($request->has('slug')) {
                     $query->where('slug', $request->slug);
                 }
-            })
-            ->orderBy('id', 'desc')
+            })->selectRaw('group_concat(DISTINCT(flow_actions.channel_id)) as channels')
+            ->groupBy('campaigns.id');
+
+        $paginator = $campaigns
+            ->orderBy('campaigns.id', 'desc')
             ->paginate($itemsPerPage, ['*'], 'pageNo');
 
 
