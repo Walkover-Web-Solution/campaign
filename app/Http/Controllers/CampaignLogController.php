@@ -90,10 +90,13 @@ class CampaignLogController extends Controller
 
         //change reason to response
         $paginator = $actionLogs
-            ->select('id', 'campaign_id', 'campaign_log_id', 'status', 'reason', 'ip', 'ref_id', 'no_of_records', 'created_at')
+            ->select('id', 'campaign_id', 'campaign_log_id', 'status', 'report_status', 'response', 'ref_id', 'no_of_records', 'created_at')
             ->where(function ($query) use ($request) {
                 if ($request->has('status')) {
                     $query->where('status', $request->status);
+                }
+                if ($request->has('report_status')) {
+                    $query->where('report_status', $request->status);
                 }
             })
             ->orderBy('id', 'desc')
