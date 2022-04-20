@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\ActionLogsController;
+use App\Http\Controllers\API\ActionLogsController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CampaignsController;
 use App\Http\Controllers\API\ChannelTypesController;
@@ -10,9 +10,9 @@ use App\Http\Controllers\API\IPTypesController;
 use App\Http\Controllers\API\TokensController;
 use App\Http\Controllers\TestingController;
 use App\Http\Controllers\API\FlowActionsController;
-use App\Http\Controllers\CampaignLogController;
-use App\Http\Controllers\ConditionsController;
-use App\Http\Controllers\RunCampaignController;
+use App\Http\Controllers\API\CampaignLogController;
+use App\Http\Controllers\API\ConditionsController;
+use App\Http\Controllers\API\RunCampaignController;
 use Illuminate\Support\Facades\Route;
 
 /*
