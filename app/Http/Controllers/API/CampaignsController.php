@@ -32,7 +32,7 @@ class CampaignsController extends Controller
         $fields = $request->input('fields', 'campaigns.id,campaigns.name,is_active,slug');
 
         $campaigns = Campaign::select(explode(',', $fields))
-            ->join('flow_actions', 'flow_actions.campaign_id', '=', 'campaigns.id')
+            ->leftJoin('flow_actions', 'flow_actions.campaign_id', '=', 'campaigns.id')
             ->where('company_id', $request->company->id)
             ->where(function ($query) use ($request) {
                 if ($request->has('name')) {
