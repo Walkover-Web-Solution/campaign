@@ -34,7 +34,7 @@ class CompanyTokenIPsController extends Controller
             'data' => $paginator->items(),
             'itemsPerPage' => $itemsPerPage,
             'pageNumber' => $paginator->currentPage(),
-            'totalEntityCount' => $token->ips()->count(),
+            'totalEntityCount' => $paginator->total(),
             'totalPageCount' => ceil($paginator->total() / $paginator->perPage())
         ]);
     }
