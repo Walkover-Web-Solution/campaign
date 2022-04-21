@@ -93,9 +93,13 @@ class AuthByAuthkeyOrTokenMiddleware
             $whiteListTypeIP = 1;
             if (!$token->ips()->where('ip', $ip)->where('ip_type_id', $whiteListTypeIP)->exists()) {
                 printlog("validate user ip");
-                $this->validateUserIP($token);
-                printLog("validate throttle token");
-                $this->throttleTokenValidate($token);
+                $blockedResponse = $this->validateUserIP($token);
+                if (empty($blockedResponse)) {
+                    printLog("validate throttle token");
+                    $this->throttleTokenValidate($token);
+                } else {
+                    return $blockedResponse;
+                }
             }
             printLog("check for token");
             $campaign = $token->company->campaigns()->where('slug', $request->slug)->first();
