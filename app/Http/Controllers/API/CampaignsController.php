@@ -60,7 +60,7 @@ class CampaignsController extends Controller
             'itemsPerPage' => $itemsPerPage,
             'pageNo' => $paginator->currentPage(),
             'pageNumber' => $paginator->currentPage(),
-            'totalEntityCount' => $request->company->campaigns()->count(),
+            'totalEntityCount' => $paginator->total(),
             'totalPageCount' => ceil($paginator->total() / $paginator->perPage())
         ]);
     }

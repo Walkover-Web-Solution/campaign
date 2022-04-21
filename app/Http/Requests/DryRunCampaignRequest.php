@@ -5,12 +5,14 @@ namespace App\Http\Requests;
 use App\Models\Campaign;
 use App\Models\ChannelType;
 use App\Models\FlowAction;
+use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Http\FormRequest;
 
 class DryRunCampaignRequest extends FormRequest
 {
     protected $case = '';
+    protected $limit = true;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -32,12 +34,21 @@ class DryRunCampaignRequest extends FormRequest
         $this->merge([
             'campaign' => $campaign
         ]);
+
+        if (!$this->checkDayLimit()) {
+            $this->limit = false;
+            return false;
+        }
+
         return true;
     }
-    // protected function failedAuthorization()
-    // {
-    //     throw new AuthorizationException('This action is unauthorized.');
-    // }
+    protected function failedAuthorization()
+    {
+        if(!$this->limit){
+            throw new AuthorizationException('Limit for today exceeded by 5.');
+        }
+        throw new AuthorizationException('This action is unauthorized.');
+    }
 
     /**
      * Get the validation rules that apply to the request.
@@ -114,5 +125,13 @@ class DryRunCampaignRequest extends FormRequest
             }
         });
         return $obj->case;
+    }
+    public function checkDayLimit()
+    {
+        $dayLimit = 5;
+        $campaignLogs = $this->campaign->campaignLogs()->where('created_at', '>=', Carbon::parse('-24 hours'))->where('ip',request()->ip())->get();
+        if (count($campaignLogs) >= $dayLimit)
+            return false;
+        return true;
     }
 }

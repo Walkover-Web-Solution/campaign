@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\DryRunCampaignRequest;
 use App\Http\Requests\RunCampaignRequest;
 use App\Http\Resources\CustomResource;

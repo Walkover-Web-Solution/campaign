@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Controller;
 use App\Http\Resources\CustomResource;
 use App\Models\Campaign;
 use App\Models\CampaignLog;
@@ -21,8 +22,7 @@ class CampaignLogController extends Controller
             return new CustomResource(['message' => 'Invalid Campaign']);
         }
 
-        $campaignLogs = Campaign::where('slug', $slug)->where('company_id', $request->company->id)->first()
-            ->campaignLogs();
+        $campaignLogs = $campaign->campaignLogs();
 
         $itemsPerPage = $request->input('itemsPerPage', 25);
 
@@ -43,7 +43,7 @@ class CampaignLogController extends Controller
             'itemsPerPage' => $itemsPerPage,
             'pageNo' => $paginator->currentPage(),
             'pageNumber' => $paginator->currentPage(),
-            'totalEntityCount' => $request->company->campaigns()->count(),
+            'totalEntityCount' => $paginator->total(),
             'totalPageCount' => ceil($paginator->total() / $paginator->perPage())
         ]);
     }
@@ -113,7 +113,7 @@ class CampaignLogController extends Controller
             'itemsPerPage' => $itemsPerPage,
             'pageNo' => $paginator->currentPage(),
             'pageNumber' => $paginator->currentPage(),
-            'totalEntityCount' => $request->company->campaigns()->count(),
+            'totalEntityCount' => $paginator->total(),
             'totalPageCount' => ceil($paginator->total() / $paginator->perPage())
         ]);
     }
