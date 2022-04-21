@@ -129,7 +129,7 @@ class DryRunCampaignRequest extends FormRequest
     public function checkDayLimit()
     {
         $dayLimit = 5;
-        $campaignLogs = $this->campaign->campaignLogs()->where('created_at', '>=', Carbon::parse('-1 minutes'))->where('ip',request()->ip())->get();
+        $campaignLogs = $this->campaign->campaignLogs()->where('created_at', '>=', Carbon::parse('-24 hours'))->where('ip',request()->ip())->get();
         if (count($campaignLogs) >= $dayLimit)
             return false;
         return true;
