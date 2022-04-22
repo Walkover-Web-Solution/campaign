@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\CustomResource;
 use App\Models\ActionLog;
+use App\Models\Campaign;
 use Illuminate\Http\Request;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
@@ -18,6 +19,8 @@ class TestingController extends Controller
      */
     public function index(Request $request)
     {
+        $campaign = Campaign::where('id', 3)->first();
+        dd($campaign->campaignLogs()->where('status', '!=', 'Running')->pluck('id'));
         //  getFlows($request);
         // $action= ActionLog::find(124);
         // dd($action);
@@ -25,7 +28,8 @@ class TestingController extends Controller
     }
 
     public function getActionLogFromCampaignRequest()
-    {}
+    {
+    }
 
     public function encodeData(Request $request)
     {
