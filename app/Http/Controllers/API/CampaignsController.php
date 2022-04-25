@@ -147,7 +147,6 @@ class CampaignsController extends Controller
      */
     public function destroy(DeleteCampaignRequest $request, Campaign $campaign)
     {
-        dd('here');
         // delete all templates related to this campaign via flowActions
         $campaign->flowActions()->get()->map(function ($item) {
             $item->template()->delete();
