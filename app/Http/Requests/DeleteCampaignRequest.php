@@ -34,7 +34,7 @@ class DeleteCampaignRequest extends FormRequest
      */
     public function rules()
     {
-        if (!empty($this->campaign->campaignLogs()->where('status', '!=', 'Running')->pluck('id')->toArray())) {
+        if ($this->campaign->campaignLogs()->where('status', '=', 'Running')->count() > 0) {
             return [
                 'is_running' => 'required'
             ];
