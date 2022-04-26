@@ -169,15 +169,15 @@ class CampaignsController extends Controller
         $obj->mapping = [];
 
         //get variables
-        $variables = [];
+        $obj->variables = [];
         $variableArray = $request->campaign->variables()->pluck('variables')->toArray();
         foreach ($variableArray as $variable) {
-            $variables = array_unique(array_merge($variables, $variable));
+            $obj->variables = array_unique(array_merge($obj->variables, $variable));
         }
-        if (!empty($variables))
-            collect($variables)->each(function ($variable) use ($obj) {
-                $obj->variables[$variable] = $variable;
-            });
+        // if (!empty($variables))
+        //     collect($variables)->each(function ($variable) use ($obj) {
+        //         $obj->variables[$variable] = $variable;
+        //     });
 
         // make validation for every channel id
         collect($channelIds)->each(function ($channelId) use ($obj) {
