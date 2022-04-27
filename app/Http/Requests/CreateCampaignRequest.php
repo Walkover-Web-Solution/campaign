@@ -25,7 +25,7 @@ class CreateCampaignRequest extends FormRequest
     public function rules()
     {
         $validationArray = [
-            'name' => ['required', 'string', 'min:3', 'max:50', Rule::unique('campaigns', 'name')->where(function ($query) {
+            'name' => ['required', 'string', 'min:3', 'regex:/^[a-zA-Z0-9_]+$/', 'max:50', Rule::unique('campaigns', 'name')->where(function ($query) {
                 return $query->where('company_id', $this->company->id);
             })],
             'style' => 'array',
