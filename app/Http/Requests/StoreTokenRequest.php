@@ -27,7 +27,7 @@ class StoreTokenRequest extends FormRequest
             //
         ];
     }
-    
+
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
@@ -59,4 +59,5 @@ class StoreTokenRequest extends FormRequest
                 }
             }
         });
+    }
 }
