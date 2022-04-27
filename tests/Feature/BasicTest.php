@@ -31,7 +31,7 @@ class BasicTest extends TestCase
     {
         $reqbody = array(
             'module_type' => 'flow',
-            'name' => "testing12345",
+            'name' => "test1",
         );
         $this->withHeader(
             'Authorization',
@@ -42,7 +42,7 @@ class BasicTest extends TestCase
 
     public function test_create_flow_action()
     {
-        $flow_action = array(
+        $email = array(
 
             "module_type" => "Email",
             "name" => "Email_1",
@@ -100,7 +100,7 @@ class BasicTest extends TestCase
                     "sourceFieldLabel" => "",
                     "sourceFieldValue" => "",
                     "is_required" => true,
-                    "value" => "",
+                    "value" => "paresh",
                     "placeholder" => "You can email that will be shown to recipient."
                 ),
                 array(
@@ -112,7 +112,7 @@ class BasicTest extends TestCase
                     "sourceFieldLabel" => "",
                     "sourceFieldValue" => "",
                     "is_required" => true,
-                    "value" => ""
+                    "value" => "mailerautoroutingindia162072635593.foo.taskb.in"
                 ),
                 array(
                     "name" => "parent_domain",
@@ -123,7 +123,7 @@ class BasicTest extends TestCase
                     "sourceFieldLabel" => "name",
                     "sourceFieldValue" => "name",
                     "is_required" => true,
-                    "value" => ""
+                    "value" => "mailerautoroutingindia162072635593.foo.taskb.in"
                 ),
                 array(
                     "name" => "from_email_name",
@@ -136,7 +136,7 @@ class BasicTest extends TestCase
                     "sourceFieldLabel" => "",
                     "sourceFieldValue" => "",
                     "is_required" => true,
-                    "value" => "",
+                    "value" => "paresh",
                     "placeholder" => "You can define name that will be shown to recipient."
                 ),
 
@@ -149,7 +149,7 @@ class BasicTest extends TestCase
                     "sourceFieldLabel" => "",
                     "sourceFieldValue" => "",
                     "is_required" => false,
-                    "value" => ""
+                    "value" => "paresh@whozzat.com"
                 ),
                 array(
                     "name" => "bcc",
@@ -164,30 +164,147 @@ class BasicTest extends TestCase
                 )
             )
         );
+
+        $sms = array(
+
+            "module_type" => "SMS",
+            "name" => "SMS_1",
+            "channel_id" => 2,
+            "configurations" => array(
+                array(
+                    "name" => "template",
+                    "type" => "object",
+                    "template" => array(
+                        "name" => "valid-flow",
+                        "template_id" => "609bb138bd6b2326c7429542"
+                    ),
+                    "source" => "",
+                    "sourceFieldLabel" => "name",
+                    "sourceFieldValue" => "name",
+                    "is_required" => true,
+                    "variables" => [
+                        "NAME",
+                        "var1",
+                        "var2",
+                        "var"
+                    ]
+                )
+            )
+        );
         $this->withHeader(
             'Authorization',
             $this->authuser
-        )->post('api/testing12345/flowActions', $flow_action)
+        )->post('api/test1/flowActions', $email)
+            ->assertStatus(201);
+
+        $res = $this->withHeader(
+            'Authorization',
+            $this->authuser
+        )->post('api/test1/flowActions', $sms)
             ->assertStatus(201);
     }
 
     public function test_update_campaign()
     {
         $update = array(
-            "name" => "For Local Testing",
-            "module_data" => array(
+            "module_data" => [
                 "op_start" => 1,
                 "op_start_type" => "Email",
+            ]
+        );
+
+        $res = $this->withHeader(
+            'Authorization',
+            $this->authuser
+        )->json('PUT', '/api/campaigns/test1', $update)
+            ->assertStatus(200);
+    }
+
+    public function test_update_flow_action()
+    {
+        $flow_update = array(
+            "module_data" => array(
+                "op_success" => 2,
+                "op_success_type" => "SMS",
+                "op_failed" => null,
+                "op_failed_type" => null
             )
         );
 
-        // $res = $this->withHeader(
-        //     'Authorization',
-        //     $this->authuser
-        // )->put('api/campaigns/testing12345', $update)
-        //     ->assertStatus(200);
-
-        $this->json('Put', '/api/campaigns/testing12345',$update)
-        ->assertStatus(200);
+        $res = $this->withHeader(
+            'Authorization',
+            $this->authuser
+        )->json('PUT', '/api/test1/flowActions/1', $flow_update)
+            ->assertStatus(200);
     }
+
+    public function test_run_campaign()
+    {
+        $data = array(
+            "data" => [
+                "sendTo" => array(
+                    array(
+                        "to" => [
+                            array(
+                                "mobiles" => "919754710770",
+                                "name" => "Prasuk",
+                                "email" => ""
+                            ),
+                            array(
+                                "mobiles" => "917223854594",
+                                "name" => "Paresh",
+                                "email" => "paresh@whhozzat.com"
+                            )
+                        ],
+                        "bcc" => [
+                            array(
+                                "mobiles" => "",
+                                "name" => "ravi",
+                                "email" => "ravisoni@walkover.in"
+                            )
+                        ],
+                        "variables" => [
+                            "ORG_LOGO_LINK" => "ORG_LOGO_LINK",
+                            "ORG_NAME" => "ORG_NAME",
+                            "MENU1_LINK" => "MENU1_LINK",
+                            "MENU1_TEXT" => "MENU1_TEXT",
+                            "MENU2_LINK" => "MENU2_LINK",
+                            "MENU2_TEXT" => "MENU2_TEXT",
+                            "MENU3_LINK" => "MENU3_LINK",
+                            "MENU3_TEXT" => "MENU3_TEXT",
+                            "MENU4_LINK" => "MENU4_LINK",
+                            "MENU4_TEXT" => "MENU4_TEXT",
+                            "BACKGROUND_IMAGE_SRC" => "BACKGROUND_IMAGE_SRC",
+                            "BANNER_LINK" => "BANNER_LINK",
+                            "BANNER_IMAGE_SRC" => "BANNER_IMAGE_SRC",
+                            "MSG_SUBJECT" => "MSG_SUBJECT",
+                            "BTN_LINK" => "BTN_LINK",
+                            "BTN_TXT" => "BTN_TXT",
+                            "CLICK_GIF_SRC" => "CLICK_GIF_SRC",
+                            "MSG_BODY" => "MSG_BODY",
+                            "FB_SOCIAL_LINK" => "FB_SOCIAL_LINK",
+                            "INSTAGRAM_SOCIAL_LINK" => "INSTAGRAM_SOCIAL_LINK",
+                            "TWITTER_SOCIAL_LINK" => "TWITTER_SOCIAL_LINK",
+                            "YOUTUBE_SOCIAL_LINK" => "YOUTUBE_SOCIAL_LINK",
+                            "ORG_LOGO_SRC" => "ORG_LOGO_SRC",
+                            "ORG_ADDRESS" => "ORG_ADDRESS",
+                            "CONTACT_NUMS" => "CONTACT_NUMS",
+                            "NAME" => "NAME",
+                            "var1" => "var1",
+                            "var2" => "var2",
+                            "var" => "var"
+                        ]
+                    )
+                )
+            ]
+        );
+
+        $res = $this->withHeaders([
+            'Authorization' => $this->authuser,
+            'Accept' => "application/json",
+        ])->post('api/campaigns/test1/run', $data)
+            ->assertStatus(200);
+    }
+
+
 }
