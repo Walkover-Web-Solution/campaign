@@ -34,7 +34,7 @@ class UpdateCampaignRequest extends FormRequest
     public function rules()
     {
         $validationArray =  [
-            'name' => ['nullable', 'string', 'min:3', 'max:50', Rule::unique('campaigns', 'name')->where(function ($query) {
+            'name' => ['nullable', 'string', 'min:3', 'max:50', 'regex:/^[a-zA-Z0-9_]+$/', Rule::unique('campaigns', 'name')->where(function ($query) {
                 return $query->where('company_id', $this->company->id);
             })->ignore($this->campaign->id)],
             'style' => 'nullable|array',
