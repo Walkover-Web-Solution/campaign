@@ -37,6 +37,7 @@ class CampaignsController extends Controller
             ->where('company_id', $request->company->id)
             ->where(function ($query) use ($request) {
                 if ($request->has('name')) {
+                    $request->name = str_replace('_', '\_', $request->name);
                     $query->where('campaigns.name', 'like', '%' . $request->name . '%');
                 }
                 if ($request->has('is_active')) {
