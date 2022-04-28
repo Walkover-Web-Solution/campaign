@@ -9,7 +9,11 @@
             <directory suffix="Test.php">./tests/Unit</directory>
         </testsuite>
         <testsuite name="Feature">
-            <directory suffix="Test.php">./tests/Feature</directory>
+            <!-- <directory suffix="Test.php">./tests/Feature</directory> -->
+            <file>tests\Feature\BasicTest.php</file> //this will be run before file2
+            <file>tests\Feature\ValidFlowActionTest.php</file>
+            <file>tests\Feature\DeleteCampaignTest.php</file>
+            <file>tests\Feature\ValidCampaignTest.php</file>
         </testsuite>
     </testsuites>
     <coverage processUncoveredFiles="true">

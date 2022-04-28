@@ -28,7 +28,6 @@ class ValidCampaignTest extends TestCase
         )->post('api/campaigns', $reqbody)
             ->assertSuccessful();
             $res=json_decode($res->getContent());
-            print_r($res->errors);
         $this->assertTrue($res->errors[0]=="The name field is required.");
     }
 }
