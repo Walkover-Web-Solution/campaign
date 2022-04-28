@@ -49,7 +49,8 @@ class RunCampaignController extends Controller
         $logs = [
             "no_of_contacts" => array_sum($no_of_contacts),
             "mongo_uid" => $reqId,
-            'ip' => request()->ip()
+            'ip' => request()->ip(),
+            'need_validation' => $request->need_validation
         ];
         $campaignLog = $campaign->campaignLogs()->create($logs);
 

@@ -59,6 +59,9 @@ class AuthByAuthkeyOrTokenMiddleware
                 throw new \Exception("Unauthorized");
             }
 
+            // in case of JWT we set need_validation to true by default
+            $need_validation = true;
+
             $company = Company::where('ref_id', $res->company->id)->first();
 
             printLog("company :", (array)$company);
@@ -79,7 +82,8 @@ class AuthByAuthkeyOrTokenMiddleware
                 return response()->json($response, 404);
             }
         } else {
-
+            // in case of Token we set need_validation to false by default
+            $need_validation = false;
             printLog("check by token");
             // token validation
             $token = Token::where('token', $request->header('token'))->first();
@@ -116,7 +120,8 @@ class AuthByAuthkeyOrTokenMiddleware
         printLog("merge campaign");
         $request->merge([
             'campaign' => $campaign,
-            'company' => $campaign->company
+            'company' => $campaign->company,
+            'need_validation' => $need_validation
         ]);
 
         return $next($request);
