@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AssociateTokenToCampaignRequest;
+use App\Http\Requests\StoreTokenRequest;
 use App\Http\Requests\UpdateTokenRequest;
 use App\Http\Resources\CustomResource;
 use App\Models\Campaign;
@@ -60,7 +61,7 @@ class TokensController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreTokenRequest $request)
     {
         $request->validate([
             'name' => ['required', 'string', 'min:3', 'max:50', Rule::unique('tokens', 'name')->where(function ($query)  use ($request) {
@@ -118,7 +119,7 @@ class TokensController extends Controller
     {
         $input = $request->validated();
         if ($token->is_primary) {
-            if(isset($input->is_primary)){
+            if (isset($input->is_primary)) {
                 unset($input->is_primary);
             }
             // return new CustomResource(["message" => "Can not update default token"]);
@@ -139,7 +140,7 @@ class TokensController extends Controller
             throw new \Exception("Unauthorized", 1);
         }
         if ($token->is_primary) {
-            return new CustomResource(["message" => "Can not delete default token"],true);
+            return new CustomResource(["message" => "Can not delete default token"], true);
         }
         $token->delete();
         return new CustomResource(['message' => "Delete successfully"]);

@@ -14,7 +14,12 @@ class CampaignLog extends Model
         'mongo_uid',
         'no_of_contacts',
         'status',
-        'ip'
+        'ip',
+        'need_validation'
+    ];
+
+    protected $casts = [
+        'need_validation' => 'boolean'
     ];
 
     protected $hidden = [

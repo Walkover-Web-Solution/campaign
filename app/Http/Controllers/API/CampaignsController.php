@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CopyCampaignRequest;
 use App\Http\Requests\CreateCampaignRequest;
 use App\Http\Requests\CreateCampaignV2Request;
+use App\Http\Requests\DeleteCampaignRequest;
 use App\Http\Requests\GetFieldsRequest;
 use App\Http\Requests\UpdateCampaignRequest;
 use App\Http\Resources\CustomResource;
@@ -36,6 +37,7 @@ class CampaignsController extends Controller
             ->where('company_id', $request->company->id)
             ->where(function ($query) use ($request) {
                 if ($request->has('name')) {
+                    $request->name = str_replace('_', '\_', $request->name);
                     $query->where('campaigns.name', 'like', '%' . $request->name . '%');
                 }
                 if ($request->has('is_active')) {
@@ -144,13 +146,8 @@ class CampaignsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, Campaign $campaign)
+    public function destroy(DeleteCampaignRequest $request, Campaign $campaign)
     {
-        // check if the campaign is of request's company or not
-        if ($campaign->company_id != $request->company->id) {
-            return new CustomResource(['message' => "Campaign Not Found"]);
-        }
-
         // delete all templates related to this campaign via flowActions
         $campaign->flowActions()->get()->map(function ($item) {
             $item->template()->delete();
@@ -173,15 +170,15 @@ class CampaignsController extends Controller
         $obj->mapping = [];
 
         //get variables
-        $variables = [];
+        $obj->variables = [];
         $variableArray = $request->campaign->variables()->pluck('variables')->toArray();
         foreach ($variableArray as $variable) {
-            $variables = array_unique(array_merge($variables, $variable));
+            $obj->variables = array_unique(array_merge($obj->variables, $variable));
         }
-        if (!empty($variables))
-            collect($variables)->each(function ($variable) use ($obj) {
-                $obj->variables[$variable] = $variable;
-            });
+        // if (!empty($variables))
+        //     collect($variables)->each(function ($variable) use ($obj) {
+        //         $obj->variables[$variable] = $variable;
+        //     });
 
         // make validation for every channel id
         collect($channelIds)->each(function ($channelId) use ($obj) {
