@@ -99,8 +99,8 @@ class FlowActionsController extends Controller
         if (isset($request->module_data)) {
             $obj = new \stdClass();
             $obj->flag = false;
-            $conditions = ChannelType::where('id', $request->flowAction->channel_id)->first()->conditions()->pluck('name');
-            $conditions->map(function ($item) use ($obj, $request) {
+            $events = ChannelType::where('id', $request->flowAction->channel_id)->first()->events()->pluck('name');
+            $events->map(function ($item) use ($obj, $request) {
                 $key = 'op_' . strtolower($item);
                 if (isset($request->module_data[$key]) &&  $request->module_data[$key] != null) {
                     $flow = $request->campaign->flowActions()->where('id', $request->module_data[$key])->first();

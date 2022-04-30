@@ -11,7 +11,7 @@ use App\Http\Controllers\API\TokensController;
 use App\Http\Controllers\TestingController;
 use App\Http\Controllers\API\FlowActionsController;
 use App\Http\Controllers\API\CampaignLogController;
-use App\Http\Controllers\API\ConditionsController;
+use App\Http\Controllers\API\EventsController;
 use App\Http\Controllers\API\RunCampaignController;
 use Illuminate\Support\Facades\Route;
 
@@ -50,7 +50,7 @@ Route::post('/campaigns/{slug}/dryrun', [RunCampaignController::class, 'dryRun']
 
 Route::post('/encode', [TestingController::class, 'encodeData'])->withoutMiddleware('authby.jwt');
 
-Route::get('/conditions', [ConditionsController::class, 'index']);
+Route::get('/events', [EventsController::class, 'index']);
 
 Route::get('/campaigns/{slug}/fields', [CampaignsController::class, 'getFields']);
 

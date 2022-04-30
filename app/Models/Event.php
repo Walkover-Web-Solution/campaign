@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Condition extends Model
+class Event extends Model
 {
     use HasFactory;
 
@@ -37,6 +37,6 @@ class Condition extends Model
 
     public function channel()
     {
-        return $this->belongsToMany(ChannelType::class)->using(ChannelTypeCondition::class);
+        return $this->belongsToMany(ChannelType::class)->using(ChannelTypeEvents::class);
     }
 }

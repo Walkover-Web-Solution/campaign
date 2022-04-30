@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Condition;
+use App\Models\Event;
 use Illuminate\Database\Seeder;
 
-class ConditionTableSeeder extends Seeder
+class EventTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -17,12 +17,12 @@ class ConditionTableSeeder extends Seeder
         /*
          * getting count of rows from db table
          */
-        Condition::truncate();
+        Event::truncate();
 
         /*
-         * creating an array for all the rows 
+         * creating an array for all the rows
          */
-        $conditionsArr = [
+        $eventsArr = [
             [
                 'name' => 'Success',
                 'is_boolean' => true,
@@ -58,6 +58,6 @@ class ConditionTableSeeder extends Seeder
          * checks for every element in array if it is already present and executing query to create if not
          */
 
-        Condition::insert($conditionsArr);
+        Event::insert($eventsArr);
     }
 }

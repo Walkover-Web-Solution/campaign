@@ -12,7 +12,6 @@ use App\Http\Requests\UpdateCampaignRequest;
 use App\Http\Resources\CustomResource;
 use App\Models\Campaign;
 use App\Models\ChannelType;
-use App\Models\Condition;
 use App\Models\FlowAction;
 use App\Models\TemplateDetail;
 use App\Models\Token;
