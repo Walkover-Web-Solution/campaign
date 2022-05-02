@@ -25,7 +25,7 @@ class CreateCampaignRequest extends FormRequest
     public function rules()
     {
         $validationArray = [
-            'name' => ['required', 'string', 'min:3', 'regex:/^[a-zA-Z0-9_]+$/', 'max:50', Rule::unique('campaigns', 'name')->where(function ($query) {
+            'name' => ['required', 'string', 'min:3', 'regex:/^[a-zA-Z0-9_\s]+$/', 'max:50', Rule::unique('campaigns', 'name')->where(function ($query) {
                 return $query->where('company_id', $this->company->id);
             })],
             'style' => 'array',
@@ -51,6 +51,10 @@ class CreateCampaignRequest extends FormRequest
 
         if (isset($this->modules))
             $modules = $this->modules;
+
+        //trim middle spaces in name of campaign
+        $this->name = preg_replace('!\s+!', ' ', $this->name);
+
         return array(
             'name' => $this->name,
             'configurations' => empty($this->configurations) ? [] : $this->configurations,
