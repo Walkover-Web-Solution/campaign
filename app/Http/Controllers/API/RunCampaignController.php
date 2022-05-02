@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\DryRunCampaignRequest;
 use App\Http\Requests\RunCampaignRequest;
 use App\Http\Resources\CustomResource;
@@ -48,8 +49,10 @@ class RunCampaignController extends Controller
         $logs = [
             "no_of_contacts" => array_sum($no_of_contacts),
             "mongo_uid" => $reqId,
-            'ip' => request()->ip()
+            'ip' => request()->ip(),
+            'need_validation' => empty($request->need_validation) ? 0 : $request->need_validation
         ];
+      
         $campaignLog = $campaign->campaignLogs()->create($logs);
 
         if ($request->filled('data')) {
@@ -73,42 +76,28 @@ class RunCampaignController extends Controller
         $obj->data = [];
         $obj->data['sendTo'] = [[]];
         $obj->data['sendTo'][0]['to'] = [];
-        $obj->variables = [];
-        //get variables for this campaign
-        $variables = [];
-        $variableArray = [];
-        try {
-            $variableArray = $request->campaign->variables()->pluck('variables')->toArray();
-            foreach ($variableArray as $variable) {
-                $variables = array_unique(array_merge($variables, $variable));
-            }
-            collect($variables)->each(function ($variable) use ($obj) {
-                $obj->variables[$variable] = $variable;
-            });
-        } catch (Exception $ex) {
-        }
+        $obj->data['sendTo'][0]['cc'] = [];
+        $obj->data['sendTo'][0]['bcc'] = [];
+        $obj->data['sendTo'][0]['variables'] = [];
+
 
         //convert this body to new run request body
         collect($request->data)->each(function ($ob) use ($obj) {
             $key = $ob['name'];
-            if ($key != 'mobiles')
-                if (empty($obj->data['sendTo'][0][$key])) {
-                    $obj->data['sendTo'][0][$key] = [];
-                }
             $myArr = explode(',', $ob['value']);
-            collect($myArr)->each(function ($item) use ($key, $obj) {
+            collect($myArr)->each(function ($item) use ($key, $obj, $ob) {
                 if (!empty($item))
                     if ($key == 'mobiles')
                         array_push($obj->data['sendTo'][0]['to'], ['name' => null, 'email' => null, 'mobiles' => $item]);
-                    else
+                    else if ($key == 'to' || $key == 'cc' || $key == 'bcc')
                         array_push($obj->data['sendTo'][0][$key], ['name' => null, 'email' => $item, 'mobiles' => null]);
+                    else {
+                        $value = $ob['value'];
+                        $obj->data['sendTo'][0]['variables'][$key] = $value;
+                    }
             });
         });
 
-        if (!empty($variableArray)) {
-            //merge variables array to data object
-            $obj->data['sendTo'][0] = array_merge($obj->data['sendTo'][0], ['variables' => $obj->variables]);
-        }
         $request->merge(['data' => $obj->data]);
         return new CustomResource($this->commonRun($request)->resource);
     }
