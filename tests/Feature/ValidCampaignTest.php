@@ -15,7 +15,7 @@ class ValidCampaignTest extends TestCase
      *
      * @return void
      */
-    public function test_not_valid_campaign()
+    public function test_passing_empty_campaign_name()
     {
         $reqbody = array(
             'module_type' => 'flow',
@@ -30,4 +30,52 @@ class ValidCampaignTest extends TestCase
             $res=json_decode($res->getContent());
         $this->assertTrue($res->errors[0]=="The name field is required.");
     }
+
+    public function test_passing_invalid_campaign_name()
+    {
+        $reqbody = array(
+            'module_type' => 'flow',
+            'name' => "hello-test "
+        );
+
+        $res = $this->withHeader(
+            'Authorization',
+            $this->authuser
+        )->post('api/campaigns', $reqbody)
+            ->assertSuccessful();
+            $res=json_decode($res->getContent());
+        $this->assertTrue($res->errors[0]=="The name format is invalid.");
+    }
+
+    public function test_campaign_name_has_less_than_3_words()
+    {
+        $reqbody = array(
+            'module_type' => 'flow',
+            'name' => "p"
+        );
+
+        $res = $this->withHeader(
+            'Authorization',
+            $this->authuser
+        )->post('api/campaigns', $reqbody)
+            ->assertSuccessful();
+            $res=json_decode($res->getContent());
+        $this->assertTrue($res->errors[0]=="The name must be at least 3 characters long.");
+    }
+    public function test_campaign_name_has_more_than_50_words()
+    {
+        $reqbody = array(
+            'module_type' => 'flow',
+            'name' => "ahdjdsjjskljhdfjdjhfjndsfhdsfjahdjdsjjskljhdfjdjhfjndsfhdsfjahdjdsjjskljhdfjdjhfjndsfhdsfjahdjdsjjskljhdfjdjhfjndsfhdsfjahdjdsjjskljhdfjdjhfjndsfhdsfjahdjdsjjskljhdfjdjhfjndsfhdsfjahdjdsjjskljhdfjdjhfjndsfhdsfjahdjdsjjskljhdfjdjhfjndsfhdsfjahdjdsjjskljhdfjdjhfjndsfhdsfjahdjdsjjskljhdfjdjhfjndsfhdsfjahdjdsjjskljhdfjdjhfjndsfhdsfjahdjdsjjskljhdfjdjhfjndsfhdsfjahdjdsjjskljhdfjdjhfjndsfhdsfjahdjdsjjskljhdfjdjhfjndsfhdsfjahdjdsjjskljhdfjdjhfjndsfhdsfjahdjdsjjskljhdfjdjhfjndsfhdsfj"
+        );
+
+        $res = $this->withHeader(
+            'Authorization',
+            $this->authuser
+        )->post('api/campaigns', $reqbody)
+            ->assertSuccessful();
+            $res=json_decode($res->getContent());
+        $this->assertTrue($res->errors[0]=="The name must not be greater than 50 characters long.");
+    }
+
 }
