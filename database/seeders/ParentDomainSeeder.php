@@ -15,9 +15,9 @@ class ParentDomainSeeder extends Seeder
      */
     public function run()
     {
-        $emialFlowAction =  FlowAction::where('channel_id', 1)->get();
+        $emailFlowAction =  FlowAction::where('channel_id', 1)->get();
 
-        $emialFlowAction->map(function ($item) {
+        $emailFlowAction->map(function ($item) {
 
             $domain = collect($item->configurations)->firstWhere('name', 'domain');
             $parent_domain = collect($item->configurations)->firstWhere('name', 'parent_domain');
@@ -41,7 +41,7 @@ class ParentDomainSeeder extends Seeder
             }
             else{
 
-                $item->configurations=collect($item->configurations)->map(function($configs) use ($domain,$item){
+                $item->configurations=collect($item->configurations)->map(function($configs) use ($domain){
                     if($configs->name=='parent_domain'){
                         $configs->source=$domain->source;
                         $configs->value=$domain->value;
