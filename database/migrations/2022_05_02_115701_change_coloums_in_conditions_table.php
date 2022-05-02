@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class RenameTableNameAsEventInConditionsTable extends Migration
+class ChangeColoumsInConditionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,11 @@ class RenameTableNameAsEventInConditionsTable extends Migration
      */
     public function up()
     {
-        Schema::rename('conditions', 'events');
+        Schema::table('conditions', function (Blueprint $table) {
+            $table->json('configurations');
+            $table->dropColumn('is_boolean');
+            $table->dropColumn('wait_to_fail');
+        });
     }
 
     /**
@@ -23,7 +27,6 @@ class RenameTableNameAsEventInConditionsTable extends Migration
      */
     public function down()
     {
-
-        Schema::rename('events','conditions');
+        Schema::dropIfExists('conditions');
     }
 }
