@@ -12,6 +12,7 @@ class CompanyTokenIp extends Model
     protected $table = 'company_token_ips';
     protected $fillable = [
         'ip',
+        'token_id',
         'expires_at',
         'ip_type_id'
     ];
@@ -34,7 +35,7 @@ class CompanyTokenIp extends Model
         if ($this->ip_type_id != 3) {
             return '-';
         }
-        //return GMTToIST($value); - function comes from app\helper.php
+        return GMTToIST($value); // function comes from app\helper.php
     }
 
 
@@ -53,6 +54,6 @@ class CompanyTokenIp extends Model
      */
     public function token()
     {
-        return $this->belongsTo(Token::class, 'company_token_id');
+        return $this->belongsTo(Token::class, 'token_id');
     }
 }

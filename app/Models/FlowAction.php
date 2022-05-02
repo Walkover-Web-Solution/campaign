@@ -10,21 +10,52 @@ class FlowAction extends Model
     use HasFactory;
 
     protected $fillable = [
+        'name',
         'campaign_id',
-        'linked_id',
+        'channel_id',
         'linked_type',
         'is_condition',
-        'configurations'
+        'parent_id',
+        'configurations',
+        'style',
+        'module_data',
+        'is_completed'
     ];
     protected $casts = array(
         'is_condition' => 'boolean',
-        'configurations'=>'object'
+        'configurations' => 'object',
+        'style' => 'object',
+        'module_data' => 'object'
     );
     protected $hidden = array(
         'created_at',
-        'updated_at',
-        'parent_id'
+        'updated_at'
     );
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($flowAction) {
+
+            // Adding default values for style in case if it is null
+            if (empty($flowAction->style)) {
+                $flowAction->style = array(
+                    "x" => 0,
+                    "y" => 0,
+                    "width" => 150,
+                    "height" => 100
+                );
+            }
+
+            if (empty($flowAction->module_data)) {
+                $flowAction->module_data = array(
+                    "op_success" => null,
+                    "op_success_type" => null
+                );
+            }
+        });
+    }
 
 
     /**

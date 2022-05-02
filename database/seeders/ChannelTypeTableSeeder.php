@@ -14,6 +14,9 @@ class ChannelTypeTableSeeder extends Seeder
      */
     public function run()
     {
+
+        ChannelType::truncate();
+
         $channelTypes = [
             [
                 "name" => "Email",
@@ -21,22 +24,32 @@ class ChannelTypeTableSeeder extends Seeder
                     "fields" => array(
                         array(
                             "name" => "template",
-<<<<<<< HEAD
-                            "type" => "object",
-=======
                             "type" => "dropdown",
->>>>>>> 298e3cb61d62ef84171033bacb48a895e7316b65
                             "template" => array(
                                 "name" => "",
-                                "template_id" => ""
+                                "template_id" => "",
+                                "slug" => ""
                             ),
-<<<<<<< HEAD
-=======
                             "source" => "",
                             "sourceFieldLabel" => "name",
                             "sourceFieldValue" => "name",
->>>>>>> 298e3cb61d62ef84171033bacb48a895e7316b65
-                            "is_required" => true
+                            "is_required" => true,
+                            "value" => "",
+                            "variables" => []
+                        ),
+                        array(
+                            "name" => "from_email",
+                            "type" => 'text',
+                            "label" => 'From Email',
+                            "regex" => "^[A-Za-z\d\.]+$",
+                            "min" => 1,
+                            "max" => 50,
+                            "source" => "",
+                            "sourceFieldLabel" => "",
+                            "sourceFieldValue" => "",
+                            "is_required" => true,
+                            "value" => "",
+                            "placeholder" => "You can email that will be shown to recipient."
                         ),
                         array(
                             "name" => "domain",
@@ -44,50 +57,58 @@ class ChannelTypeTableSeeder extends Seeder
                             "label" => 'Select  Domain',
                             "regex" => "",
                             "source" => "domains?is_enabled=1&status_id=2",
+                            "sourceFieldLabel" => "",
+                            "sourceFieldValue" => "",
+                            "is_required" => true,
+                            "value" => ""
+                        ),
+                        array(
+                            "name" => "parent_domain",
+                            "type" => 'dropdown',
+                            "label" => 'Select Parent Domain',
+                            "regex" => "",
+                            "source" => "domains?is_enabled=1&status_id=2",
                             "sourceFieldLabel" => "name",
                             "sourceFieldValue" => "name",
-                            "is_required" => true
+                            "is_required" => true,
+                            "value" => ""
                         ),
                         array(
                             "name" => "from_email_name",
                             "type" => 'text',
                             "label" => 'From Email Name',
-                            "regex" => "",
+                            "regex" => '^[A-Za-z\d\s]+$',
+                            "min" => 1,
+                            "max" => 50,
                             "source" => "",
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
                             "is_required" => true,
-                            "ui_visible" => true
+                            "value" => "",
+                            "placeholder" => "You can define name that will be shown to recipient."
                         ),
-                        array(
-                            "name" => "from_email",
-                            "type" => 'text',
-                            "label" => 'From Email',
-                            "regex" => "",
-                            "source" => "",
-                            "sourceFieldLabel" => "",
-                            "sourceFieldValue" => "",
-                            "is_required" => true
-                        ),
+
                         array(
                             "name" => "cc",
                             "type" => 'list',
                             "label" => 'CC',
-                            "regex" => "",
+                            "regex" => "^([\w+-.%]+@[\w.]+\.[A-Za-z]{2,4},?)+$",
                             "source" => "",
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
-                            "is_required" => false
+                            "is_required" => false,
+                            "value" => ""
                         ),
                         array(
                             "name" => "bcc",
                             "type" => 'list',
                             "label" => 'BCC',
-                            "regex" => "",
+                            "regex" => "^([\w+-.%]+@[\w.]+\.[A-Za-z]{2,4},?)+$",
                             "source" => "",
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
-                            "is_required" => false
+                            "is_required" => false,
+                            "value" => ""
                         )
                     ),
                     "mapping" => array(
@@ -95,45 +116,34 @@ class ChannelTypeTableSeeder extends Seeder
                             "name" => "to",
                             "type" => 'list',
                             "label" => 'To',
-                            "regex" => "",
+                            "regex" => "^([\w+-.%]+@[\w.]+\.[A-Za-z]{2,4},?)+$",
                             "source" => "",
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
-                            "is_required" => true
+                            "is_required" => true,
+                            "is_array" => true
                         ),
                         array(
                             "name" => "cc",
                             "type" => 'list',
                             "label" => 'CC',
-                            "regex" => "",
+                            "regex" => "^([\w+-.%]+@[\w.]+\.[A-Za-z]{2,4},?)+$",
                             "source" => "",
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
-                            "is_required" => false
+                            "is_required" => false,
+                            "is_array" => true
                         ),
                         array(
                             "name" => "bcc",
                             "type" => 'list',
                             "label" => 'BCC',
-                            "regex" => "",
+                            "regex" => "^([\w+-.%]+@[\w.]+\.[A-Za-z]{2,4},?)+$",
                             "source" => "",
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
-                            "is_required" => false
-                        ),
-                        array(
-                            "name" => "variables",
-                            "type" => 'list',
-<<<<<<< HEAD
-                            "label" => 'BCC',
-=======
-                            "label" => '',
->>>>>>> 298e3cb61d62ef84171033bacb48a895e7316b65
-                            "regex" => "",
-                            "source" => "",
-                            "sourceFieldLabel" => "",
-                            "sourceFieldValue" => "",
-                            "is_required" => false
+                            "is_required" => false,
+                            "is_array" => true
                         )
                     )
 
@@ -150,45 +160,26 @@ class ChannelTypeTableSeeder extends Seeder
                                 "name" => "",
                                 "template_id" => ""
                             ),
-<<<<<<< HEAD
-=======
                             "source" => "",
                             "sourceFieldLabel" => "name",
                             "sourceFieldValue" => "name",
->>>>>>> 298e3cb61d62ef84171033bacb48a895e7316b65
-                            "is_required" => true
+                            "is_required" => true,
+                            "variables" => []
                         )
 
                     ),
                     "mapping" => array(
                         array(
                             "name" => "mobiles",
-<<<<<<< HEAD
-                            "type" => 'text',
-=======
                             "type" => 'list',
->>>>>>> 298e3cb61d62ef84171033bacb48a895e7316b65
                             "is_required" => true,
                             "label" => 'Mobiles',
-                            "regex" => "",
+                            "regex" => "^([\d],?)+$",
                             "source" => "",
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
-                            "is_required" => true
-                        ),
-                        array(
-                            "name" => "variables",
-                            "type" => 'list',
-<<<<<<< HEAD
-                            "label" => 'BCC',
-=======
-                            "label" => '',
->>>>>>> 298e3cb61d62ef84171033bacb48a895e7316b65
-                            "regex" => "",
-                            "source" => "",
-                            "sourceFieldLabel" => "",
-                            "sourceFieldValue" => "",
-                            "is_required" => false
+                            "is_required" => true,
+                            "is_array" => true
                         )
                     )
                 )
@@ -196,10 +187,39 @@ class ChannelTypeTableSeeder extends Seeder
             ],
 
             [
-                "name" => "OTP",
-<<<<<<< HEAD
-                "configurations" => new \StdClass
-=======
+                "name" => "Whatsapp",
+                "configurations" => array(
+                    "fields" => array(
+                        array(
+                            "name" => "integrated_number",
+                            "label" => "Integrated number",
+                            "type" => "dropdown",
+                            "source" => "",
+                            "sourceFieldLabel" => "name",
+                            "sourceFieldValue" => "name",
+                            "is_required" => true,
+                            "value" => ""
+                        )
+                    ),
+                    "mapping" => array(
+                        array(
+                            "name" => "mobiles",
+                            "type" => 'list',
+                            "is_required" => true,
+                            "label" => 'Mobiles',
+                            "regex" => "^([\d],?)+$",
+                            "source" => "",
+                            "sourceFieldLabel" => "",
+                            "sourceFieldValue" => "",
+                            "is_required" => true,
+                            "is_array" => true
+                        )
+                    )
+                )
+            ],
+
+            [
+                "name" => "Voice",
                 "configurations" => array(
                     "fields" => array(),
                     "mapping" => array(
@@ -208,77 +228,20 @@ class ChannelTypeTableSeeder extends Seeder
                             "type" => 'list',
                             "is_required" => true,
                             "label" => 'Mobiles',
-                            "regex" => "",
+                            "regex" => "^([\d],?)+$",
                             "source" => "",
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
-                            "is_required" => true
-                        )
-                    )
-                )
->>>>>>> 298e3cb61d62ef84171033bacb48a895e7316b65
-            ],
-
-            [
-                "name" => "whatsapp",
-                "configurations" => array(
-                    "fields" => array(),
-<<<<<<< HEAD
-                    "mapping" => array()
-=======
-                    "mapping" => array(
-                        array(
-                            "name" => "mobiles",
-                            "type" => 'list',
                             "is_required" => true,
-                            "label" => 'Mobiles',
-                            "regex" => "",
-                            "source" => "",
-                            "sourceFieldLabel" => "",
-                            "sourceFieldValue" => "",
-                            "is_required" => true
+                            "is_array" => true
                         )
                     )
->>>>>>> 298e3cb61d62ef84171033bacb48a895e7316b65
-                )
-            ],
-
-            [
-                "name" => "voice",
-                "configurations" => array(
-                    "fields" => array(),
-<<<<<<< HEAD
-                    "mapping" => array()
-=======
-                    "mapping" => array(
-                        array(
-                            "name" => "mobiles",
-                            "type" => 'list',
-                            "is_required" => true,
-                            "label" => 'Mobiles',
-                            "regex" => "",
-                            "source" => "",
-                            "sourceFieldLabel" => "",
-                            "sourceFieldValue" => "",
-                            "is_required" => true
-                        )
-                    )
->>>>>>> 298e3cb61d62ef84171033bacb48a895e7316b65
                 )
             ],
         ];
 
-        foreach ($channelTypes as $channelType) {
-<<<<<<< HEAD
-            $channelTypeObj = ChannelType::withoutGlobalScopes()->where('name', $channelType['name'])->first();
-=======
-            $channelTypeObj = ChannelType::where('name', $channelType['name'])->first();
->>>>>>> 298e3cb61d62ef84171033bacb48a895e7316b65
-            if (empty($channelTypeObj)) {
-                ChannelType::create($channelType);
-            } else {
-                $channelTypeObj->update($channelType);
-            }
-        }
+        collect($channelTypes)->map(function ($channelType) {
+            ChannelType::create($channelType);
+        });
     }
 }

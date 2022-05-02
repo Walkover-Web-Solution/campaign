@@ -20,6 +20,8 @@ class Template extends Model
     ];
 
     protected $hidden = array(
+        'id',
+        'flow_action_id',
         'created_at',
         'updated_at'
     );

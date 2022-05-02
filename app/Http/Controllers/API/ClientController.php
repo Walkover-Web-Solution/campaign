@@ -3,18 +3,22 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ClientRequest;
+use App\Http\Resources\CustomResource;
+use App\Models\Client;
 use Illuminate\Http\Request;
 
-class TemplatesController extends Controller
+class ClientController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(ClientRequest $request)
     {
-        //
+        $clients = Client::select('name', 'authkey')->get();
+        return new CustomResource($clients);
     }
 
     /**

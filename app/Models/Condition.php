@@ -24,13 +24,19 @@ class Condition extends Model
     protected $hidden = array(
         'created_at',
         'updated_at',
+        'pivot'
     );
 
     /**
      * Get all of the post's flowActions.
-    */
+     */
     public function flowActions()
     {
         return $this->morphMany(FlowAction::class, 'linked');
+    }
+
+    public function channel()
+    {
+        return $this->belongsToMany(ChannelType::class)->using(ChannelTypeCondition::class);
     }
 }

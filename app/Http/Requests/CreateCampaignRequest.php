@@ -2,9 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Company;
-use App\Models\Token;
-use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -17,35 +14,6 @@ class CreateCampaignRequest extends FormRequest
      */
     public function authorize()
     {
-
-        //check for authorization key in header
-        if (!($this->hasHeader('authorization'))) {
-            return false;
-        }
-        // decode key
-        try {
-            $res = JWTdecode(request()->header('authorization'));
-        } catch (\Exception $e) {
-            return false;
-        }
-
-        // get company whose ref_id matches with the company's id found in key
-        $company = Company::where('ref_id', $res->company->id)->first();
-        if (empty($company)) {
-            return false;
-        }
-
-        // get user whose company matches with the company passed in key
-        $user = User::where('company_id', $company->id)->first();
-        if (empty($user)) {
-            return false;
-        }
-
-        // merge into the request
-        $this->merge([
-            'company' => $company,
-            'user' => $user
-        ]);
         return true;
     }
 
@@ -57,17 +25,11 @@ class CreateCampaignRequest extends FormRequest
     public function rules()
     {
         $validationArray = [
-            'name' => ['required', 'string', 'min:3', 'max:50', Rule::unique('campaigns', 'name')->where(function ($query) {
+            'name' => ['required', 'string', 'min:3', 'regex:/^[a-zA-Z0-9_]+$/', 'max:50', Rule::unique('campaigns', 'name')->where(function ($query) {
                 return $query->where('company_id', $this->company->id);
             })],
-            'flow_action' => 'required|array',
-            'flow_action.*.linked_id' => 'required',
-            'flow_action.*.parent_id' => 'nullable|confirmed',
-            'flow_action.*.template' => 'required|array',
-            'flow_action.*.template.template_id' => 'required',
-            'flow_action.*.template.name' => 'required',
-            'flow_action.*.template.variables' => 'nullable|array',
-            'flow_action.*.template.meta' => 'required'
+            'style' => 'array',
+            'module_data' => 'array',
         ];
         return $validationArray;
     }
@@ -81,15 +43,22 @@ class CreateCampaignRequest extends FormRequest
             ]);
         }
 
+        if (isset($this->module_data) && !empty($this->module_data)) {
+            if (($this->module_data['op_start']) != null) {
+                return false;
+            }
+        }
 
-        $flow_action = $this->flow_action;
-
+        if (isset($this->modules))
+            $modules = $this->modules;
         return array(
             'name' => $this->name,
             'configurations' => empty($this->configurations) ? [] : $this->configurations,
             'meta' => [],
-            'flow_action' => $flow_action,
-            'company_token_id' => $token->id,
+            'style' => $this->style,
+            'module_data' => $this->module_data,
+            'modules' => empty($modules) ? [] : $modules,
+            'token_id' => $token->id,
             'user_id' => $this->user->id,
             'is_active' => true
         );

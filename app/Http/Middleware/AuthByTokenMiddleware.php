@@ -35,7 +35,7 @@ class AuthByTokenMiddleware
         }
 
         //checks uf token's id is equal to the cmapiagn's company token id
-        if ($campaign->company_token_id != $token->id) {
+        if ($campaign->token_id != $token->id) {
             throw new \Exception("Unauthorized, Invalid Request");
         }
 

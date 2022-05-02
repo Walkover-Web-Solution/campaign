@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Http\Resources\CustomResource;
+use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,17 +14,20 @@ class Campaign extends Model
     protected $fillable = [
         'user_id',
         'name',
-        'campaign_type_id',
-        'company_token_id',
+        'token_id',
         'is_active',
         'configurations',
         'meta',
-        'slug'
+        'slug',
+        'style',
+        'module_data'
     ];
 
     protected $casts = array(
         'meta' => 'object',
         'configurations' => 'object',
+        'style' => 'json',
+        'module_data' => 'json'
     );
 
 
@@ -31,7 +36,7 @@ class Campaign extends Model
         'updated_at',
         'user_id',
         "company_id",
-        "company_token_id",
+        "token_id",
         'deleted_at',
         'meta'
     );
@@ -58,6 +63,21 @@ class Campaign extends Model
                     break;
                 }
                 $i++;
+            }
+            if (empty($campaign->style)) {
+                $campaign->style = array(
+                    "x" => 0,
+                    "y" => 0,
+                    "width" => 150,
+                    "height" => 100
+                );
+            }
+
+            if (empty($campaign->module_data)) {
+                $campaign->module_data = array(
+                    "op_start" => null,
+                    "op_start_type" => null
+                );
             }
         });
     }
@@ -86,7 +106,7 @@ class Campaign extends Model
      */
     public function token()
     {
-        return $this->belongsTo(token::class, 'company_token_id');
+        return $this->belongsTo(Token::class, 'token_id');
     }
 
     /**
@@ -111,5 +131,34 @@ class Campaign extends Model
     public function campaignReports()
     {
         return $this->hasMany(CampaignReport::class, 'campaign_id');
+    }
+
+    /**
+     * Get all of the campaignLogs for the Campaign
+     */
+    public function campaignLogs()
+    {
+        return $this->hasMany(CampaignLog::class);
+    }
+
+    /**
+     * Get all of the variables from template of all flowActions for the Campaign
+     */
+    public function variables()
+    {
+        return $this->hasManyThrough(Template::class, FlowAction::class);
+    }
+
+    public function resolveRouteBinding($value, $field = null)
+    {
+        try {
+            $res = JWTDecode(request()->header('authorization'));
+            $company = Company::where('ref_id', $res->company->id)->first();
+            if (empty($company))
+                throw new Exception();
+        } catch (\Exception $e) {
+            return new CustomResource(["message" => "Unauthorized"], true);
+        }
+        return Campaign::where('company_id', $company->id)->where('slug', $value)->first();
     }
 }
