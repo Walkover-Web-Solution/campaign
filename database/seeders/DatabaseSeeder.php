@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
         // No need to run client seeder for now
         // $this->call(ClientTableSeeder::class);
         $this->call(ChannelTypeTableSeeder::class);
-        $this->call(IPTypesTableSeeder::class);
+        $this->call(IPTypeTableSeeder::class);
         $this->call(ConditionTableSeeder::class);
         $this->call(ChannelConditionTableSeeder::class);
         $this->call(ParentDomainSeeder::class);
