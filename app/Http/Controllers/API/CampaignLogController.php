@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Controller;
 use App\Http\Resources\CustomResource;
 use App\Models\Campaign;
 use App\Models\CampaignLog;
@@ -21,8 +22,7 @@ class CampaignLogController extends Controller
             return new CustomResource(['message' => 'Invalid Campaign']);
         }
 
-        $campaignLogs = Campaign::where('slug', $slug)->where('company_id', $request->company->id)->first()
-            ->campaignLogs();
+        $campaignLogs = $campaign->campaignLogs();
 
         $itemsPerPage = $request->input('itemsPerPage', 25);
 
@@ -43,7 +43,7 @@ class CampaignLogController extends Controller
             'itemsPerPage' => $itemsPerPage,
             'pageNo' => $paginator->currentPage(),
             'pageNumber' => $paginator->currentPage(),
-            'totalEntityCount' => $request->company->campaigns()->count(),
+            'totalEntityCount' => $paginator->total(),
             'totalPageCount' => ceil($paginator->total() / $paginator->perPage())
         ]);
     }
@@ -91,11 +91,10 @@ class CampaignLogController extends Controller
             ]);
         }
 
-        $actionLogs = $campaignLog->actionLogs();
+        $actionLogs = $campaignLog->actionLogs()->join('flow_actions', 'flow_actions.id', '=', 'action_logs.flow_action_id');
 
-        //change reason to response
         $paginator = $actionLogs
-            ->select('id', 'campaign_id', 'campaign_log_id', 'status', 'report_status', 'response', 'ref_id', 'no_of_records', 'created_at')
+            ->select('action_logs.id', 'flow_actions.name', 'action_logs.campaign_id', 'campaign_log_id', 'status', 'report_status', 'response', 'ref_id', 'no_of_records', 'action_logs.created_at')
             ->where(function ($query) use ($request) {
                 if ($request->has('status')) {
                     $query->where('status', $request->status);
@@ -104,7 +103,7 @@ class CampaignLogController extends Controller
                     $query->where('report_status', $request->status);
                 }
             })
-            ->orderBy('id', 'desc')
+            ->orderBy('action_logs.id', 'desc')
             ->paginate($itemsPerPage, ['*'], 'pageNo');
 
 
@@ -113,7 +112,7 @@ class CampaignLogController extends Controller
             'itemsPerPage' => $itemsPerPage,
             'pageNo' => $paginator->currentPage(),
             'pageNumber' => $paginator->currentPage(),
-            'totalEntityCount' => $request->company->campaigns()->count(),
+            'totalEntityCount' => $paginator->total(),
             'totalPageCount' => ceil($paginator->total() / $paginator->perPage())
         ]);
     }
