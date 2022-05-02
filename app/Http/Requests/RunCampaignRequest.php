@@ -72,7 +72,7 @@ class RunCampaignRequest extends FormRequest
         return [
             'is_activeTrue.required' => 'Campaign is Paused. Unable to Execute!',
             'checkCount.required' => 'Data limit should not exceeded more than 1000.',
-            'validCamp.required' => 'Invaid Campaign Action. Unable to Execute!',
+            'validCamp.required' => 'No start node for Campaign. Unable to Execute!',
             'is_EmptyTrue.required' => 'No Actions Found. Unable to Execute!',
             'is_completedTrue.required' => 'Incomplete Campaign. Unable to Execute!'
         ];

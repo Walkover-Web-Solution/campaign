@@ -109,7 +109,7 @@ class DryRunCampaignRequest extends FormRequest
         return [
             'is_dataEmpty.required' => 'Invalid Data. Unable to Execute!',
             'checkCount.required' => 'Data limit should not exceeded more than 5 in ' . $this->case,
-            'validCamp.required' => 'Invaid Campaign Action. Unable to Execute!',
+            'validCamp.required' => 'No start node for Campaign. Unable to Execute!',
             'is_EmptyTrue.required' => 'No Actions Found. Unable to Execute!',
             'is_completedTrue.required' => 'Incomplete Campaign. Unable to Execute!'
         ];
