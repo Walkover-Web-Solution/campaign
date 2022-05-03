@@ -238,6 +238,14 @@ class ChannelTypeTableSeeder extends Seeder
                     )
                 )
             ],
+
+            [
+                "name" => "Condition",
+                "configurations" => array(
+                    "fields" => array(),
+                    "mapping" => array()
+                )
+            ]
         ];
 
         collect($channelTypes)->map(function ($channelType) {

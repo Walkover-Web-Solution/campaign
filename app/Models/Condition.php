@@ -14,7 +14,7 @@ class Condition extends Model
     ];
 
     protected $casts = array(
-        'configurations' => 'object',
+        'configurations' => 'json',
     );
 
 
