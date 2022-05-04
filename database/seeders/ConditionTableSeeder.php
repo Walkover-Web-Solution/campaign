@@ -20,18 +20,7 @@ class ConditionTableSeeder extends Seeder
             [
                 "name" => "Countries",
                 "configurations" => array(
-                    "fields" => array(
-                        array(
-                            "name" => "delay",
-                            "label" => "Delay for",
-                            "type" => "text",
-                            "source" => "",
-                            "sourceFieldLabel" => "",
-                            "sourceFieldValue" => "",
-                            "is_required" => false,
-                            "value" => "0"
-                        )
-                    ),
+                    "fields" => array(),
                     "mapping" => array()
                 )
             ]
