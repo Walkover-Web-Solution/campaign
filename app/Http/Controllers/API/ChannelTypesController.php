@@ -17,6 +17,15 @@ class ChannelTypesController extends Controller
     public function index()
     {
         $channels = ChannelType::with('events:name')->get();
-        return new CustomResource($channels);
+        $obj = new \stdClass();
+        $obj->channels = [];
+        $condition = 5;
+        $channels->map(function ($channel) use ($obj, $condition) {
+            $channel->is_hidden = false;
+            if ($channel->id == $condition)
+                $channel->is_hidden = true;
+            array_push($obj->channels, $channel);
+        });
+        return new CustomResource($obj->channels);
     }
 }
