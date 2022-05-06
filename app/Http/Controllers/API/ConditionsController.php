@@ -39,7 +39,8 @@ class ConditionsController extends Controller
                 $obj->filters = $name;
             });
             $condition = $condition->toArray();
-            $condition['filters'] = $obj->filters;
+            // change conditions to filters when UI get updated - TASK
+            $condition['conditions'] = $obj->filters;
             $obj->filters = [];
             array_push($obj->conditions, $condition);
         });

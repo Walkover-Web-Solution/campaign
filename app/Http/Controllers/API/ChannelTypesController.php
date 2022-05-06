@@ -16,7 +16,7 @@ class ChannelTypesController extends Controller
      */
     public function index()
     {
-        $channels = ChannelType::with('events:name')->get();
+        $channels = ChannelType::with('conditions:name')->get();
         $obj = new \stdClass();
         $obj->channels = [];
         $condition = 5;
