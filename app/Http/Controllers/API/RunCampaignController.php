@@ -49,7 +49,7 @@ class RunCampaignController extends Controller
         $logs = [
             "no_of_contacts" => array_sum($no_of_contacts),
             "mongo_uid" => $reqId,
-            'ip' => request()->ip(),
+            'ip' => (!empty(request()->ip)) ? request()->ip : request()->ip(),
             'need_validation' => empty($request->need_validation) ? 0 : $request->need_validation
         ];
 
