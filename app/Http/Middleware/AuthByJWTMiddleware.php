@@ -9,9 +9,28 @@ use Closure;
 use Exception;
 use Illuminate\Http\Request;
 use Firebase\JWT\JWT;
+use Illuminate\Cache\RateLimiter;
 
 class AuthByJWTMiddleware
 {
+    public $limiter;
+    protected $ip;
+
+    public function __construct(RateLimiter $limiter)
+    {
+        $this->limiter = $limiter;
+        if (request()->header('userip')) {
+            $ips = explode(',', request()->header('userip'));
+            $this->ip = $ips[0];
+        } elseif (request()->header('cf-connecting-ip')) {
+            $this->ip = request()->header('cf-connecting-ip');
+        } else {
+            $this->ip = request()->ip();
+        }
+        request()->merge([
+            'ip' => $this->ip
+        ]);
+    }
     /**
      * Handle an incoming request.
      *
