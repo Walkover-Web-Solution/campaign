@@ -21,12 +21,7 @@ class DatabaseSeeder extends Seeder
         $this->call(EventTableSeeder::class);
         $this->call(ChannelEventTableSeeder::class);
         $this->call(ConditionTableSeeder::class);
-<<<<<<< HEAD
-        $this->call(ChannelConditionTableSeeder::class);
-        $this->call(ParentDomainSeeder::class);
-=======
         $this->call(FilterTableSeeder::class);
         $this->call(ConditionFilterTableSeeder::class);
->>>>>>> changeConditions
     }
 }
