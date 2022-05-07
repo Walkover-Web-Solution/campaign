@@ -32,7 +32,8 @@ class ChannelType extends Model
             $sms = 2;
             $whatsapp = 3;
             $voice = 4;
-            $builder->whereIn('id', [$emailType, $sms]);
+            $condition = 5;
+            $builder->whereIn('id', [$emailType, $sms, $condition]);
         });
     }
 
@@ -44,8 +45,19 @@ class ChannelType extends Model
         return $this->morphMany(FlowAction::class, 'linked');
     }
 
+    /**
+     * Get all events of this FLow Action
+     */
+    public function events()
+    {
+        return $this->belongsToMany(Event::class)->using(ChannelTypeEvent::class);
+    }
+
+    /**
+     * Purpose of creating events function as conditions is to show on UI as till UI changes conditions key to events
+     */
     public function conditions()
     {
-        return $this->belongsToMany(Condition::class)->using(ChannelTypeCondition::class);
+        return $this->belongsToMany(Event::class)->using(ChannelTypeEvent::class);
     }
 }

@@ -109,6 +109,16 @@ class ChannelTypeTableSeeder extends Seeder
                             "sourceFieldValue" => "",
                             "is_required" => false,
                             "value" => ""
+                        ),
+                        array(
+                            "name" => "delay",
+                            "label" => "Delay for",
+                            "type" => "text",
+                            "source" => "",
+                            "sourceFieldLabel" => "",
+                            "sourceFieldValue" => "",
+                            "is_required" => false,
+                            "value" => "0"
                         )
                     ),
                     "mapping" => array(
@@ -147,6 +157,7 @@ class ChannelTypeTableSeeder extends Seeder
                         )
                     )
 
+
                 )
             ],
             [
@@ -165,6 +176,16 @@ class ChannelTypeTableSeeder extends Seeder
                             "sourceFieldValue" => "name",
                             "is_required" => true,
                             "variables" => []
+                        ),
+                        array(
+                            "name" => "delay",
+                            "label" => "Delay for",
+                            "type" => "text",
+                            "source" => "",
+                            "sourceFieldLabel" => "",
+                            "sourceFieldValue" => "",
+                            "is_required" => false,
+                            "value" => "0"
                         )
 
                     ),
@@ -238,6 +259,35 @@ class ChannelTypeTableSeeder extends Seeder
                     )
                 )
             ],
+
+            [
+                "name" => "Condition",
+                "configurations" => array(
+                    "fields" => array(
+                        array(
+                            "name" => "delay",
+                            "label" => "Delay for",
+                            "type" => "text",
+                            "source" => "",
+                            "sourceFieldLabel" => "",
+                            "sourceFieldValue" => "",
+                            "is_required" => false,
+                            "value" => "0"
+                        ),
+                        array(
+                            "name" => "Condition",
+                            "label" => "Condition",
+                            "type" => "text",
+                            "source" => "",
+                            "sourceFieldLabel" => "",
+                            "sourceFieldValue" => "",
+                            "is_required" => true,
+                            "value" => ""
+                        )
+                    ),
+                    "mapping" => array()
+                )
+            ]
         ];
 
         collect($channelTypes)->map(function ($channelType) {

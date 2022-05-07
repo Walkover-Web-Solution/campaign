@@ -69,8 +69,8 @@ class CreateFlowActionsRequest extends FormRequest
         if (isset($this->module_data)) {
             $obj = new \stdClass();
             $obj->flag = false;
-            $conditions = ChannelType::where('id', $this->channel_id)->first()->conditions()->pluck('name');
-            $conditions->map(function ($item) use ($obj) {
+            $events = ChannelType::where('id', $this->channel_id)->first()->events()->pluck('name');
+            $events->map(function ($item) use ($obj) {
                 $key = 'op_' . strtolower($item);
                 if (isset($this->module_data[$key]) &&  $this->module_data[$key] != null) {
                     $flow = $this->campaign->flowActions()->where('id', $this->module_data[$key])->first();

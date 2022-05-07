@@ -3,11 +3,11 @@
 namespace Database\Seeders;
 
 use App\Models\ChannelType;
-use App\Models\ChannelTypeCondition;
-use App\Models\Condition;
+use App\Models\ChannelTypeEvent;
+use App\Models\Event;
 use Illuminate\Database\Seeder;
 
-class ChannelConditionTableSeeder extends Seeder
+class ChannelEventTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -16,11 +16,11 @@ class ChannelConditionTableSeeder extends Seeder
      */
     public function run()
     {
-        ChannelTypeCondition::truncate();
+        ChannelTypeEvent::truncate();
 
-        // get all conditions map of name:id
-        $conditions = Condition::select('name', 'id')->get()->toArray();
-        $conditionsMap = array_column($conditions, 'id', 'name');
+        // get all events map of name:id
+        $events = Event::select('name', 'id')->get()->toArray();
+        $eventsMap = array_column($events, 'id', 'name');
 
         // get all channels map of name:id
         $channels = ChannelType::select('name', 'id')->get()->toArray();
@@ -30,31 +30,31 @@ class ChannelConditionTableSeeder extends Seeder
         $arr = [
             [
                 'channel_type_id' => $channelMap['Email'],
-                'condition_id' => $conditionsMap['Success'],
+                'event_id' => $eventsMap['Success'],
             ],
             [
                 'channel_type_id' => $channelMap['Email'],
-                'condition_id' => $conditionsMap['Failed'],
+                'event_id' => $eventsMap['Failed'],
             ],
             [
                 'channel_type_id' => $channelMap['Email'],
-                'condition_id' => $conditionsMap['Read'],
+                'event_id' => $eventsMap['Read'],
             ],
             [
                 'channel_type_id' => $channelMap['Email'],
-                'condition_id' => $conditionsMap['Unread'],
+                'event_id' => $eventsMap['Unread'],
             ],
             [
                 'channel_type_id' => $channelMap['SMS'],
-                'condition_id' => $conditionsMap['Success'],
+                'event_id' => $eventsMap['Success'],
             ],
             [
                 'channel_type_id' => $channelMap['SMS'],
-                'condition_id' => $conditionsMap['Failed'],
+                'event_id' => $eventsMap['Failed'],
             ]
         ];
 
 
-        ChannelTypeCondition::insert($arr);
+        ChannelTypeEvent::insert($arr);
     }
 }
