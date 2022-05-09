@@ -270,11 +270,34 @@ class CampaignsController extends Controller
         $obj->pair = [];
         $obj->dd = [];
 
-        // create new flow actions for new copied campaign, and make map for previoud and new flowactions ids.
+        // create new flow actions for new copied campaign, and make map for previous and new flowactions ids.
         collect($oldCampaign->flowActions()->get())->map(function ($action) use ($obj, $campaign) {
             $key = $action->id;
-            $flow = $campaign->flowActions()->create($action->makeVisible(['channel_id'])->toArray());
-            $obj->pair[$key] = $flow->id;
+            $flowAction = $campaign->flowActions()->create($action->makeVisible(['channel_id'])->toArray());
+            $obj->pair[$key] = $flowAction->id;
+
+            // create template for new flowactions
+            if (!empty($flowAction->configurations)) {
+                $templateObj = collect($flowAction->configurations)->where('name', 'template')->first();
+                $template = null;
+                if (!empty($templateObj->template->template_id)) {
+                    if ($flowAction->channel_id == 1)
+                        $templateObj->template->template_id = $templateObj->template->slug;
+                    $template = (array)$templateObj->template;
+                    $template['variables'] = empty($templateObj->variables) ? [] : $templateObj->variables;
+                    if (empty($flowAction->template)) {
+                        $flowAction->template()->create($template);
+                    } else {
+                        $flowAction->template->template_id = $template['template_id'];
+                        $flowAction->template->variables = $template['variables'];
+                        $flowAction->template->save();
+                    }
+                } else {
+                    if (!empty($flowAction->template)) {
+                        $flowAction->template->delete();
+                    }
+                }
+            }
         });
 
         // change ids in campaign module data according to the map created in above loop
