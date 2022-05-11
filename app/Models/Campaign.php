@@ -152,6 +152,9 @@ class Campaign extends Model
     public function resolveRouteBinding($value, $field = null)
     {
         try {
+            if (empty(request()->header('authorization'))) {
+                throw new \Exception('Invalid Request');
+            }
             $res = JWTDecode(request()->header('authorization'));
             $company = Company::where('ref_id', $res->company->id)->first();
             if (empty($company))
