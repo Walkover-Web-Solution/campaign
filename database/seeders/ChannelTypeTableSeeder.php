@@ -263,8 +263,46 @@ class ChannelTypeTableSeeder extends Seeder
             [
                 "name" => "RCS",
                 "configurations" => array(
-                    "fields" => array(),
-                    "mapping" => array()
+                    "fields" => array(
+                        array(
+                            "name" => "template",
+                            "type" => "object",
+                            "template" => array(
+                                "name" => "",
+                                "template_id" => "",
+                                "project_id" => ""
+                            ),
+                            "source" => "rcs-client-panel/template",
+                            "sourceFieldLabel" => "name",
+                            "sourceFieldValue" => "name",
+                            "is_required" => true,
+                            "variables" => []
+                        ),
+                        array(
+                            "name" => "delay",
+                            "label" => "Delay for",
+                            "type" => "text",
+                            "source" => "",
+                            "sourceFieldLabel" => "",
+                            "sourceFieldValue" => "",
+                            "is_required" => false,
+                            "value" => "0"
+                        )
+                    ),
+                    "mapping" => array(
+                        array(
+                            "name" => "mobiles",
+                            "type" => 'list',
+                            "is_required" => true,
+                            "label" => 'Mobiles',
+                            "regex" => "^([\d],?)+$",
+                            "source" => "",
+                            "sourceFieldLabel" => "",
+                            "sourceFieldValue" => "",
+                            "is_required" => true,
+                            "is_array" => true
+                        )
+                    )
                 )
             ],
 
