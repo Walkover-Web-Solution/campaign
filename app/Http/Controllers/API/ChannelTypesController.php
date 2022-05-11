@@ -19,7 +19,7 @@ class ChannelTypesController extends Controller
         $channels = ChannelType::with('conditions:name')->get();
         $obj = new \stdClass();
         $obj->channels = [];
-        $condition = 5;
+        $condition = 6;
         $channels->map(function ($channel) use ($obj, $condition) {
             $channel->is_hidden = false;
             if ($channel->id == $condition)

@@ -261,6 +261,14 @@ class ChannelTypeTableSeeder extends Seeder
             ],
 
             [
+                "name" => "RCS",
+                "configurations" => array(
+                    "fields" => array(),
+                    "mapping" => array()
+                )
+            ],
+
+            [
                 "name" => "Condition",
                 "configurations" => array(
                     "fields" => array(
