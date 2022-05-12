@@ -34,7 +34,7 @@ class UpdateCampaignRequest extends FormRequest
     public function rules()
     {
         $validationArray =  [
-            'name' => ['nullable', 'string', 'min:3', 'max:50', 'regex:/^[a-zA-Z0-9_]+$/', Rule::unique('campaigns', 'name')->where(function ($query) {
+            'name' => ['nullable', 'string', 'min:3', 'max:50', 'regex:/^[a-zA-Z0-9_\s]+$/', Rule::unique('campaigns', 'name')->where(function ($query) {
                 return $query->where('company_id', $this->company->id);
             })->ignore($this->campaign->id)],
             'style' => 'nullable|array',
@@ -49,6 +49,11 @@ class UpdateCampaignRequest extends FormRequest
     public function validated()
     {
         $input = $this->validator->validated();
+
+        //trim middle spaces in name of campaign
+        if (isset($this->name)) {
+            $input['name'] = preg_replace('!\s+!', ' ', $input['name']);
+        }
 
         if (isset($this->configurations)) {
             $input['configurations'] = $this->configurations;
