@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Models\Campaign;
 use App\Models\ChannelType;
 use App\Models\FlowAction;
+use App\Rules\ValidateModuleData;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -38,7 +39,7 @@ class CreateFlowActionsRequest extends FormRequest
             'name' => 'required|string|min:3|max:50|regex:/^[a-zA-Z0-9-_]+$/',
             'channel_id' => 'required|exists:channel_types,id',
             'style' => 'array',
-            'module_data' => 'array',
+            'module_data' => ['array', new ValidateModuleData($this)],
             'configurations' => 'required|array',
             'template' => 'array'
         ];
@@ -63,25 +64,6 @@ class CreateFlowActionsRequest extends FormRequest
             $token = $this->company->tokens()->create([
                 'name' => 'Default Token'
             ]);
-        }
-
-        // validate if any id from module data belongs to this campaign or not
-        if (isset($this->module_data)) {
-            $obj = new \stdClass();
-            $obj->flag = false;
-            $events = ChannelType::where('id', $this->channel_id)->first()->events()->pluck('name');
-            $events->map(function ($item) use ($obj) {
-                $key = 'op_' . strtolower($item);
-                if (isset($this->module_data[$key]) &&  $this->module_data[$key] != null) {
-                    $flow = $this->campaign->flowActions()->where('id', $this->module_data[$key])->first();
-                    if (empty($flow)) {
-                        $obj->flag = true;
-                        return $key;
-                    }
-                }
-            });
-            if ($obj->flag)
-                return false;
         }
 
         $obj = collect($this->configurations)->where('name', 'template')->first();
