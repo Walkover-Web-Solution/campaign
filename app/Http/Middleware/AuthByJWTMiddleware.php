@@ -18,6 +18,11 @@ class AuthByJWTMiddleware
 
     public function __construct(RateLimiter $limiter)
     {
+        if (!empty(request()->ip)) {
+            request()->merge([
+                'op_ip' => request()->ip
+            ]);
+        }
         $this->limiter = $limiter;
         if (request()->header('userip')) {
             $ips = explode(',', request()->header('userip'));

@@ -57,13 +57,19 @@ class CompanyTokenIPsController extends Controller
      */
     public function store(Token $token, StoreCompanyTokenIPRequest $request)
     {
-        $ip = $token->ips()->where('ip', $request->ip)->first();
-        if (empty($ip)) {
-            $ip = $token->ips()->create($request->validated());
+        $validated = $request->validated();
+        // changing ip to op_ip beacuse of having duplicate key 'ip' in middleware
+        $data = [
+            'ip' => $validated['op_ip'],
+            'ip_type_id' => $validated['ip_type_id']
+        ];
+        $op_ip = $token->ips()->where('ip', $request->op_ip)->first();
+        if (empty($op_ip)) {
+            $op_ip = $token->ips()->create($data);
         } else {
-            $ip->update($request->validated());
+            $op_ip->update($data);
         }
-        return new CustomResource($ip);
+        return new CustomResource($op_ip);
     }
 
     /**
