@@ -51,18 +51,20 @@ class ValidateModuleDataRule implements Rule
             }
         }
 
-        foreach ($value['groupNames'] as $grpId => $grpName) {
-            $nameLength = \Str::length($grpName);
-            if (!($nameLength >= 1 && $nameLength <= 5)) {
-                $this->nameLimit = true;
+        if (!empty($value['groupNames'])) {
+            foreach ($value['groupNames'] as $grpId => $grpName) {
+                $nameLength = \Str::length($grpName);
+                if (!($nameLength >= 1 && $nameLength <= 5)) {
+                    $this->nameLimit = true;
+                    return false;
+                }
+            }
+
+            // As discussed with Shubhendra Agrawal, Can not create more than 9 Groups + 1(others)
+            if (count($value['groupNames']) > 9) {
+                $this->groupLimit = true;
                 return false;
             }
-        }
-
-        // As discussed with Shubhendra Agrawal, Can not create more than 9 Groups + 1(others)
-        if (count($value['groupNames']) > 9) {
-            $this->groupLimit = true;
-            return false;
         }
 
         return true;
