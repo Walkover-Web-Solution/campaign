@@ -44,10 +44,6 @@ class FlowActionsController extends Controller
     {
         $input = $request->validated();
 
-        if (!$input) {
-            return new CustomResource(["message" => "Module Data doesn't Belongs to Campaign"], true);
-        }
-
         //create flowAction
         $flowAction = $request->campaign->flowActions()->create($input);
 

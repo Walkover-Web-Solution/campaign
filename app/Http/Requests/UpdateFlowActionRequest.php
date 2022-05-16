@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\Campaign;
 use App\Models\ChannelType;
+use App\Rules\ValidateModuleDataRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -37,15 +38,10 @@ class UpdateFlowActionRequest extends FormRequest
             'name' => 'regex:/^[a-zA-Z0-9-_]+$/',
             'channel_id' => 'numeric',
             'style' => 'array',
-            'module_data' => 'array',
+            'module_data' => ['array', new ValidateModuleDataRule($this)],
             'configurations' => 'array',
             'template' => 'array'
         ];
         return $validationArray;
     }
-
-    // public function validated()
-    // {
-        
-    // }
 }
