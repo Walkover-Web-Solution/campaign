@@ -33,7 +33,8 @@ class ValidateModuleDataRule implements Rule
     {
 
         foreach ($value as $opKey => $opVal) {
-            if (\Str::startsWith($opKey, 'op') && !(\Str::endsWith($opKey, 'grp_id'))) {
+            $keySplit = explode('_', $opKey);
+            if (count($keySplit) == 2) {
                 if (!empty($this->request->module_data[$opKey])) {
                     $flow = $this->request->campaign->flowActions()->where('id', $this->request->module_data[$opKey])->first();
                     $updateFlowActionId = 0;
