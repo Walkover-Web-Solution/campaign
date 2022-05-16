@@ -5,7 +5,7 @@ namespace App\Rules;
 use App\Models\ChannelType;
 use Illuminate\Contracts\Validation\Rule;
 
-class ValidateModuleData implements Rule
+class ValidateModuleDataRule implements Rule
 {
     /**
      * Create a new rule instance.
@@ -31,7 +31,6 @@ class ValidateModuleData implements Rule
      */
     public function passes($attribute, $value)
     {
-        $flag = false;
 
         foreach ($value as $opKey => $opVal) {
             if (\Str::startsWith($opKey, 'op') && !(\Str::endsWith($opKey, 'grp_id'))) {

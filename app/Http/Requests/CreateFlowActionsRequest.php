@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use App\Models\Campaign;
 use App\Models\ChannelType;
 use App\Models\FlowAction;
-use App\Rules\ValidateModuleData;
+use App\Rules\ValidateModuleDataRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -39,7 +39,7 @@ class CreateFlowActionsRequest extends FormRequest
             'name' => 'required|string|min:3|max:50|regex:/^[a-zA-Z0-9-_]+$/',
             'channel_id' => 'required|exists:channel_types,id',
             'style' => 'array',
-            'module_data' => ['array', new ValidateModuleData($this)],
+            'module_data' => ['array', new ValidateModuleDataRule($this)],
             'configurations' => 'required|array',
             'template' => 'array'
         ];
