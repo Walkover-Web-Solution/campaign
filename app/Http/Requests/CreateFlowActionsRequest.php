@@ -61,7 +61,7 @@ class CreateFlowActionsRequest extends FormRequest
     public function messages()
     {
         return [
-            'module_data.groupNames.*.name.regex' => "Group name's character limit should not be more than 5 and less than 1, ( _ - )"
+            'module_data.groupNames.*.name.regex' => "Group name's character limit should not be more than 5 and less than 1 and allowed characters are (A-z 0-9 _ -)"
         ];
     }
 
