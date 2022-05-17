@@ -350,6 +350,7 @@ class CampaignsController extends Controller
                         $obj->count = true;
                         $campaignLog->is_paused = false;
                         $campaignLog->save();
+                        playCampaign($campaignLog);
                     });
                     if ($obj->count)
                         return new CustomResource(['message' => 'Whole Campaign is Unpaused.']);
@@ -374,6 +375,7 @@ class CampaignsController extends Controller
             case 'play': {
                     $request->campaignLog->is_paused = false;
                     $request->campaignLog->save();
+                    playCampaign($request->campaignLog);
                     return new CustomResource(['message' => 'Campaign is Unpaused.']);
                 }
             default:

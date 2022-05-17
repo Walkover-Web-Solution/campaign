@@ -41,6 +41,10 @@ class ActivityRequest extends FormRequest
                 }
                 break;
             case 'play': {
+                    if ($campaignLog->status == 'Complete') {
+                        $this->running = false;
+                        return false;
+                    }
                     if (!$campaignLog->is_paused) {
                         $this->play = true;
                         return false;
