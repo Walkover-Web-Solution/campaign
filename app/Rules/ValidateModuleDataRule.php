@@ -14,7 +14,6 @@ class ValidateModuleDataRule implements Rule
      */
     protected $request;
     protected $update = false;
-    protected $nameLimit = false;
     protected $invalidModule = false;
     protected $groupLimit = false;
     public function __construct($request)
@@ -53,14 +52,6 @@ class ValidateModuleDataRule implements Rule
         }
 
         if (!empty($value['groupNames'])) {
-            foreach ($value['groupNames'] as $grpId => $grpName) {
-                $nameLength = \Str::length($grpName);
-                if (!($nameLength >= 1 && $nameLength <= 5)) {
-                    $this->nameLimit = true;
-                    return false;
-                }
-            }
-
             // As discussed with Shubhendra Agrawal, Can not create more than 9 Groups + 1(others)
             if (count($value['groupNames']) > 9) {
                 $this->groupLimit = true;
@@ -84,8 +75,6 @@ class ValidateModuleDataRule implements Rule
             return "Module data doesn't belongs to Campaign";
         } else if ($this->groupLimit) {
             return "You can not create more than 10 groups.";
-        } else if ($this->nameLimit) {
-            return "Group name's character limit should not be more than 5 and less than 1.";
         }
         return 'Something went wrong!';
     }

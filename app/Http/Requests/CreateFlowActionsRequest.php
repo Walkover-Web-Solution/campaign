@@ -40,6 +40,7 @@ class CreateFlowActionsRequest extends FormRequest
             'channel_id' => 'required|exists:channel_types,id',
             'style' => 'array',
             'module_data' => ['array', new ValidateModuleDataRule($this)],
+            'module_data.groupNames.*.name' => 'regex:/^[a-z0-9A-Z_-]{1,5}$/',
             'configurations' => 'required|array',
             'template' => 'array'
         ];
@@ -55,6 +56,13 @@ class CreateFlowActionsRequest extends FormRequest
         }
 
         return $validationArray;
+    }
+
+    public function messages()
+    {
+        return [
+            'module_data.groupNames.*.name.regex' => "Group name's character limit should not be more than 5 and less than 1, ( _ - )"
+        ];
     }
 
     public function validated()
