@@ -58,6 +58,8 @@ class EventTableSeeder extends Seeder
          * checks for every element in array if it is already present and executing query to create if not
          */
 
-        Event::insert($eventsArr);
+         collect($eventsArr)->map(function($event){
+            Event::create($event);
+         });
     }
 }
