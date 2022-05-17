@@ -27,7 +27,8 @@ class Campaign extends Model
         'meta' => 'object',
         'configurations' => 'object',
         'style' => 'json',
-        'module_data' => 'json'
+        'module_data' => 'json',
+        'is_active' => 'boolean'
     );
 
 
