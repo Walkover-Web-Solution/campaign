@@ -33,7 +33,8 @@ class ValidateModuleDataRule implements Rule
     {
 
         foreach ($value as $opKey => $opVal) {
-            if (\Str::startsWith($opKey, 'op') && !(\Str::endsWith($opKey, 'grp_id'))) {
+            $keySplit = explode('_', $opKey);
+            if (count($keySplit) == 2) {
                 if (!empty($this->request->module_data[$opKey])) {
                     $flow = $this->request->campaign->flowActions()->where('id', $this->request->module_data[$opKey])->first();
                     $updateFlowActionId = 0;
@@ -51,18 +52,20 @@ class ValidateModuleDataRule implements Rule
             }
         }
 
-        foreach ($value['groupNames'] as $grpId => $grpName) {
-            $nameLength = \Str::length($grpName);
-            if (!($nameLength >= 1 && $nameLength <= 5)) {
-                $this->nameLimit = true;
+        if (!empty($value['groupNames'])) {
+            foreach ($value['groupNames'] as $grpId => $grpName) {
+                $nameLength = \Str::length($grpName);
+                if (!($nameLength >= 1 && $nameLength <= 5)) {
+                    $this->nameLimit = true;
+                    return false;
+                }
+            }
+
+            // As discussed with Shubhendra Agrawal, Can not create more than 9 Groups + 1(others)
+            if (count($value['groupNames']) > 9) {
+                $this->groupLimit = true;
                 return false;
             }
-        }
-
-        // As discussed with Shubhendra Agrawal, Can not create more than 9 Groups + 1(others)
-        if (count($value['groupNames']) > 9) {
-            $this->groupLimit = true;
-            return false;
         }
 
         return true;
