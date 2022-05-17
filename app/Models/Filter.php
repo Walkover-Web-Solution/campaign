@@ -13,6 +13,10 @@ class Filter extends Model
         'source'
     ];
 
+    protected $casts = array(
+        'source' => 'json',
+    );
+
     protected $hidden = array(
         'created_at',
         'updated_at',

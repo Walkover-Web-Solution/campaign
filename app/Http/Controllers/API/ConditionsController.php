@@ -30,15 +30,10 @@ class ConditionsController extends Controller
                     $name = $filter->name;
                     array_push($obj->filters, $name);
                 } else {
-                    $countriesJson = Cache::get('countriesJson');
-                    if (empty($countriesJson)) {
-                        $countriesJson = json_decode(file_get_contents($filter->source));
-                        Cache::put('countriesJson', $countriesJson, 86400);
-                    }
                     // $name = collect($countriesJson)->pluck('Country code')->toArray();
-                    collect($countriesJson)->map(function ($item) use ($obj) {
-                        $countryCode = 'Country code';
-                        array_push($obj->filters, $item->$countryCode);
+                    collect($filter->source)->map(function ($item) use ($obj) {
+                        array_push($obj->filters, $item['filterValue']);
+
                     });
                 }
 
