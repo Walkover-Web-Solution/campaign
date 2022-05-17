@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\ActionLogsController;
+use App\Http\Controllers\API\ActionPerformedController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CampaignsController;
 use App\Http\Controllers\API\ChannelTypesController;
@@ -66,3 +67,5 @@ Route::get('/logs', [ActionLogsController::class, 'index']);
 Route::resource('/{slug}/flowActions', FlowActionsController::class);
 
 Route::resource('/{slug}/campaignLogs', CampaignLogController::class);
+
+Route::resource('/actionPerformed', ActionPerformedController::class);

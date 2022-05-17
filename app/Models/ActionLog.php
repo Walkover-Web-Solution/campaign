@@ -23,7 +23,6 @@ class ActionLog extends Model
     ];
 
     protected $casts = [
-        'mongo_id' => 'json',
         'response' => 'json'
     ];
 
