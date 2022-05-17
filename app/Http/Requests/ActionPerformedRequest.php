@@ -47,7 +47,7 @@ class ActionPerformedRequest extends FormRequest
             if ($action_log->flowAction()->first()->channel_id == 1) {
                 $validationArray += ['data.*.email' => 'required|email'];
             } else {
-                $validationArray += ['data.*.mobile_number' => 'required|mobile'];
+                $validationArray += ['data.*.mobile' => 'required|mobile'];
             }
         }
 
