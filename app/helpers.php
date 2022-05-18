@@ -160,15 +160,3 @@ function createNewJob($channel_id, $input)
         RabbitMQJob::dispatch($input)->onQueue($queue); //dispatching the job
     }
 }
-
-
-function playCampaign($campaignLog)
-{
-    $actionLogs = $campaignLog->actionLogs()->where('status', 'pending')->get();
-    collect($actionLogs)->map(function ($actionLog) {
-        $input = new \stdClass();
-        $input->action_log_id =  $actionLog->id;
-        $channel_id = $actionLog->flowAction()->first()->channel_id;
-        createNewJob($channel_id, $input);
-    });
-}

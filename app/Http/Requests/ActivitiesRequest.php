@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Http\FormRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ActivitiesRequest extends FormRequest
 {
@@ -35,9 +35,9 @@ class ActivitiesRequest extends FormRequest
     protected function failedAuthorization()
     {
         if ($this->invalidActivity) {
-            throw new AuthorizationException('Invalid Activity.');
+            throw new NotFoundHttpException('Invalid activity.');
         }
-        throw new AuthorizationException('This action is unauthorized.');
+        throw new NotFoundHttpException('This action is unauthorized.');
     }
 
     /**

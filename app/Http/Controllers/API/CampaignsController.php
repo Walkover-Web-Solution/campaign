@@ -3,8 +3,6 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ActivitiesRequest;
-use App\Http\Requests\ActivityRequest;
 use App\Http\Requests\CopyCampaignRequest;
 use App\Http\Requests\CreateCampaignRequest;
 use App\Http\Requests\DeleteCampaignRequest;
@@ -323,63 +321,5 @@ class CampaignsController extends Controller
 
         // return new CustomResource($campaign);
         return new CustomResource(["message" => "Campaign Copied Successfully."]);
-    }
-
-    /**
-     * Play and Pause all Campaign Logs belong to this Campaign.
-     */
-    public function activities(ActivitiesRequest $request)
-    {
-        $obj = new \stdClass();
-        $obj->count = false;
-        switch (strtolower($request->activity)) {
-            case 'pause': {
-                    $campaignLogs = $request->campaign->campaignLogs()->where('status', 'Running')->where('is_paused', false)->get();
-                    $campaignLogs->map(function ($campaignLog) use ($obj) {
-                        $obj->count = true;
-                        $campaignLog->is_paused = true;
-                        $campaignLog->save();
-                    });
-                    if ($obj->count)
-                        return new CustomResource(['message' => 'Whole Campaign is Paused.']);
-                    return new CustomResource(['message' => 'No single one is playing.']);
-                }
-            case 'play': {
-                    $campaignLogs = $request->campaign->campaignLogs()->where('is_paused', true)->get();
-                    $campaignLogs->map(function ($campaignLog) use ($obj) {
-                        $obj->count = true;
-                        $campaignLog->is_paused = false;
-                        $campaignLog->save();
-                        playCampaign($campaignLog);
-                    });
-                    if ($obj->count)
-                        return new CustomResource(['message' => 'Whole Campaign is Unpaused.']);
-                    return new CustomResource(['message' => 'No single one is paused.']);
-                }
-            default:
-                return new CustomResource(['message' => 'Invalid Activity.'], 1);
-        }
-    }
-
-    /**
-     * Play and Pause a single Campaign Log belongs to this Campaign.
-     */
-    public function activity(ActivityRequest $request)
-    {
-        switch (strtolower($request->activity)) {
-            case 'pause': {
-                    $request->campaignLog->is_paused = true;
-                    $request->campaignLog->save();
-                    return new CustomResource(['message' => 'Campaign is paused.']);
-                }
-            case 'play': {
-                    $request->campaignLog->is_paused = false;
-                    $request->campaignLog->save();
-                    playCampaign($request->campaignLog);
-                    return new CustomResource(['message' => 'Campaign is Unpaused.']);
-                }
-            default:
-                return new CustomResource(['message' => 'Invalid Activity.'], 1);
-        }
     }
 }

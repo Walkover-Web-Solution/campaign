@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Http\FormRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ActivityRequest extends FormRequest
 {
@@ -68,15 +68,15 @@ class ActivityRequest extends FormRequest
     protected function failedAuthorization()
     {
         if ($this->play) {
-            throw new AuthorizationException('Campaign is Already Playing.');
+            throw new \Exception('Campaign is already playing.');
         } else if ($this->pause) {
-            throw new AuthorizationException('Campaign is Already Paused.');
+            throw new \Exception('Campaign is already paused.');
         } else if (!$this->running) {
-            throw new AuthorizationException('Campaign is Already Completed.');
+            throw new \Exception('Campaign Completed. Unable to perform activity!');
         } else if ($this->invalidActivity) {
-            throw new AuthorizationException('Invalid Activity.');
+            throw new NotFoundHttpException('Invalid activity.');
         }
-        throw new AuthorizationException('This action is unauthorized.');
+        throw new NotFoundHttpException('Not found.');
     }
 
     /**

@@ -65,7 +65,7 @@ class Handler extends ExceptionHandler
                 'hasError' => true,
                 'status' => 'fail'
 
-            ]);
+            ], 404);
         });
 
 
