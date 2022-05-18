@@ -21,30 +21,8 @@ class ConditionsController extends Controller
         $obj->conditions = [];
         $obj->filters = [];
 
-        $conditons = Condition::all();
-
-        $conditons->map(function ($condition) use ($obj) {
-            $filters = $condition->filters()->get();
-            $filters->map(function ($filter) use ($obj) {
-                if (empty($filter->source)) {
-                    $name = $filter->name;
-                    array_push($obj->filters, $name);
-                } else {
-                    // $name = collect($countriesJson)->pluck('Country code')->toArray();
-                    collect($filter->source)->map(function ($item) use ($obj) {
-                        array_push($obj->filters, $item['filterValue']);
-
-                    });
-                }
-
-            });
-            $condition = $condition->toArray();
-            // change conditions to filters when UI get updated - TASK
-            $condition['conditions'] = $obj->filters;
-            $obj->filters = [];
-            array_push($obj->conditions, $condition);
-        });
-        return new CustomResource($obj->conditions);
+        $conditions = Condition::with('conditions')->get();
+        return new CustomResource($conditions);
     }
 
     /**

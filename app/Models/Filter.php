@@ -10,16 +10,17 @@ class Filter extends Model
     use HasFactory;
     protected $fillable = [
         'name',
-        'source'
+        'field',
+        'short_name',
+        'operation',
+        'value',
+        'query'
     ];
-
-    protected $casts = array(
-        'source' => 'json',
-    );
 
     protected $hidden = array(
         'created_at',
         'updated_at',
-        'pivot'
+        'pivot',
+        'id'
     );
 }

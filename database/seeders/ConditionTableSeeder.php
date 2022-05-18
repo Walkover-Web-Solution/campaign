@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\Condition;
+use App\Models\ConditionFilter;
+use App\Models\Filter;
 use Illuminate\Database\Seeder;
 
 class ConditionTableSeeder extends Seeder
@@ -15,7 +17,6 @@ class ConditionTableSeeder extends Seeder
     public function run()
     {
         Condition::truncate();
-
         $conditions = [
             [
                 "name" => "Countries",
@@ -27,7 +28,7 @@ class ConditionTableSeeder extends Seeder
         ];
 
         collect($conditions)->map(function ($condition) {
-            Condition::create($condition);
+            $condition = Condition::create($condition);
         });
     }
 }

@@ -13,8 +13,14 @@ class ChangeSourceTypeInFiltersTable extends Migration
      */
     public function up()
     {
+
         Schema::table('filters', function (Blueprint $table) {
-            $table->json('source')->change();
+            $table->dropColumn('source');
+            $table->text('short_name');
+            $table->text('field');
+            $table->text('operation');
+            $table->longText('value');
+            $table->longText('query');
         });
     }
 

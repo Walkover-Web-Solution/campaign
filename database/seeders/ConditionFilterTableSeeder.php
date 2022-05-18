@@ -16,6 +16,7 @@ class ConditionFilterTableSeeder extends Seeder
      */
     public function run()
     {
+        return;
         ConditionFilter::truncate();
 
         // get all condition map of name:id
