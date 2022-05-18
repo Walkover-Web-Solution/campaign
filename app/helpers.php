@@ -171,5 +171,4 @@ function playCampaign($campaignLog)
         $channel_id = $actionLog->flowAction()->first()->channel_id;
         createNewJob($channel_id, $input);
     });
-    dd('here');
 }
