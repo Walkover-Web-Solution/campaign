@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Resources\CustomResource;
+use App\Jobs\RabbitMQJob;
 use App\Models\Campaign;
 use App\Models\ChannelType;
 use App\Models\FlowAction;
@@ -126,5 +127,36 @@ function printLog($message, $data = null, $log = 1)
                 Log::emergency($message);
                 break;
             }
+    }
+}
+
+
+function getQueue($channel_id)
+{
+    switch ($channel_id) {
+        case 1:
+            return 'run_email_campaigns';
+        case 2:
+            return 'run_sms_campaigns';
+        case 3:
+            return 'run_whastapp_campaigns';
+        case 4:
+            return 'run_voice_campaigns';
+        case 5:
+            return 'run_rcs_campaigns';
+        case 6:
+            return 'condition_queue';
+    }
+}
+
+function createNewJob($channel_id, $input)
+{
+    //selecting the queue name as per the flow channel id
+    $queue = getQueue($channel_id);
+
+    if (env('APP_ENV') == 'local') {
+        RabbitMQJob::dispatch($input)->onQueue($queue)->onConnection('rabbitmqlocal'); //dispatching the job
+    } else {
+        RabbitMQJob::dispatch($input)->onQueue($queue); //dispatching the job
     }
 }

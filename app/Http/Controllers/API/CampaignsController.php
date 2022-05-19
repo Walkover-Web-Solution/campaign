@@ -5,7 +5,6 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CopyCampaignRequest;
 use App\Http\Requests\CreateCampaignRequest;
-use App\Http\Requests\CreateCampaignV2Request;
 use App\Http\Requests\DeleteCampaignRequest;
 use App\Http\Requests\GetFieldsRequest;
 use App\Http\Requests\UpdateCampaignRequest;
@@ -13,10 +12,7 @@ use App\Http\Resources\CustomResource;
 use App\Models\Campaign;
 use App\Models\ChannelType;
 use App\Models\FlowAction;
-use App\Models\TemplateDetail;
-use App\Models\Token;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class CampaignsController extends Controller
 {

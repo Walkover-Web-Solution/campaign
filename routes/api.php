@@ -69,3 +69,6 @@ Route::resource('/{slug}/flowActions', FlowActionsController::class);
 Route::resource('/{slug}/campaignLogs', CampaignLogController::class);
 
 Route::resource('/actionPerformed', ActionPerformedController::class);
+Route::post('{slug}/activity', [CampaignLogController::class, 'activities']);
+
+Route::post('{slug}/activity/{campaignLogId}', [CampaignLogController::class, 'activity']);

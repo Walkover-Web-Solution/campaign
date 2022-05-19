@@ -50,7 +50,8 @@ class RunCampaignController extends Controller
             "no_of_contacts" => array_sum($no_of_contacts),
             "mongo_uid" => $reqId,
             'ip' => (!empty(request()->ip)) ? request()->ip : request()->ip(),
-            'need_validation' => empty($request->need_validation) ? 0 : $request->need_validation
+            'need_validation' => empty($request->need_validation) ? 0 : $request->need_validation,
+            'is_paused' => false
         ];
 
         $campaignLog = $campaign->campaignLogs()->create($logs);
