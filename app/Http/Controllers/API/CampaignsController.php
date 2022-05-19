@@ -209,12 +209,28 @@ class CampaignsController extends Controller
             "token" => $token->token
         );
 
+        // Documentation
+        $obj->snippets['documentation'] = "Note: In case of SMS, RCS, Whatsapp priority will be given to variables associated with contacts and in case of Email priority will be given to variables associated with sendto object.";
+
         // get all channel ids from flow actions attached to given campaign
         $flowActions = collect($flowActions);
         $channelIds = $flowActions->pluck('channel_id')->unique();
 
+
+        // get all variables of this campaign
+        $variables = [];
+        $variableArray = $request->campaign->variables()->pluck('variables')->toArray();
+        // As per new request body, supports variables in contact in case of sms
+        $smsVariables = $request->campaign->variables()->where('flow_actions.channel_id', 2)->pluck('variables')->first();
+        foreach ($variableArray as $variable) {
+            $variables = array_unique(array_merge($variables, $variable));
+        }
+        collect($variables)->each(function ($variable) use ($obj) {
+            $obj->variables[$variable] = $variable;
+        });
+
         // create object of name,email,mobile according to channelIds
-        collect($channelIds)->each(function ($channelId) use ($obj) {
+        collect($channelIds)->each(function ($channelId) use ($obj, $smsVariables) {
             switch ($channelId) {
                 case 1: {
                         $obj->ob['name'] = 'name';
@@ -223,19 +239,10 @@ class CampaignsController extends Controller
                         break;
                     }
                 default: {
-                        $obj->ob['mobiles'] = '911234567890';
+                        $obj->ob['mobile'] = '911234567890';
+                        $obj->ob['variables'] = $smsVariables;
                     }
             }
-        });
-
-        // get all variables of this campaign
-        $variables = [];
-        $variableArray = $request->campaign->variables()->pluck('variables')->toArray();
-        foreach ($variableArray as $variable) {
-            $variables = array_unique(array_merge($variables, $variable));
-        }
-        collect($variables)->each(function ($variable) use ($obj) {
-            $obj->variables[$variable] = $variable;
         });
 
         // creating snippet requestBody according to object created above
