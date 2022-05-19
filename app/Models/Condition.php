@@ -30,4 +30,11 @@ class Condition extends Model
     {
         return $this->belongsToMany(Filter::class);
     }
+    /**
+     * will remove when UI gets updated - TASK
+     */
+    public function conditions()
+    {
+        return $this->belongsToMany(Filter::class);
+    }
 }
