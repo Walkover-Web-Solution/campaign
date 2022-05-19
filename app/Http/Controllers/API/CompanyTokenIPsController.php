@@ -82,7 +82,7 @@ class CompanyTokenIPsController extends Controller
     public function show(Token $token, CompanyTokenIP $ip)
     {
         if ($ip->token_id != $token->id) {
-            throw new NotFoundHttpException("Forbidden, Not Found!");
+            throw new NotFoundHttpException("Token not found!");
         }
         $ip->load('type');
         return  new CustomResource($ip);

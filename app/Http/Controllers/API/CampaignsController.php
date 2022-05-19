@@ -128,7 +128,7 @@ class CampaignsController extends Controller
         $input = $request->validated();
 
         if (!$input) {
-            return new CustomResource(["message" => "Module Data doesn't Belongs to Campaign"], true);
+            return new CustomResource(["message" => "Module Data doesn't Belongs to Campaign."], true);
         }
 
         $campaign->update($input);

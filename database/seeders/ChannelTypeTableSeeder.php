@@ -166,7 +166,7 @@ class ChannelTypeTableSeeder extends Seeder
                     "fields" => array(
                         array(
                             "name" => "template",
-                            "type" => "object",
+                            "type" => "dropdown",
                             "template" => array(
                                 "name" => "",
                                 "template_id" => ""
@@ -266,13 +266,13 @@ class ChannelTypeTableSeeder extends Seeder
                     "fields" => array(
                         array(
                             "name" => "template",
-                            "type" => "object",
+                            "type" => "dropdown",
                             "template" => array(
                                 "name" => "",
                                 "template_id" => "",
                                 "project_id" => ""
                             ),
-                            "source" => "rcs-client-panel/template",
+                            "source" => "rcs-client-panel/template/",
                             "sourceFieldLabel" => "name",
                             "sourceFieldValue" => "name",
                             "is_required" => true,
