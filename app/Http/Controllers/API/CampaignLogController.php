@@ -9,6 +9,7 @@ use App\Http\Resources\CustomResource;
 use App\Models\Campaign;
 use App\Models\CampaignLog;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CampaignLogController extends Controller
 {
@@ -21,7 +22,7 @@ class CampaignLogController extends Controller
     {
         $campaign = Campaign::where('slug', $slug)->where('company_id', $request->company->id)->first();
         if (empty($campaign)) {
-            return new CustomResource(['message' => 'Invalid Campaign']);
+            throw new NotFoundHttpException('Invalid Campaign');
         }
 
         $campaignLogs = $campaign->campaignLogs();
@@ -83,14 +84,11 @@ class CampaignLogController extends Controller
 
         $campaign = Campaign::where('slug', $slug)->where('company_id', $request->company->id)->first();
         if (empty($campaign)) {
-            return new CustomResource(['message' => 'Invalid Campaign']);
+            throw new NotFoundHttpException('Invalid Campaign');
         }
 
         if ($campaignLog->campaign_id != $campaign->id) {
-            return new CustomResource([
-                'data' => [],
-                'message' => 'No Action Logs Found'
-            ]);
+            throw new NotFoundHttpException('No Action Logs Found');
         }
 
         $actionLogs = $campaignLog->actionLogs()->join('flow_actions', 'flow_actions.id', '=', 'action_logs.flow_action_id');
@@ -185,7 +183,7 @@ class CampaignLogController extends Controller
                     return new CustomResource(['message' => 'No single one is paused.']);
                 }
             default:
-                return new CustomResource(['message' => 'Invalid Activity.'], 1);
+                throw new NotFoundHttpException('Invalid activity.');
         }
     }
 
@@ -207,7 +205,7 @@ class CampaignLogController extends Controller
                     return new CustomResource(['message' => 'Campaign is unpaused.']);
                 }
             default:
-                return new CustomResource(['message' => 'Invalid activity.'], 1);
+                throw new NotFoundHttpException('Invalid activity.');
         }
     }
 

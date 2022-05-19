@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Exceptions\InvalidRequestException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AssociateTokenToCampaignRequest;
 use App\Http\Requests\StoreTokenRequest;
@@ -81,7 +82,7 @@ class TokensController extends Controller
     public function show(Request $request, Token $token)
     {
         if ($token->company_id != $request->company->id) {
-            throw new \Exception("Unauthorized", 1);
+            throw new InvalidRequestException("Unauthorized");
         }
 
         $token->load(['campaigns']);
@@ -137,7 +138,7 @@ class TokensController extends Controller
     public function destroy(Token $token, Request $request)
     {
         if ($token->company_id != $request->company->id) {
-            throw new \Exception("Unauthorized", 1);
+            throw new InvalidRequestException("Unauthorized");
         }
         if ($token->is_primary) {
             return new CustomResource(["message" => "Can not delete default token"], true);

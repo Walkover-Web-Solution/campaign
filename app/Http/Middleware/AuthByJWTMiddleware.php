@@ -2,13 +2,11 @@
 
 namespace App\Http\Middleware;
 
-use App\Http\Resources\CustomResource;
+use App\Exceptions\InvalidRequestException;
 use App\Models\Company;
 use App\Models\User;
 use Closure;
-use Exception;
 use Illuminate\Http\Request;
-use Firebase\JWT\JWT;
 use Illuminate\Cache\RateLimiter;
 
 class AuthByJWTMiddleware
@@ -46,40 +44,39 @@ class AuthByJWTMiddleware
     public function handle(Request $request, Closure $next)
     {
         if (empty($request->header('authorization'))) {
-            throw new \Exception('Invalid Request');
+            throw new InvalidRequestException('Invalid Request');
         }
 
         try {
             $value = $request->header('authorization');
             $res = JWTDecode($value);
-
-            // checks if the request is to register.
-            if (\Request::getRequestUri() == "/api/register") {
-                return $next($request);
-            }
-
-            // get company whose ref_id matches with the company's id found in key
-            $company = Company::where('ref_id', $res->company->id)->first();
-            if (empty($company)) {
-                $response = new CustomResource(["message" => "invalid request"], true);
-                return response()->json($response, 404);
-            }
-
-            // get user whose company matches with the company passed in key
-            $user = User::where('company_id', $company->id)->first();
-            if (empty($user)) {
-                $response = new CustomResource(["message" => "invalid request"], true);
-                return response()->json($response, 404);
-            }
-
-            // merge into the request
-            $request->merge([
-                'company' => $company,
-                'user' => $user
-            ]);
         } catch (\Exception $e) {
-            throw new \Exception('Unauthorized');
+            printLog("expeption", (array)$e->getTrace());
+            throw new InvalidRequestException('Unauthorized');
         }
+
+        // checks if the request is to register.
+        if (\Request::getRequestUri() == "/api/register") {
+            return $next($request);
+        }
+
+        // get company whose ref_id matches with the company's id found in key
+        $company = Company::where('ref_id', $res->company->id)->first();
+        if (empty($company)) {
+            throw new InvalidRequestException('Invalid Request');
+        }
+
+        // get user whose company matches with the company passed in key
+        $user = User::where('company_id', $company->id)->first();
+        if (empty($user)) {
+            throw new InvalidRequestException('Invalid Request');
+        }
+
+        // merge into the request
+        $request->merge([
+            'company' => $company,
+            'user' => $user
+        ]);
 
         return $next($request);
     }

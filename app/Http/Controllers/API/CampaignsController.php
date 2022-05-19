@@ -13,6 +13,7 @@ use App\Models\Campaign;
 use App\Models\ChannelType;
 use App\Models\FlowAction;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CampaignsController extends Controller
 {
@@ -191,7 +192,7 @@ class CampaignsController extends Controller
     {
         $flowActions = $request->campaign->flowActions()->get();
         if (empty($flowActions->toArray())) {
-            return new CustomResource(['message' => 'No Actions Found!'], true);
+            throw new NotFoundHttpException('No Actions Found!');
         }
 
         $obj = new \stdClass();

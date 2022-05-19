@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Exceptions\InvalidRequestException;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ClientRequest extends FormRequest
@@ -15,7 +16,7 @@ class ClientRequest extends FormRequest
     {
         //check for secret key in header
         if (!($this->hasHeader('secretKey'))) {
-            throw new \Exception("Inavlid Request");
+            throw new InvalidRequestException("Invalid Request");
         }
 
         //check if key matches to the key (below only)->just a random generated key, fixed

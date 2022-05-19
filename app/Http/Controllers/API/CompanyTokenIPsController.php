@@ -9,6 +9,7 @@ use App\Http\Resources\CustomResource;
 use App\Models\CompanyTokenIp;
 use App\Models\Token;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CompanyTokenIPsController extends Controller
 {
@@ -81,7 +82,7 @@ class CompanyTokenIPsController extends Controller
     public function show(Token $token, CompanyTokenIP $ip)
     {
         if ($ip->token_id != $token->id) {
-            throw new \Exception("Forbidden, Not Found!");
+            throw new NotFoundHttpException("Forbidden, Not Found!");
         }
         $ip->load('type');
         return  new CustomResource($ip);
