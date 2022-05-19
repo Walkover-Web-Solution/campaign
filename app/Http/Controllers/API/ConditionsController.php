@@ -21,7 +21,7 @@ class ConditionsController extends Controller
         $obj->conditions = [];
         $obj->filters = [];
 
-        $conditions = Condition::with('conditions')->get();
+        $conditions = Condition::with('conditions:name,short_name')->get();
         return new CustomResource($conditions);
     }
 
