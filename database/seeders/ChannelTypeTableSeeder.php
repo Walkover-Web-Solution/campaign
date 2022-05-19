@@ -323,7 +323,7 @@ class ChannelTypeTableSeeder extends Seeder
                         array(
                             "name" => "Condition",
                             "label" => "Condition",
-                            "type" => "text",
+                            "type" => "list",
                             "source" => "",
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
