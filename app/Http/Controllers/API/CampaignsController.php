@@ -223,6 +223,10 @@ class CampaignsController extends Controller
         $variableArray = $request->campaign->variables()->pluck('variables')->toArray();
         // As per new request body, supports variables in contact in case of sms
         $smsVariables = $request->campaign->variables()->where('flow_actions.channel_id', 2)->pluck('variables')->first();
+        $obj->smsVariables = [];
+        collect($smsVariables)->map(function ($smsVariable) use ($obj) {
+            $obj->smsVariables = array_merge($obj->smsVariables, [$smsVariable => $smsVariable]);
+        });
         foreach ($variableArray as $variable) {
             $variables = array_unique(array_merge($variables, $variable));
         }
@@ -240,8 +244,8 @@ class CampaignsController extends Controller
                         break;
                     }
                 default: {
-                        $obj->ob['mobile'] = '911234567890';
-                        $obj->ob['variables'] = $smsVariables;
+                        $obj->ob['mobiles'] = '911234567890';
+                        $obj->ob['variables'] = $obj->smsVariables;
                     }
             }
         });
