@@ -64,7 +64,31 @@ class RunCampaignRequest extends FormRequest
         if ($flowActionsCount > 0) {
             return ['is_completedTrue' => 'required'];
         }
-        return [];
+
+        $keys = '';
+        $email = 1;
+        $sms = 2;
+        $whatsapp = 3;
+        $voice = 4;
+        $rcs = 5;
+        $channelTypes = $this->campaign->flowActions()->pluck('channel_id')->unique()->toArray();
+        // Check for email
+        if (in_array($email, $channelTypes)) {
+            $keys = 'email';
+        }
+        // Check for mobiles
+        if (
+            in_array($sms, $channelTypes) || in_array($whatsapp, $channelTypes) ||
+            in_array($voice, $channelTypes) || in_array($rcs, $channelTypes)
+        ) {
+            $keys .= empty($keys) ? 'mobiles' : ',mobiles';
+        }
+
+        return [
+            "data.sendTo.*.to.*" => 'required_array_keys:' . $keys,
+            "data.sendTo.*.cc.*" => 'required_array_keys:' . $keys,
+            "data.sendTo.*.bcc.*" => 'required_array_keys:' . $keys
+        ];
     }
 
     public function messages()
@@ -84,10 +108,10 @@ class RunCampaignRequest extends FormRequest
             return false;
         $totalCount = collect($this->data['sendTo'])->map(function ($item) {
             $maxCount = 1000;
-            $toCount = isset($item['to'])?count(collect($item['to'])):0;
-            $ccCount = isset($item['cc'])?count(collect($item['cc'])):0;;
-            $bccCount = isset($item['bcc'])?count(collect($item['bcc'])):0;;
-            $count = $toCount+$ccCount+$bccCount;
+            $toCount = isset($item['to']) ? count(collect($item['to'])) : 0;
+            $ccCount = isset($item['cc']) ? count(collect($item['cc'])) : 0;;
+            $bccCount = isset($item['bcc']) ? count(collect($item['bcc'])) : 0;;
+            $count = $toCount + $ccCount + $bccCount;
             if ($count >= $maxCount)
                 if ($count > $maxCount) {
                     return false;
