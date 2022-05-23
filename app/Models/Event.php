@@ -39,4 +39,15 @@ class Event extends Model
     {
         return $this->belongsToMany(ChannelType::class)->using(ChannelTypeEvents::class);
     }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($event) {
+            if (str_contains($event->name, '_')) {
+                throw new \Exception("Event name should not contains underscore!");
+            }
+        });
+    }
 }
