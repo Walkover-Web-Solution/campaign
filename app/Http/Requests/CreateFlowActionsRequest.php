@@ -81,6 +81,12 @@ class CreateFlowActionsRequest extends FormRequest
             $template['variables'] = $obj['variables'];
         }
 
+        if (empty($this->module_data['groupNames']) && $this->channel_id == 6) {
+            $module_data = $this->module_data;
+            $module_data['groupNames'] = [];
+            $this->module_data = $module_data;
+        }
+
         return array(
             'name' => $this->name,
             'channel_id' => $this->channel_id,
