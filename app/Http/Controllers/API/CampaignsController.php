@@ -227,6 +227,15 @@ class CampaignsController extends Controller
         collect($smsVariables)->map(function ($smsVariable) use ($obj) {
             $obj->smsVariables = array_merge($obj->smsVariables, [$smsVariable => $smsVariable]);
         });
+        // As per new request body, supports variables in contact in case of rcs
+        $rcsVariables = $request->campaign->variables()->where('flow_actions.channel_id', 5)->pluck('variables')->first();
+        $obj->rcsVariables = [];
+        collect($rcsVariables)->map(function ($rcsVariable) use ($obj) {
+            $obj->rcsVariables = array_merge($obj->rcsVariables, [$rcsVariable => $rcsVariable]);
+        });
+        // merge rcs and sms variables
+        $obj->mobileVariables = array_merge($obj->smsVariables, $obj->rcsVariables);
+
         foreach ($variableArray as $variable) {
             $variables = array_unique(array_merge($variables, $variable));
         }
@@ -245,7 +254,7 @@ class CampaignsController extends Controller
                     }
                 default: {
                         $obj->ob['mobiles'] = '911234567890';
-                        $obj->ob['variables'] = $obj->smsVariables;
+                        $obj->ob['variables'] = $obj->mobileVariables;
                     }
             }
         });
