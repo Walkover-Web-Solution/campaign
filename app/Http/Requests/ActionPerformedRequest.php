@@ -29,9 +29,14 @@ class ActionPerformedRequest extends FormRequest
             'data' => 'required|array',
             'data.*.event' => 'required'
         ];
-        $ref_id = $this->campaign_id;
+        $campaign_id = $this->campaign_id;
+        $mongo_id = '';
+        $campaign_id_split = explode('_', $campaign_id);
+        for ($i = 1; $i < count($campaign_id_split); $i++) {
+            $mongo_id .= empty($mongo_id) ? $campaign_id_split[$i] : '_' . $campaign_id_split[$i];
+        }
 
-        $action_log = ActionLog::where('mongo_id', $ref_id)->first();
+        $action_log = ActionLog::where('mongo_id', $mongo_id)->first();
         if (!empty($action_log)) {
             $channel_id = $action_log->flowAction()->first()->channel_id;
             $this->merge([
