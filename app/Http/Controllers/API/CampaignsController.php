@@ -198,6 +198,7 @@ class CampaignsController extends Controller
         $obj = new \stdClass();
         $obj->snippets = [];
         $obj->variables = [];
+        $obj->contactVariables = [];
         $obj->ob = [];
         $obj->isEmail = false;
 
@@ -221,30 +222,29 @@ class CampaignsController extends Controller
         // get all variables of this campaign
         $variables = [];
         $variableArray = $request->campaign->variables()->pluck('variables')->toArray();
-        // As per new request body, supports variables in contact in case of sms
-        $smsVariables = $request->campaign->variables()->where('flow_actions.channel_id', 2)->pluck('variables')->first();
-        $obj->smsVariables = [];
-        collect($smsVariables)->map(function ($smsVariable) use ($obj) {
-            $obj->smsVariables = array_merge($obj->smsVariables, [$smsVariable => $smsVariable]);
-        });
-        // As per new request body, supports variables in contact in case of rcs
-        $rcsVariables = $request->campaign->variables()->where('flow_actions.channel_id', 5)->pluck('variables')->first();
-        $obj->rcsVariables = [];
-        collect($rcsVariables)->map(function ($rcsVariable) use ($obj) {
-            $obj->rcsVariables = array_merge($obj->rcsVariables, [$rcsVariable => $rcsVariable]);
-        });
-        // merge rcs and sms variables
-        $obj->mobileVariables = array_merge($obj->smsVariables, $obj->rcsVariables);
 
         foreach ($variableArray as $variable) {
             $variables = array_unique(array_merge($variables, $variable));
         }
+
+        // As per new request body, supports variables in contact in case mobiles, remove email variables from contactVariables
+        $emailVariables = $request->campaign->variables()->where('flow_actions.channel_id', 1)->pluck('variables')->first();
+        if (empty($emailVariables)) {
+            $emailVariables = [];
+        }
+        $contactVariables = array_diff($variables, $emailVariables);
+
+        // make variables in key-value format
         collect($variables)->each(function ($variable) use ($obj) {
             $obj->variables[$variable] = $variable;
         });
 
+        collect($contactVariables)->each(function ($variable) use ($obj) {
+            $obj->contactVariables[$variable] = $variable;
+        });
+
         // create object of name,email,mobile according to channelIds
-        collect($channelIds)->each(function ($channelId) use ($obj, $smsVariables) {
+        collect($channelIds)->each(function ($channelId) use ($obj) {
             switch ($channelId) {
                 case 1: {
                         $obj->ob['name'] = 'name';
@@ -254,7 +254,7 @@ class CampaignsController extends Controller
                     }
                 default: {
                         $obj->ob['mobiles'] = '911234567890';
-                        $obj->ob['variables'] = $obj->mobileVariables;
+                        $obj->ob['variables'] = $obj->contactVariables;
                     }
             }
         });
