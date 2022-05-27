@@ -39,10 +39,6 @@ class ActionPerformedRequest extends FormRequest
         $action_log = ActionLog::where('mongo_id', $mongo_id)->first();
         if (!empty($action_log)) {
             $channel_id = $action_log->flowAction()->first()->channel_id;
-            $this->merge([
-                'action_log' => $action_log,
-                'channel_id' => $channel_id
-            ]);
             if ($channel_id == 1) {
                 $validationArray += ['data.*.email' => 'required|email'];
             } else {
