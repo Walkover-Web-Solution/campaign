@@ -149,7 +149,7 @@ function getQueue($channel_id)
     }
 }
 
-function createNewJob($channel_id, $input)
+function createNewJob($channel_id, $input, $delay = 0)
 {
     //selecting the queue name as per the flow channel id
     $queue = getQueue($channel_id);

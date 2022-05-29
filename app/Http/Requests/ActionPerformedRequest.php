@@ -12,7 +12,6 @@ class ActionPerformedRequest extends FormRequest
      *
      * @return bool
      */
-    protected $ref_id;
     public function authorize()
     {
         return true;
@@ -26,25 +25,18 @@ class ActionPerformedRequest extends FormRequest
     public function rules()
     {
         $validationArray =  [
-            'campaign_id' => 'string',
+            'campaign_id' => 'required|string',
             'data' => 'required|array',
             'data.*.event' => 'required'
         ];
-        $this->ref_id = $this->campaign_id;
+        $campaign_id = $this->campaign_id;
+        $campaign_id_split = explode('_', $campaign_id);
+        $actionLogId = $campaign_id_split[0];
 
-        if (empty($this->campaign_id)) {
-            unset($validationArray['campaign_id']);
-            $validationArray += [
-                'request_id' => 'required|string'
-            ];
-            $this->ref_id = $this->request_id;
-        }
-        $action_log = ActionLog::where('ref_id', $this->ref_id)->first();
+        $action_log = ActionLog::where('id', (int)$actionLogId)->first();
         if (!empty($action_log)) {
-            $this->merge([
-                'action_log' => $action_log
-            ]);
-            if ($action_log->flowAction()->first()->channel_id == 1) {
+            $channel_id = $action_log->flowAction()->first()->channel_id;
+            if ($channel_id == 1) {
                 $validationArray += ['data.*.email' => 'required|email'];
             } else {
                 $validationArray += ['data.*.mobile' => 'required|mobile'];
@@ -57,7 +49,7 @@ class ActionPerformedRequest extends FormRequest
     public function messages()
     {
         return [
-            'request_id.required' => 'request_id or campaign_id is required.'
+            'campaign_id.required' => 'campaign_id field is required.'
         ];
     }
 }
