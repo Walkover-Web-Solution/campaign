@@ -70,7 +70,7 @@ class CampaignsController extends Controller
      */
     public function create()
     {
-        //
+        throw new NotFoundHttpException();
     }
 
     /**
@@ -113,7 +113,7 @@ class CampaignsController extends Controller
      */
     public function edit($id)
     {
-        //
+        throw new NotFoundHttpException();
     }
 
     /**

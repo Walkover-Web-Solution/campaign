@@ -47,7 +47,7 @@ class CompanyTokenIPsController extends Controller
      */
     public function create()
     {
-        //
+        throw new NotFoundHttpException();
     }
 
     /**
@@ -96,7 +96,7 @@ class CompanyTokenIPsController extends Controller
      */
     public function edit($id)
     {
-        //
+        throw new NotFoundHttpException();
     }
 
     /**

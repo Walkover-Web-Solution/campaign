@@ -58,7 +58,7 @@ class CampaignLogController extends Controller
      */
     public function create()
     {
-        //
+        throw new NotFoundHttpException();
     }
 
     /**
@@ -69,7 +69,7 @@ class CampaignLogController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        throw new NotFoundHttpException();
     }
 
     /**
@@ -125,7 +125,7 @@ class CampaignLogController extends Controller
      */
     public function edit($id)
     {
-        //
+        throw new NotFoundHttpException();
     }
 
     /**
@@ -137,7 +137,7 @@ class CampaignLogController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        throw new NotFoundHttpException();
     }
 
     /**
@@ -148,7 +148,7 @@ class CampaignLogController extends Controller
      */
     public function destroy($id)
     {
-        //
+        throw new NotFoundHttpException();
     }
 
     /**

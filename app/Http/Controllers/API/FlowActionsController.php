@@ -9,9 +9,7 @@ use App\Http\Resources\CustomResource;
 use App\Models\Campaign;
 use App\Models\ChannelType;
 use App\Models\FlowAction;
-use App\Models\TemplateDetail;
-use Illuminate\Http\Request;
-use stdClass;
+use Illuminate\Http\Request;;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class FlowActionsController extends Controller
@@ -23,7 +21,7 @@ class FlowActionsController extends Controller
      */
     public function index()
     {
-        //
+        throw new NotFoundHttpException();
     }
 
     /**
@@ -33,7 +31,7 @@ class FlowActionsController extends Controller
      */
     public function create()
     {
-        //
+        throw new NotFoundHttpException();
     }
 
     /**
@@ -68,7 +66,7 @@ class FlowActionsController extends Controller
      */
     public function show($id)
     {
-        //
+        throw new NotFoundHttpException();
     }
 
     /**
@@ -79,7 +77,7 @@ class FlowActionsController extends Controller
      */
     public function edit($id)
     {
-        //
+        throw new NotFoundHttpException();
     }
 
     /**

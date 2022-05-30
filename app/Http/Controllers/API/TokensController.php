@@ -12,6 +12,7 @@ use App\Models\Campaign;
 use App\Models\Token;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TokensController extends Controller
 {
@@ -53,7 +54,7 @@ class TokensController extends Controller
      */
     public function create()
     {
-        //
+        throw new NotFoundHttpException();
     }
 
     /**
@@ -106,7 +107,7 @@ class TokensController extends Controller
      */
     public function edit($id)
     {
-        //
+        throw new NotFoundHttpException();
     }
 
     /**

@@ -7,11 +7,9 @@ use App\Http\Requests\ActionPerformedRequest;
 use App\Http\Resources\CustomResource;
 use App\Libs\JobLib;
 use App\Libs\MongoDBLib;
-use App\Models\ActionLog;
-use App\Models\ChannelType;
-use App\Models\FlowAction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ActionPerformedController extends Controller
 {
@@ -22,7 +20,7 @@ class ActionPerformedController extends Controller
      */
     public function index()
     {
-        //
+        throw new NotFoundHttpException();
     }
 
     /**
@@ -32,7 +30,7 @@ class ActionPerformedController extends Controller
      */
     public function create()
     {
-        //
+        throw new NotFoundHttpException();
     }
 
     /**
@@ -74,7 +72,7 @@ class ActionPerformedController extends Controller
      */
     public function show($id)
     {
-        //
+        throw new NotFoundHttpException();
     }
 
     /**
@@ -85,7 +83,7 @@ class ActionPerformedController extends Controller
      */
     public function edit($id)
     {
-        //
+        throw new NotFoundHttpException();
     }
 
     /**
@@ -97,7 +95,7 @@ class ActionPerformedController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        throw new NotFoundHttpException();
     }
 
     /**
@@ -108,6 +106,6 @@ class ActionPerformedController extends Controller
      */
     public function destroy($id)
     {
-        //
+        throw new NotFoundHttpException();
     }
 }
