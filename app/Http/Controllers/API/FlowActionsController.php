@@ -10,6 +10,7 @@ use App\Models\Campaign;
 use App\Models\ChannelType;
 use App\Models\FlowAction;
 use App\Models\TemplateDetail;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use stdClass;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -93,25 +94,6 @@ class FlowActionsController extends Controller
     {
         $input = $request->validated();
 
-        // validate if any id from module data belongs to this campaign or not
-        if (isset($request->module_data)) {
-            $obj = new \stdClass();
-            $obj->flag = false;
-            $events = ChannelType::where('id', $request->flowAction->channel_id)->first()->events()->pluck('name');
-            $events->map(function ($item) use ($obj, $request) {
-                $key = 'op_' . strtolower($item);
-                if (isset($request->module_data[$key]) &&  $request->module_data[$key] != null) {
-                    $flow = $request->campaign->flowActions()->where('id', $request->module_data[$key])->first();
-                    if (empty($flow)) {
-                        $obj->flag = true;
-                        return $key;
-                    }
-                }
-            });
-            if ($obj->flag)
-                return new CustomResource(["message" => "Module Data doesn't Belongs to Campaign"], true);
-        }
-
         $flowAction->update($input);
 
         if (isset($input['configurations'])) {
@@ -136,6 +118,15 @@ class FlowActionsController extends Controller
             }
         }
 
+        $newVariables = collect($input['campaign_variables'])->where('id', null)->toArray();
+        $existingVariables = collect($input['campaign_variables'])->whereNotNull('id')->pluck('id')->toArray();
+        $flowAction->campaign_variables()->sync($existingVariables);
+        try {
+            $flowAction->campaign_variables()->createMany($newVariables);
+        } catch (QueryException $e) {
+            return new CustomResource(['message' => $e->getBindings()[0] . ' Already Exists!'], true);
+        }
+        
         //validate if is_completed
         $flowAction->is_completed = validateFlow($flowAction);
         $flowAction->save();

@@ -15,6 +15,7 @@ use App\Http\Controllers\API\CampaignLogController;
 use App\Http\Controllers\API\ConditionsController;
 use App\Http\Controllers\API\EventsController;
 use App\Http\Controllers\API\RunCampaignController;
+use App\Http\Controllers\VariablesController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -69,6 +70,9 @@ Route::resource('/{slug}/flowActions', FlowActionsController::class);
 Route::resource('/{slug}/campaignLogs', CampaignLogController::class);
 
 Route::resource('/actionPerformed', ActionPerformedController::class);
+
 Route::post('{slug}/activity', [CampaignLogController::class, 'activities']);
 
 Route::post('{slug}/activity/{campaignLogId}', [CampaignLogController::class, 'activity']);
+
+Route::resource('/campaignvariables',VariablesController::class);

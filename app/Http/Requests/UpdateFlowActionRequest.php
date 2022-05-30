@@ -40,8 +40,16 @@ class UpdateFlowActionRequest extends FormRequest
             'style' => 'array',
             'module_data' => ['array', new ValidateModuleDataRule($this)],
             'configurations' => 'array',
-            'template' => 'array'
+            'template' => 'array',
+            'campaign_variables' => 'array'
         ];
+
+        if (!empty($this->campaign_variables)) {
+            $validationArray += [
+                'campaign_variables.*.id' => 'exists:variables,id,company_id,' . $this->company->id . '|nullable'
+            ];
+        }
+
         return $validationArray;
     }
 }
