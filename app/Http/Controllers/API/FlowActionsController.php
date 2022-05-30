@@ -210,7 +210,7 @@ class FlowActionsController extends Controller
                                 return;
                             }
                             $op_type = $parent['op_type'];
-                            if ($parentFlow->op_type != $flowAction->id) {
+                            if ($parentFlow->module_data->$op_type != $flowAction->id) {
                                 $obj->wrongParent = true;
                                 return;
                             }
