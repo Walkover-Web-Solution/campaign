@@ -163,7 +163,7 @@ class FlowActionsController extends Controller
         $obj->wrongParent = false;
         if (isset($request->parent_data)) {
             collect($request->parent_data)->map(function ($parent) use ($campaign, $flowAction, $obj) {
-                if ($parent['op_type'] == "op_start") {
+                if (!empty($parent['op_type']) && $parent['op_type'] == "op_start") {
                     $campaign->module_data = array(
                         "op_start" => null,
                         "op_start_type" => null
@@ -205,8 +205,16 @@ class FlowActionsController extends Controller
                                 $module_data = $changedModuleData;
                             }
                         } else {
-                            //modify it
+                            if (empty($parent['op_type'])) {
+                                $obj->wrongParent = true;
+                                return;
+                            }
                             $op_type = $parent['op_type'];
+                            if ($parentFlow->op_type != $flowAction->id) {
+                                $obj->wrongParent = true;
+                                return;
+                            }
+                            //modify it
                             $module_data->$op_type = null;
                         }
 
