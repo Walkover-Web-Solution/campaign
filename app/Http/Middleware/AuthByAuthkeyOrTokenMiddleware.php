@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Http\Resources\CustomResource;
+use App\Exceptions\InvalidRequestException;
 use App\Models\Company;
 use App\Models\Token;
 use Closure;
@@ -10,6 +10,7 @@ use Illuminate\Cache\RateLimiter;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AuthByAuthkeyOrTokenMiddleware
 {
@@ -46,7 +47,7 @@ class AuthByAuthkeyOrTokenMiddleware
         printLog("start of handle");
         if (!($request->hasHeader('token') || $request->hasHeader('authorization'))) {
             //     if (!($request->hasHeader('token'))){
-            throw new \Exception("Invalid Request");
+            throw new InvalidRequestException('Invalid Request');
         }
 
         printLog("check for authorization");
@@ -56,7 +57,7 @@ class AuthByAuthkeyOrTokenMiddleware
                 printLog("res=", (array)$res);
             } catch (\Exception $e) {
                 printLog("expeption", (array)$e->getTrace());
-                throw new \Exception("Unauthorized");
+                throw new InvalidRequestException('Unauthorized');
             }
 
             // in case of JWT we set need_validation to true by default
@@ -67,19 +68,16 @@ class AuthByAuthkeyOrTokenMiddleware
             printLog("company :", (array)$company);
 
             if (empty($company)) {
-                $response = new CustomResource(["message" => "invalid request"], true);
-                return response()->json($response, 404);
+                throw new InvalidRequestException('Invalid Request');
             }
             printLog("check for company");
             $campaign = $company->campaigns()->where('slug', $request->slug)->first();
             if (empty($campaign)) {
-                $response = new CustomResource(["message" => "Invalid Campaign"], true);
-                return response()->json($response, 404);
+                throw new NotFoundHttpException('Invalid Campaign');
             }
             printLog("company found");
             if (!$company->campaigns()->where('id', $campaign->id)->exists()) {
-                $response = new CustomResource(["message" => "User not Authorized"], true);
-                return response()->json($response, 404);
+                throw new NotFoundHttpException('User not Authorized');
             }
         } else {
             // in case of Token we set need_validation to false by default
@@ -89,8 +87,7 @@ class AuthByAuthkeyOrTokenMiddleware
             $token = Token::where('token', $request->header('token'))->first();
             printLog("token : ", (array)$token);
             if (empty($token)) {
-                $response = new CustomResource(["message" => "User not Authorized"], true);
-                return response()->json($response, 404);
+                throw new NotFoundHttpException('User not Authorized');
             }
             printLog("check for ip");
             $ip = $this->ip;
@@ -108,13 +105,11 @@ class AuthByAuthkeyOrTokenMiddleware
             printLog("check for token");
             $campaign = $token->company->campaigns()->where('slug', $request->slug)->first();
             if (empty($campaign)) {
-                $response = new CustomResource(["message" => "Invalid Campaign"], true);
-                return response()->json($response, 404);
+                throw new NotFoundHttpException('Invalid Campaign');
             }
             printLog("found campaign");
             if ($campaign->token_id != $token->id) {
-                $response = new CustomResource(["message" => "User not Authorized"], true);
-                return response()->json($response, 404);
+                throw new NotFoundHttpException('User not Authorized');
             }
         }
         printLog("merge campaign");
@@ -147,15 +142,13 @@ class AuthByAuthkeyOrTokenMiddleware
         if (!empty($tokenIP)) {
 
             if ($tokenIP->ip_type_id == $blackListIPType) {
-                $response = new CustomResource(["message" => "Your IP is blocked"], true);
-                return response()->json($response, 404);
+                throw new NotFoundHttpException('Your IP is blocked');
             }
 
             printLog("found token ip");
             if ($tokenIP->ip_type_id == $temporaryBlockedIPType) {
                 if (time() < strtotime(ISTToGMT($tokenIP->expires_at))) {
-                    $response = new CustomResource(["message" => $ip . " is blocked temporary"], true);
-                    return response()->json($response, 404);
+                    throw new NotFoundHttpException($ip . " is blocked temporary");
                 } else {
                     $tokenIP->delete();
                     $token->ips()->create([

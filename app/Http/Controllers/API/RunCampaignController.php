@@ -7,10 +7,7 @@ use App\Http\Requests\DryRunCampaignRequest;
 use App\Http\Requests\RunCampaignRequest;
 use App\Http\Resources\CustomResource;
 use App\Libs\MongoDBLib;
-use App\Models\ChannelType;
-use App\Models\FlowAction;
 use Carbon\Carbon;
-use Exception;
 use Illuminate\Foundation\Http\FormRequest;
 
 class RunCampaignController extends Controller
@@ -50,7 +47,8 @@ class RunCampaignController extends Controller
             "no_of_contacts" => array_sum($no_of_contacts),
             "mongo_uid" => $reqId,
             'ip' => (!empty(request()->ip)) ? request()->ip : request()->ip(),
-            'need_validation' => empty($request->need_validation) ? 0 : $request->need_validation
+            'need_validation' => empty($request->need_validation) ? 0 : $request->need_validation,
+            'is_paused' => false
         ];
 
         $campaignLog = $campaign->campaignLogs()->create($logs);

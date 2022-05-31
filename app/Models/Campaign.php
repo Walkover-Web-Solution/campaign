@@ -2,8 +2,7 @@
 
 namespace App\Models;
 
-use App\Http\Resources\CustomResource;
-use Exception;
+use App\Exceptions\InvalidRequestException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -27,7 +26,8 @@ class Campaign extends Model
         'meta' => 'object',
         'configurations' => 'object',
         'style' => 'json',
-        'module_data' => 'json'
+        'module_data' => 'json',
+        'is_active' => 'boolean'
     );
 
 
@@ -151,14 +151,17 @@ class Campaign extends Model
 
     public function resolveRouteBinding($value, $field = null)
     {
+        if (empty(request()->header('authorization'))) {
+            throw new InvalidRequestException('Invalid Request');
+        }
         try {
             $res = JWTDecode(request()->header('authorization'));
-            $company = Company::where('ref_id', $res->company->id)->first();
-            if (empty($company))
-                throw new Exception();
         } catch (\Exception $e) {
-            return new CustomResource(["message" => "Unauthorized"], true);
+            throw new InvalidRequestException('Invalid Request');
         }
+        $company = Company::where('ref_id', $res->company->id)->first();
+        if (empty($company))
+            throw new InvalidRequestException('Unauthorized');
         return Campaign::where('company_id', $company->id)->where('slug', $value)->first();
     }
 }

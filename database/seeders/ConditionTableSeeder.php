@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\Condition;
+use App\Models\ConditionFilter;
+use App\Models\Filter;
 use Illuminate\Database\Seeder;
 
 class ConditionTableSeeder extends Seeder
@@ -14,50 +16,19 @@ class ConditionTableSeeder extends Seeder
      */
     public function run()
     {
-        /*
-         * getting count of rows from db table
-         */
         Condition::truncate();
-
-        /*
-         * creating an array for all the rows 
-         */
-        $conditionsArr = [
+        $conditions = [
             [
-                'name' => 'Success',
-                'is_boolean' => true,
-                'wait_to_fail' => true
-            ],
-            [
-                'name' => 'Failed',
-                'is_boolean' => true,
-                'wait_to_fail' => true
-            ],
-            [
-                'name' => 'Read',
-                'is_boolean' => true,
-                'wait_to_fail' => true
-            ],
-            [
-                'name' => 'Unread',
-                'is_boolean' => true,
-                'wait_to_fail' => true
-            ],
-            [
-                'name' => 'Wait',
-                'is_boolean' => false,
-                'wait_to_fail' => false
+                "name" => "Countries",
+                "configurations" => array(
+                    "fields" => array(),
+                    "mapping" => array()
+                )
             ]
         ];
 
-        /*
-         * checks if this array has same length with the number of rows in database
-         */
-
-        /*
-         * checks for every element in array if it is already present and executing query to create if not
-         */
-
-        Condition::insert($conditionsArr);
+        collect($conditions)->map(function ($condition) {
+            $condition = Condition::create($condition);
+        });
     }
 }

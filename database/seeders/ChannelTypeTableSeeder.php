@@ -109,6 +109,16 @@ class ChannelTypeTableSeeder extends Seeder
                             "sourceFieldValue" => "",
                             "is_required" => false,
                             "value" => ""
+                        ),
+                        array(
+                            "name" => "delay",
+                            "label" => "Delay for",
+                            "type" => "text",
+                            "source" => "",
+                            "sourceFieldLabel" => "",
+                            "sourceFieldValue" => "",
+                            "is_required" => false,
+                            "value" => "0"
                         )
                     ),
                     "mapping" => array(
@@ -147,6 +157,7 @@ class ChannelTypeTableSeeder extends Seeder
                         )
                     )
 
+
                 )
             ],
             [
@@ -155,7 +166,7 @@ class ChannelTypeTableSeeder extends Seeder
                     "fields" => array(
                         array(
                             "name" => "template",
-                            "type" => "object",
+                            "type" => "dropdown",
                             "template" => array(
                                 "name" => "",
                                 "template_id" => ""
@@ -165,6 +176,16 @@ class ChannelTypeTableSeeder extends Seeder
                             "sourceFieldValue" => "name",
                             "is_required" => true,
                             "variables" => []
+                        ),
+                        array(
+                            "name" => "delay",
+                            "label" => "Delay for",
+                            "type" => "text",
+                            "source" => "",
+                            "sourceFieldLabel" => "",
+                            "sourceFieldValue" => "",
+                            "is_required" => false,
+                            "value" => "0"
                         )
 
                     ),
@@ -238,6 +259,81 @@ class ChannelTypeTableSeeder extends Seeder
                     )
                 )
             ],
+
+            [
+                "name" => "RCS",
+                "configurations" => array(
+                    "fields" => array(
+                        array(
+                            "name" => "template",
+                            "type" => "dropdown",
+                            "template" => array(
+                                "name" => "",
+                                "template_id" => "",
+                                "project_id" => ""
+                            ),
+                            "source" => "rcs-client-panel/template/",
+                            "sourceFieldLabel" => "name",
+                            "sourceFieldValue" => "name",
+                            "is_required" => true,
+                            "variables" => []
+                        ),
+                        array(
+                            "name" => "delay",
+                            "label" => "Delay for",
+                            "type" => "text",
+                            "source" => "",
+                            "sourceFieldLabel" => "",
+                            "sourceFieldValue" => "",
+                            "is_required" => false,
+                            "value" => "0"
+                        )
+                    ),
+                    "mapping" => array(
+                        array(
+                            "name" => "mobiles",
+                            "type" => 'list',
+                            "is_required" => true,
+                            "label" => 'Mobiles',
+                            "regex" => "^([\d],?)+$",
+                            "source" => "",
+                            "sourceFieldLabel" => "",
+                            "sourceFieldValue" => "",
+                            "is_required" => true,
+                            "is_array" => true
+                        )
+                    )
+                )
+            ],
+
+            [
+                "name" => "Condition",
+                "configurations" => array(
+                    "fields" => array(
+                        array(
+                            "name" => "delay",
+                            "label" => "Delay for",
+                            "type" => "text",
+                            "source" => "",
+                            "sourceFieldLabel" => "",
+                            "sourceFieldValue" => "",
+                            "is_required" => false,
+                            "value" => "0"
+                        ),
+                        array(
+                            "name" => "Condition",
+                            "label" => "Condition",
+                            "type" => "list",
+                            "source" => "",
+                            "sourceFieldLabel" => "",
+                            "sourceFieldValue" => "",
+                            "is_required" => true,
+                            "value" => ""
+                        )
+                    ),
+                    "mapping" => array()
+                )
+            ]
         ];
 
         collect($channelTypes)->map(function ($channelType) {

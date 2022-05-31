@@ -2,13 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\InvalidRequestException;
 use App\Http\Resources\CustomResource;
-use App\Models\ActionLog;
 use App\Models\Campaign;
 use Illuminate\Http\Request;
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
-use Illuminate\Bus\Dispatcher;
 
 class TestingController extends Controller
 {
@@ -34,7 +31,7 @@ class TestingController extends Controller
     public function encodeData(Request $request)
     {
         if (request()->header('testerKey') != 'testerKey') {
-            return new CustomResource(["message" => 'invalid request']);
+            throw new InvalidRequestException('Invalid Request');
         }
         try {
             $input = $request->all();

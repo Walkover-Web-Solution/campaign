@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Exceptions\InvalidRequestException;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -17,7 +18,7 @@ class AuthByAuthkeyMiddleware
     public function handle(Request $request, Closure $next)
     {
         if (empty($request->header('authkey'))) {
-            throw new \Exception('Unauthorized');
+            throw new InvalidRequestException("Unauthorized");
         }
 
         //used by MSG91 service 
