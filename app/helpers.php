@@ -1,13 +1,11 @@
 <?php
 
-use App\Http\Resources\CustomResource;
-use App\Jobs\RabbitMQJob;
+use App\Libs\JobLib;
 use App\Models\Campaign;
 use App\Models\ChannelType;
 use App\Models\FlowAction;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Support\Facades\Log;
 
 function ISTToGMT($date)
@@ -154,9 +152,7 @@ function createNewJob($channel_id, $input, $delay = 0)
     //selecting the queue name as per the flow channel id
     $queue = getQueue($channel_id);
 
-    if (env('APP_ENV') == 'local') {
-        RabbitMQJob::dispatch($input)->onQueue($queue)->onConnection('rabbitmqlocal'); //dispatching the job
-    } else {
-        RabbitMQJob::dispatch($input)->onQueue($queue); //dispatching the job
-    }
+    $lib = new JobLib();
+
+    $lib->enqueue($queue, $input);
 }
