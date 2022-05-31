@@ -5,8 +5,6 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CustomResource;
 use App\Models\ChannelType;
-use App\Models\ChannelTypeCondition;
-use App\Models\Condition;
 use Illuminate\Http\Request;
 
 class ChannelTypesController extends Controller
@@ -19,6 +17,15 @@ class ChannelTypesController extends Controller
     public function index()
     {
         $channels = ChannelType::with('conditions:name')->get();
-        return new CustomResource($channels);
+        $obj = new \stdClass();
+        $obj->channels = [];
+        $condition = 6;
+        $channels->map(function ($channel) use ($obj, $condition) {
+            $channel->is_hidden = false;
+            if ($channel->id == $condition)
+                $channel->is_hidden = true;
+            array_push($obj->channels, $channel);
+        });
+        return new CustomResource($obj->channels);
     }
 }

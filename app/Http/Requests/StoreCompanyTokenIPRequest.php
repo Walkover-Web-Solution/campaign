@@ -24,8 +24,16 @@ class StoreCompanyTokenIPRequest extends FormRequest
     public function rules()
     {
         return [
-            'ip' => 'required|ip',
+            'op_ip' => 'required|ip',
             'ip_type_id' => 'required|exists:ip_types,id'
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'op_ip.required' => 'The ip field is required.',
+            'op_ip.ip' => 'The ip must be a valid IP address.'
         ];
     }
 }

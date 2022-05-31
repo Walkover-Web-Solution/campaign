@@ -2,9 +2,8 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Campaign;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Http\FormRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DeleteCampaignRequest extends FormRequest
 {
@@ -24,7 +23,7 @@ class DeleteCampaignRequest extends FormRequest
     }
     protected function failedAuthorization()
     {
-        throw new AuthorizationException('Campaign Not Found!');
+        throw new NotFoundHttpException('Campaign Not Found!');
     }
 
     /**

@@ -5,19 +5,15 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CopyCampaignRequest;
 use App\Http\Requests\CreateCampaignRequest;
-use App\Http\Requests\CreateCampaignV2Request;
 use App\Http\Requests\DeleteCampaignRequest;
 use App\Http\Requests\GetFieldsRequest;
 use App\Http\Requests\UpdateCampaignRequest;
 use App\Http\Resources\CustomResource;
 use App\Models\Campaign;
 use App\Models\ChannelType;
-use App\Models\Condition;
 use App\Models\FlowAction;
-use App\Models\TemplateDetail;
-use App\Models\Token;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CampaignsController extends Controller
 {
@@ -74,7 +70,7 @@ class CampaignsController extends Controller
      */
     public function create()
     {
-        //
+        throw new NotFoundHttpException();
     }
 
     /**
@@ -117,7 +113,7 @@ class CampaignsController extends Controller
      */
     public function edit($id)
     {
-        //
+        throw new NotFoundHttpException();
     }
 
     /**
@@ -132,7 +128,7 @@ class CampaignsController extends Controller
         $input = $request->validated();
 
         if (!$input) {
-            return new CustomResource(["message" => "Module Data doesn't Belongs to Campaign"], true);
+            return new CustomResource(["message" => "Module Data doesn't Belongs to Campaign."], true);
         }
 
         $campaign->update($input);
@@ -196,12 +192,13 @@ class CampaignsController extends Controller
     {
         $flowActions = $request->campaign->flowActions()->get();
         if (empty($flowActions->toArray())) {
-            return new CustomResource(['message' => 'No Actions Found!'], true);
+            throw new NotFoundHttpException('No Actions Found!');
         }
 
         $obj = new \stdClass();
         $obj->snippets = [];
         $obj->variables = [];
+        $obj->contactVariables = [];
         $obj->ob = [];
         $obj->isEmail = false;
 
@@ -214,9 +211,37 @@ class CampaignsController extends Controller
             "token" => $token->token
         );
 
+        // Documentation
+        $obj->snippets['documentation'] = "Note: In case of SMS, RCS, Whatsapp priority will be given to variables associated with contacts and in case of Email priority will be given to variables associated with sendto object.";
+
         // get all channel ids from flow actions attached to given campaign
         $flowActions = collect($flowActions);
         $channelIds = $flowActions->pluck('channel_id')->unique();
+
+
+        // get all variables of this campaign
+        $variables = [];
+        $variableArray = $request->campaign->variables()->pluck('variables')->toArray();
+
+        foreach ($variableArray as $variable) {
+            $variables = array_unique(array_merge($variables, $variable));
+        }
+
+        // As per new request body, supports variables in contact in case mobiles, remove email variables from contactVariables
+        $emailVariables = $request->campaign->variables()->where('flow_actions.channel_id', 1)->pluck('variables')->first();
+        if (empty($emailVariables)) {
+            $emailVariables = [];
+        }
+        $contactVariables = array_diff($variables, $emailVariables);
+
+        // make variables in key-value format
+        collect($variables)->each(function ($variable) use ($obj) {
+            $obj->variables[$variable] = $variable;
+        });
+
+        collect($contactVariables)->each(function ($variable) use ($obj) {
+            $obj->contactVariables[$variable] = $variable;
+        });
 
         // create object of name,email,mobile according to channelIds
         collect($channelIds)->each(function ($channelId) use ($obj) {
@@ -229,18 +254,9 @@ class CampaignsController extends Controller
                     }
                 default: {
                         $obj->ob['mobiles'] = '911234567890';
+                        $obj->ob['variables'] = $obj->contactVariables;
                     }
             }
-        });
-
-        // get all variables of this campaign
-        $variables = [];
-        $variableArray = $request->campaign->variables()->pluck('variables')->toArray();
-        foreach ($variableArray as $variable) {
-            $variables = array_unique(array_merge($variables, $variable));
-        }
-        collect($variables)->each(function ($variable) use ($obj) {
-            $obj->variables[$variable] = $variable;
         });
 
         // creating snippet requestBody according to object created above
@@ -271,11 +287,34 @@ class CampaignsController extends Controller
         $obj->pair = [];
         $obj->dd = [];
 
-        // create new flow actions for new copied campaign, and make map for previoud and new flowactions ids.
+        // create new flow actions for new copied campaign, and make map for previous and new flowactions ids.
         collect($oldCampaign->flowActions()->get())->map(function ($action) use ($obj, $campaign) {
             $key = $action->id;
-            $flow = $campaign->flowActions()->create($action->makeVisible(['channel_id'])->toArray());
-            $obj->pair[$key] = $flow->id;
+            $flowAction = $campaign->flowActions()->create($action->makeVisible(['channel_id'])->toArray());
+            $obj->pair[$key] = $flowAction->id;
+
+            // create template for new flowactions
+            if (!empty($flowAction->configurations)) {
+                $templateObj = collect($flowAction->configurations)->where('name', 'template')->first();
+                $template = null;
+                if (!empty($templateObj->template->template_id)) {
+                    if ($flowAction->channel_id == 1)
+                        $templateObj->template->template_id = $templateObj->template->slug;
+                    $template = (array)$templateObj->template;
+                    $template['variables'] = empty($templateObj->variables) ? [] : $templateObj->variables;
+                    if (empty($flowAction->template)) {
+                        $flowAction->template()->create($template);
+                    } else {
+                        $flowAction->template->template_id = $template['template_id'];
+                        $flowAction->template->variables = $template['variables'];
+                        $flowAction->template->save();
+                    }
+                } else {
+                    if (!empty($flowAction->template)) {
+                        $flowAction->template->delete();
+                    }
+                }
+            }
         });
 
         // change ids in campaign module data according to the map created in above loop

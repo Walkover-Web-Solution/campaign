@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Exceptions\InvalidRequestException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AssociateTokenToCampaignRequest;
 use App\Http\Requests\StoreTokenRequest;
@@ -11,6 +12,7 @@ use App\Models\Campaign;
 use App\Models\Token;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TokensController extends Controller
 {
@@ -52,7 +54,7 @@ class TokensController extends Controller
      */
     public function create()
     {
-        //
+        throw new NotFoundHttpException();
     }
 
     /**
@@ -81,7 +83,7 @@ class TokensController extends Controller
     public function show(Request $request, Token $token)
     {
         if ($token->company_id != $request->company->id) {
-            throw new \Exception("Unauthorized", 1);
+            throw new InvalidRequestException("Unauthorized");
         }
 
         $token->load(['campaigns']);
@@ -105,7 +107,7 @@ class TokensController extends Controller
      */
     public function edit($id)
     {
-        //
+        throw new NotFoundHttpException();
     }
 
     /**
@@ -137,7 +139,7 @@ class TokensController extends Controller
     public function destroy(Token $token, Request $request)
     {
         if ($token->company_id != $request->company->id) {
-            throw new \Exception("Unauthorized", 1);
+            throw new InvalidRequestException("Unauthorized");
         }
         if ($token->is_primary) {
             return new CustomResource(["message" => "Can not delete default token"], true);

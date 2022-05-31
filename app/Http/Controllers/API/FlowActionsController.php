@@ -9,8 +9,8 @@ use App\Http\Resources\CustomResource;
 use App\Models\Campaign;
 use App\Models\ChannelType;
 use App\Models\FlowAction;
-use App\Models\TemplateDetail;
-use Illuminate\Http\Request;
+use Illuminate\Http\Request;;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class FlowActionsController extends Controller
 {
@@ -21,7 +21,7 @@ class FlowActionsController extends Controller
      */
     public function index()
     {
-        //
+        throw new NotFoundHttpException();
     }
 
     /**
@@ -31,7 +31,7 @@ class FlowActionsController extends Controller
      */
     public function create()
     {
-        //
+        throw new NotFoundHttpException();
     }
 
     /**
@@ -43,10 +43,6 @@ class FlowActionsController extends Controller
     public function store(CreateFlowActionsRequest $request)
     {
         $input = $request->validated();
-
-        if (!$input) {
-            return new CustomResource(["message" => "Module Data doesn't Belongs to Campaign"], true);
-        }
 
         //create flowAction
         $flowAction = $request->campaign->flowActions()->create($input);
@@ -70,7 +66,7 @@ class FlowActionsController extends Controller
      */
     public function show($id)
     {
-        //
+        throw new NotFoundHttpException();
     }
 
     /**
@@ -81,7 +77,7 @@ class FlowActionsController extends Controller
      */
     public function edit($id)
     {
-        //
+        throw new NotFoundHttpException();
     }
 
     /**
@@ -99,8 +95,8 @@ class FlowActionsController extends Controller
         if (isset($request->module_data)) {
             $obj = new \stdClass();
             $obj->flag = false;
-            $conditions = ChannelType::where('id', $request->flowAction->channel_id)->first()->conditions()->pluck('name');
-            $conditions->map(function ($item) use ($obj, $request) {
+            $events = ChannelType::where('id', $request->flowAction->channel_id)->first()->events()->pluck('name');
+            $events->map(function ($item) use ($obj, $request) {
                 $key = 'op_' . strtolower($item);
                 if (isset($request->module_data[$key]) &&  $request->module_data[$key] != null) {
                     $flow = $request->campaign->flowActions()->where('id', $request->module_data[$key])->first();
@@ -161,9 +157,11 @@ class FlowActionsController extends Controller
         //delete template related to this flowAction
         $flowAction->template()->delete();
 
+        $obj = new \stdClass();
+        $obj->wrongParent = false;
         if (isset($request->parent_data)) {
-            collect($request->parent_data)->map(function ($parent) use ($campaign) {
-                if ($parent['op_type'] == "op_start") {
+            collect($request->parent_data)->map(function ($parent) use ($campaign, $flowAction, $obj) {
+                if (!empty($parent['op_type']) && $parent['op_type'] == "op_start") {
                     $campaign->module_data = array(
                         "op_start" => null,
                         "op_start_type" => null
@@ -175,16 +173,60 @@ class FlowActionsController extends Controller
                         //fetch previous module_data
                         $module_data = $parentFlow->module_data;
 
-                        //modify it
-                        $op_type = $parent['op_type'];
-                        $module_data->$op_type = null;
+                        $obj->nullIds = [];
+                        // In case of condition as parent node, null every key which is connected to this flowAction
+                        if ($parentFlow->channel_id == 6) {
+                            $changedModuleData = collect($module_data)->map(function ($item, $key) use ($flowAction, $obj) {
+                                $keySplit = explode('_', $key);
+                                if (count($keySplit) == 2) {
+                                    if ($item == $flowAction->id) {
+                                        if ($keySplit[1] != 'others') {
+                                            array_push($obj->nullIds, $item);
+                                        }
+                                        return null;
+                                    } else {
+                                        return $item;
+                                    }
+                                } else if ($key != 'groupNames') {
+                                    return $item;
+                                }
+                            })->toArray();
+                            $obj->nullIds = array_unique($obj->nullIds);
+                            if (!empty($module_data->groupNames)) {
+                                $groupNames = collect($module_data->groupNames)->map(function ($item) use ($obj) {
+                                    if (in_array($item->flowAction, $obj->nullIds)) {
+                                        $item->flowAction = null;
+                                    }
+                                    return $item;
+                                })->toArray();
+                                $changedModuleData['groupNames'] = $groupNames;
+                                $module_data = $changedModuleData;
+                            }
+                        } else {
+                            if (empty($parent['op_type'])) {
+                                $obj->wrongParent = true;
+                                return;
+                            }
+                            $op_type = $parent['op_type'];
+                            if ($parentFlow->module_data->$op_type != $flowAction->id) {
+                                $obj->wrongParent = true;
+                                return;
+                            }
+                            //modify it
+                            $module_data->$op_type = null;
+                        }
 
                         //saved to db back
                         $parentFlow->module_data = $module_data;
                         $parentFlow->save();
+                    } else {
+                        $obj->wrongParent = true;
                     }
                 }
             });
+        }
+        if ($obj->wrongParent) {
+            throw new NotFoundHttpException("Parent node doesn't exists");
         }
         $flowAction->delete();
 

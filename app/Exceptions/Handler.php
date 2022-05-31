@@ -4,7 +4,6 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -48,7 +47,6 @@ class Handler extends ExceptionHandler
             ], 429);
         });
 
-
         $this->renderable(function (NotFoundHttpException  $e, $request) {
 
             $message = $e->getMessage();
@@ -65,10 +63,34 @@ class Handler extends ExceptionHandler
                 'hasError' => true,
                 'status' => 'fail'
 
-            ]);
+            ], 404);
         });
 
+        $this->renderable(function (InvalidRequestException $e, $request) {
+            $message = $e->getMessage();
+            if (empty($message)) {
+                $message = 'Invalid request!';
+            }
 
+            return response([
+                'errors' => $message,
+                'hasError' => true,
+                'status' => 'fail'
+            ], 401);
+        });
+
+        $this->renderable(function (ForbiddenException $e, $request) {
+            $message = $e->getMessage();
+            if (empty($message)) {
+                $message = 'Invalid request!';
+            }
+
+            return response([
+                'errors' => $message,
+                'hasError' => true,
+                'status' => 'fail'
+            ], 403);
+        });
 
 
 

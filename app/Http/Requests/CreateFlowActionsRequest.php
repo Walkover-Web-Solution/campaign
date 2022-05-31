@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Models\Campaign;
 use App\Models\ChannelType;
 use App\Models\FlowAction;
+use App\Rules\ValidateModuleDataRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -38,7 +39,8 @@ class CreateFlowActionsRequest extends FormRequest
             'name' => 'required|string|min:3|max:50|regex:/^[a-zA-Z0-9-_]+$/',
             'channel_id' => 'required|exists:channel_types,id',
             'style' => 'array',
-            'module_data' => 'array',
+            'module_data' => ['array', new ValidateModuleDataRule($this)],
+            'module_data.groupNames.*.name' => 'regex:/^[a-z0-9A-Z_-]{1,5}$/',
             'configurations' => 'required|array',
             'template' => 'array'
         ];
@@ -56,6 +58,13 @@ class CreateFlowActionsRequest extends FormRequest
         return $validationArray;
     }
 
+    public function messages()
+    {
+        return [
+            'module_data.groupNames.*.name.regex' => "Group name's character limit should not be more than 5 and less than 1 and allowed characters are (A-z 0-9 _ -)"
+        ];
+    }
+
     public function validated()
     {
         $token = $this->company->tokens()->first();
@@ -65,30 +74,17 @@ class CreateFlowActionsRequest extends FormRequest
             ]);
         }
 
-        // validate if any id from module data belongs to this campaign or not
-        if (isset($this->module_data)) {
-            $obj = new \stdClass();
-            $obj->flag = false;
-            $conditions = ChannelType::where('id', $this->channel_id)->first()->conditions()->pluck('name');
-            $conditions->map(function ($item) use ($obj) {
-                $key = 'op_' . strtolower($item);
-                if (isset($this->module_data[$key]) &&  $this->module_data[$key] != null) {
-                    $flow = $this->campaign->flowActions()->where('id', $this->module_data[$key])->first();
-                    if (empty($flow)) {
-                        $obj->flag = true;
-                        return $key;
-                    }
-                }
-            });
-            if ($obj->flag)
-                return false;
-        }
-
         $obj = collect($this->configurations)->where('name', 'template')->first();
         $template = null;
         if (!empty($obj['template']['template_id'])) {
             $template = $obj['template'];
             $template['variables'] = $obj['variables'];
+        }
+
+        if (empty($this->module_data['groupNames']) && $this->channel_id == 6) {
+            $module_data = $this->module_data;
+            $module_data['groupNames'] = [];
+            $this->module_data = $module_data;
         }
 
         return array(

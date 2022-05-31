@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ActionPerformedRequest;
 use App\Http\Resources\CustomResource;
-use App\Models\Condition;
+use App\Libs\JobLib;
+use App\Libs\MongoDBLib;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class ConditionsController extends Controller
+class ActionPerformedController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,12 +20,7 @@ class ConditionsController extends Controller
      */
     public function index()
     {
-        $obj = new \stdClass();
-        $obj->conditions = [];
-        $obj->filters = [];
-
-        $conditions = Condition::with('conditions:name,short_name')->get();
-        return new CustomResource($conditions);
+        throw new NotFoundHttpException();
     }
 
     /**
@@ -32,7 +30,7 @@ class ConditionsController extends Controller
      */
     public function create()
     {
-        //
+        throw new NotFoundHttpException();
     }
 
     /**
@@ -41,9 +39,29 @@ class ConditionsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ActionPerformedRequest $request)
     {
-        //
+        if (empty($this->mongo)) {
+            $this->mongo = new MongoDBLib;
+        }
+        $reqId = preg_replace('/\s+/', '', Carbon::now()->timestamp) . '_' . md5(uniqid(rand(), true));
+        $data = [
+            'requestId' => $reqId,
+            'data' => $request->validated()
+        ];
+        // insert into mongo
+        $this->mongo->collection('event_action_data')->insertOne($data);
+
+        // Create job for event_processing
+
+        $input = new \stdClass();
+        $input->eventMongoId = $reqId;
+        if (empty($this->lib)) {
+            $this->lib = new JobLib();
+        }
+        $this->lib->enqueue('event_processing', $input);
+
+        return new CustomResource(['message' => 'We have successfully recieved your response. Thank You!']);
     }
 
     /**
@@ -54,7 +72,7 @@ class ConditionsController extends Controller
      */
     public function show($id)
     {
-        //
+        throw new NotFoundHttpException();
     }
 
     /**
@@ -65,7 +83,7 @@ class ConditionsController extends Controller
      */
     public function edit($id)
     {
-        //
+        throw new NotFoundHttpException();
     }
 
     /**
@@ -77,7 +95,7 @@ class ConditionsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        throw new NotFoundHttpException();
     }
 
     /**
@@ -88,6 +106,6 @@ class ConditionsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        throw new NotFoundHttpException();
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\ActionLogsController;
+use App\Http\Controllers\API\ActionPerformedController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CampaignsController;
 use App\Http\Controllers\API\ChannelTypesController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\TestingController;
 use App\Http\Controllers\API\FlowActionsController;
 use App\Http\Controllers\API\CampaignLogController;
 use App\Http\Controllers\API\ConditionsController;
+use App\Http\Controllers\API\EventsController;
 use App\Http\Controllers\API\RunCampaignController;
 use Illuminate\Support\Facades\Route;
 
@@ -50,6 +52,8 @@ Route::post('/campaigns/{slug}/dryrun', [RunCampaignController::class, 'dryRun']
 
 Route::post('/encode', [TestingController::class, 'encodeData'])->withoutMiddleware('authby.jwt');
 
+Route::get('/events', [EventsController::class, 'index']);
+
 Route::get('/conditions', [ConditionsController::class, 'index']);
 
 Route::get('/campaigns/{slug}/fields', [CampaignsController::class, 'getFields']);
@@ -63,3 +67,9 @@ Route::get('/logs', [ActionLogsController::class, 'index']);
 Route::resource('/{slug}/flowActions', FlowActionsController::class);
 
 Route::resource('/{slug}/campaignLogs', CampaignLogController::class);
+
+Route::resource('/actionPerformed', ActionPerformedController::class);
+
+Route::post('{slug}/activity', [CampaignLogController::class, 'activities']);
+
+Route::post('{slug}/activity/{campaignLogId}', [CampaignLogController::class, 'activity']);
