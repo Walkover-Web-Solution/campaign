@@ -22,6 +22,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ChannelEventTableSeeder::class);
         $this->call(ConditionTableSeeder::class);
         $this->call(FilterTableSeeder::class);
-        $this->call(MongoIdJsonToStringSeeder::class);
+        // $this->call(MongoIdJsonToStringSeeder::class);
     }
 }
