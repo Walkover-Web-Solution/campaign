@@ -47,6 +47,10 @@ class RunCampaignRequest extends FormRequest
             return ['is_activeTrue' => 'required'];
         }
 
+        if (!isset($this->data['sendTo'])) {
+            return ['sendToNotFound' => 'required'];
+        }
+
         if (!$this->checkCount()) {
             return ['checkCount' => 'required'];
         }
@@ -70,6 +74,7 @@ class RunCampaignRequest extends FormRequest
     public function messages()
     {
         return [
+            'sendToNotFound.required' => 'data.sendTo key is required',
             'is_activeTrue.required' => 'Campaign is Paused. Unable to Execute!',
             'checkCount.required' => 'Data limit should not exceeded more than 1000.',
             'validCamp.required' => 'No start node for Campaign. Unable to Execute!',
@@ -80,14 +85,12 @@ class RunCampaignRequest extends FormRequest
 
     public function checkCount()
     {
-        if (!isset($this->data['sendTo']))
-            return false;
         $totalCount = collect($this->data['sendTo'])->map(function ($item) {
             $maxCount = 1000;
-            $toCount = isset($item['to'])?count(collect($item['to'])):0;
-            $ccCount = isset($item['cc'])?count(collect($item['cc'])):0;;
-            $bccCount = isset($item['bcc'])?count(collect($item['bcc'])):0;;
-            $count = $toCount+$ccCount+$bccCount;
+            $toCount = isset($item['to']) ? count(collect($item['to'])) : 0;
+            $ccCount = isset($item['cc']) ? count(collect($item['cc'])) : 0;
+            $bccCount = isset($item['bcc']) ? count(collect($item['bcc'])) : 0;;
+            $count = $toCount + $ccCount + $bccCount;
             if ($count >= $maxCount)
                 if ($count > $maxCount) {
                     return false;
