@@ -66,7 +66,7 @@ class TokensController extends Controller
     public function store(StoreTokenRequest $request)
     {
         $request->validate([
-            'name' => ['required', 'string', 'min:3', 'max:50', Rule::unique('tokens', 'name')->where(function ($query)  use ($request) {
+            'name' => ['required', 'string', 'regex:/^[a-zA-Z0-9 ]+$/', 'min:3', 'max:50', Rule::unique('tokens', 'name')->where(function ($query)  use ($request) {
                 return $query->where('company_id', $request->company->id);
             })]
         ]);
