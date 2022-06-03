@@ -8,6 +8,8 @@ class JobLib
 {
     public function enqueue($queue, $data)
     {
+        // Count set to zero when job first created
+        $data->failedCount = 0;
         try {
             if (env('APP_ENV') == 'local') {
                 RabbitMQJob::dispatch($data)->onQueue($queue)->onConnection('rabbitmqlocal');
