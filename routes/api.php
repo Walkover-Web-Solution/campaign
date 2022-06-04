@@ -30,6 +30,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/testing', [TestingController::class, 'index'])->withoutMiddleware('authby.jwt');
 
+Route::get('/failedJobs', [TestingController::class, 'getFailedJobs'])->withoutMiddleware('authby.jwt');
+
 Route::post('/register', [AuthController::class, 'register']);
 
 Route::resource('/campaigns', CampaignsController::class);

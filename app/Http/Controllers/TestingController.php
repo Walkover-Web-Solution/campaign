@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exceptions\InvalidRequestException;
 use App\Http\Resources\CustomResource;
 use App\Models\Campaign;
+use App\Models\FailedJob;
 use Illuminate\Http\Request;
 
 class TestingController extends Controller
@@ -39,6 +40,22 @@ class TestingController extends Controller
         } catch (\Exception $e) {
             return new CustomResource(["message" => $e->getMessage()]);
         }
+    }
+
+    public function getFailedJobs(Request $request)
+    {
+        if (request()->header('failedKey') != 'thisisfailedkey') {
+            throw new InvalidRequestException('Invalid Request');
+        }
+        $failedJobs = FailedJob::select()->where(function ($query) use ($request) {
+            if ($request->has('log_id')) {
+                $query->where('log_id', $request->log_id);
+            }
+            if ($request->has('queue')) {
+                $query->where('queue', $request->queue);
+            }
+        })->get();
+        return new CustomResource($failedJobs);
     }
 
     /**
