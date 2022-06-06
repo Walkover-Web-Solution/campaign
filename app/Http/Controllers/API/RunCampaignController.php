@@ -19,7 +19,7 @@ class RunCampaignController extends Controller
     }
 
     public function run(RunCampaignRequest $request)
-    {dd('her');
+    {
         return new CustomResource($this->commonRun($request)->resource);
     }
 

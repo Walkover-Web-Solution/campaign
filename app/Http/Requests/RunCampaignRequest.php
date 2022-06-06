@@ -92,10 +92,12 @@ class RunCampaignRequest extends FormRequest
                     if (empty($value['file'])) {
                         return $fail($key . '.file is required');
                     }
-                    if ($value['fileType'] == 'file') {
+                    if ($value['fileType'] == 'base64') {
                         $rule = new BlobRule();
                     } else if ($value['fileType'] == 'url') {
                         $rule = new AttachmentRule();
+                    } else {
+                        return $fail($key . '.fileType selected is invalid');
                     }
 
                     // Give error message if passes function return false
