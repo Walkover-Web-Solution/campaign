@@ -2,12 +2,11 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Resources\CustomResource;
 use App\Models\Campaign;
-use App\Models\ChannelType;
 use App\Models\FlowAction;
+use App\Rules\AttachmentRule;
+use App\Rules\BlobRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class RunCampaignRequest extends FormRequest
 {
@@ -68,7 +67,36 @@ class RunCampaignRequest extends FormRequest
         if ($flowActionsCount > 0) {
             return ['is_completedTrue' => 'required'];
         }
-        return [];
+
+        $validaitonArray = [
+            'data.attachments' => 'array'
+        ];
+
+        if (!empty($this->data['attachments'])); {
+            $validaitonArray += [
+                'data.attachments.*' => ['array', function ($key, $value, $fail) {
+                    // required msg for fileType
+                    if (empty($value['fileType'])) {
+                        return $fail($key . '.fileType is required');
+                    }
+                    // required msg for file
+                    if (empty($value['file'])) {
+                        return $fail($key . '.file is required');
+                    }
+                    if ($value['fileType'] == 'file') {
+                        $rule = new BlobRule();
+                    } else if ($value['fileType'] == 'url') {
+                        $rule = new AttachmentRule();
+                    }
+
+                    // Give error message if passes function return false
+                    if (!$rule->passes($key . '.file', $value['file'])) {
+                        $fail($rule->message());
+                    }
+                }]
+            ];
+        }
+        return $validaitonArray;
     }
 
     public function messages()
