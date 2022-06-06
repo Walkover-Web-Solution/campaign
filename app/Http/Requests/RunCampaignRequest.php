@@ -79,6 +79,15 @@ class RunCampaignRequest extends FormRequest
                     if (empty($value['fileType'])) {
                         return $fail($key . '.fileType is required');
                     }
+                    // required msg for fileName
+                    if (empty($value['fileName'])) {
+                        return $fail($key . '.fileName is required');
+                    } else {
+                        // To avoid dot(.) in fileName, Remove when hendled from EMAIL side - TASK
+                        if (!preg_match("/^[a-zA-Z0-9_\s-]+$/", $value['fileName'])) {
+                            return $fail($key . '.fileName format is invalid');
+                        }
+                    }
                     // required msg for file
                     if (empty($value['file'])) {
                         return $fail($key . '.file is required');
