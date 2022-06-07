@@ -7,6 +7,7 @@ use Illuminate\Contracts\Validation\Rule;
 class BlobRule implements Rule
 {
     private $errorMsg;
+    public static $overAllSize;
     /**
      * Create a new rule instance.
      *
@@ -48,7 +49,14 @@ class BlobRule implements Rule
         if ($filesize > 2097152) {
             $this->errorMsg = $attribute . ' size must be less than 2 Mb';
             return false;
+        } else {
+            BlobRule::$overAllSize += $filesize;
+            if ((BlobRule::$overAllSize + AttachmentRule::$overAllSize) > (10 * 1048576)) {
+                $this->errormsg = 'over all size must be less than 10 Mb';
+                return false;
+            }
         }
+
         // check file MIME type
         if (!in_array($mimeType, array_keys($mimeToExtensions))) {
             $this->errorMsg = $attribute . ", MIME type must be one of the following: " . implode(', ', array_keys($mimeToExtensions));

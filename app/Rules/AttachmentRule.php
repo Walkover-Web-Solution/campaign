@@ -7,6 +7,7 @@ use Illuminate\Contracts\Validation\Rule;
 class AttachmentRule implements Rule
 {
     private $errormsg;
+    public static $overAllSize;
     /**
      * Create a new rule instance.
      *
@@ -51,11 +52,17 @@ class AttachmentRule implements Rule
                 $this->errormsg = $attribute . ', Invalid file path.';
                 return false;
             }
-            if (isset($headers['Content-Length'])) {
-                $filesize = $headers['Content-Length'];
+            if (isset($headers['Content-Length']) || isset($headers['content-length'])) {
+                $filesize = empty($headers['Content-Length']) ? $headers['content-length'] : $headers['Content-Length'];
                 if ($filesize > 2097152) {
                     $this->errormsg = $attribute . ' size must be less than 2 Mb';
                     return false;
+                } else {
+                    AttachmentRule::$overAllSize += $filesize;
+                    if ((AttachmentRule::$overAllSize + BlobRule::$overAllSize) > (10 * 1048576)) {
+                        $this->errormsg = 'over all size must be less than 10 Mb';
+                        return false;
+                    }
                 }
             }
             if (isset($headers[0])) {
