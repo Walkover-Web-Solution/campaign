@@ -123,9 +123,9 @@ class ChannelTypeTableSeeder extends Seeder
                     ),
                     "mapping" => array(
                         array(
-                            "name" => "emails",
+                            "name" => "to",
                             "type" => 'list',
-                            "label" => 'To Email',
+                            "label" => 'To Emails',
                             "regex" => "^([\w+-.%]+@[\w.]+\.[A-Za-z]{2,4},?)+$",
                             "source" => "",
                             "sourceFieldLabel" => "",
