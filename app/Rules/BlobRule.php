@@ -53,7 +53,7 @@ class BlobRule implements Rule
         } else {
             BlobRule::$overAllSize += $filesize;
             if ((BlobRule::$overAllSize + AttachmentRule::$overAllSize) > (6 * 1048576)) {
-                $this->errormsg = 'Over all size must be less than 10 Mb';
+                $this->errormsg = 'Over all size of attachments must be less than 6 Mb';
                 throw new AttachmentTooLargeException('Attachment too large, ' . $this->errormsg);
             }
         }
