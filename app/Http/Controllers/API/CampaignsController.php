@@ -206,9 +206,13 @@ class CampaignsController extends Controller
         $obj->snippets['endpoint'] = env('SNIPPET_HOST_URL') . $request->campaign->slug . '/run';
 
         //token
-        $token = $request->campaign->token()->first();
+        // $token = $request->campaign->token()->first();
+        // $obj->snippets['header'] = array(
+        //     "token" => $token->token
+        // );
+        // authkey
         $obj->snippets['header'] = array(
-            "token" => $token->token
+            "authkey" => "{your_MSG91_authkey}"
         );
 
         // Documentation
@@ -264,6 +268,17 @@ class CampaignsController extends Controller
         if (!$obj->isEmail) {
             unset($obj->snippets['requestBody']['data']['sendTo'][0]['cc']);
             unset($obj->snippets['requestBody']['data']['sendTo'][0]['bcc']);
+        }
+
+        // Attachments
+        if ($obj->isEmail) {
+            $obj->snippets['requestBody']['data']['attachments'] = [
+                [
+                    "fileType" => "url/base64",
+                    "fileName" => "{your_fileName}",
+                    "file" => "{your_file}"
+                ]
+            ];
         }
 
         $obj->snippets['requestBody']['data']['sendTo'][0] = array_merge($obj->snippets['requestBody']['data']['sendTo'][0], ['variables' => $obj->variables]);
