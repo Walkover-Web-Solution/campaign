@@ -2,6 +2,7 @@
 
 namespace App\Rules;
 
+use App\Exceptions\AttachmentTooLargeException;
 use Illuminate\Contracts\Validation\Rule;
 
 class BlobRule implements Rule
@@ -52,8 +53,8 @@ class BlobRule implements Rule
         } else {
             BlobRule::$overAllSize += $filesize;
             if ((BlobRule::$overAllSize + AttachmentRule::$overAllSize) > (10 * 1048576)) {
-                $this->errormsg = 'over all size must be less than 10 Mb';
-                return false;
+                $this->errormsg = 'Over all size must be less than 10 Mb';
+                throw new AttachmentTooLargeException('Attachment too large, ' . $this->errormsg);
             }
         }
 
