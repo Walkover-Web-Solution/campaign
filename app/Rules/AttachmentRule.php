@@ -60,7 +60,7 @@ class AttachmentRule implements Rule
                     return false;
                 } else {
                     AttachmentRule::$overAllSize += $filesize;
-                    if ((AttachmentRule::$overAllSize + BlobRule::$overAllSize) > (10 * 1048576)) {
+                    if ((AttachmentRule::$overAllSize + BlobRule::$overAllSize) > (6 * 1048576)) {
                         $this->errormsg = 'Over all size must be less than 10 Mb';
                         throw new AttachmentTooLargeException('Attachment too large, ' . $this->errormsg);
                     }
