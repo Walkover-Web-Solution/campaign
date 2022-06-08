@@ -212,7 +212,7 @@ class CampaignsController extends Controller
         // );
         // authkey
         $obj->snippets['header'] = array(
-            "authkey" => "{your_authkey}"
+            "authkey" => "{your_MSG91_authkey}"
         );
 
         // Documentation
@@ -268,6 +268,17 @@ class CampaignsController extends Controller
         if (!$obj->isEmail) {
             unset($obj->snippets['requestBody']['data']['sendTo'][0]['cc']);
             unset($obj->snippets['requestBody']['data']['sendTo'][0]['bcc']);
+        }
+
+        // Attachments
+        if ($obj->isEmail) {
+            $obj->snippets['requestBody']['data']['attachments'] = [
+                [
+                    "fileType" => "url/base64",
+                    "fileName" => "{your_fileName}",
+                    "file" => "{your_file}"
+                ]
+            ];
         }
 
         $obj->snippets['requestBody']['data']['sendTo'][0] = array_merge($obj->snippets['requestBody']['data']['sendTo'][0], ['variables' => $obj->variables]);
