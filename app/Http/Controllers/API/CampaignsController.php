@@ -206,9 +206,13 @@ class CampaignsController extends Controller
         $obj->snippets['endpoint'] = env('SNIPPET_HOST_URL') . $request->campaign->slug . '/run';
 
         //token
-        $token = $request->campaign->token()->first();
+        // $token = $request->campaign->token()->first();
+        // $obj->snippets['header'] = array(
+        //     "token" => $token->token
+        // );
+        // authkey
         $obj->snippets['header'] = array(
-            "token" => $token->token
+            "authkey" => "{your_authkey}"
         );
 
         // Documentation
