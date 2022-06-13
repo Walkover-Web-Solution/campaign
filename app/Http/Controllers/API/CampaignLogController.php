@@ -167,8 +167,8 @@ class CampaignLogController extends Controller
                         $campaignLog->save();
                     });
                     if ($obj->count)
-                        return new CustomResource(['message' => 'Whole Campaign is Paused.']);
-                    return new CustomResource(['message' => 'No single one is playing.']);
+                        return new CustomResource(['message' => 'Campaign paused successfully.']);
+                    return new CustomResource(['message' => 'No log found to perform activity']);
                 }
             case 'play': {
                     $campaignLogs = $request->campaign->campaignLogs()->where('is_paused', true)->get();
@@ -179,8 +179,8 @@ class CampaignLogController extends Controller
                         $this->playCampaign($campaignLog);
                     });
                     if ($obj->count)
-                        return new CustomResource(['message' => 'Whole Campaign is Unpaused.']);
-                    return new CustomResource(['message' => 'No single one is paused.']);
+                        return new CustomResource(['message' => 'Campaign played successfully.']);
+                    return new CustomResource(['message' => 'No log found to perform activity']);
                 }
             default:
                 throw new NotFoundHttpException('Invalid activity.');
