@@ -85,7 +85,7 @@ class CampaignsController extends Controller
         $input = $request->validated();
 
         if (!$input) {
-            return new CustomResource(["message" => "Invalid Campaign Request"], true);
+            return new CustomResource(["message" => "Invalid Request Payload"], true);
         }
 
         // create campaign with the company assoication
@@ -128,7 +128,7 @@ class CampaignsController extends Controller
         $input = $request->validated();
 
         if (!$input) {
-            return new CustomResource(["message" => "Module Data doesn't Belongs to Campaign."], true);
+            return new CustomResource(["message" => "Module Data doesn't Belong to Unit."], true);
         }
 
         $campaign->update($input);
@@ -154,7 +154,7 @@ class CampaignsController extends Controller
 
         // delete this campaign
         $campaign->delete();
-        return new CustomResource(['message' => "Campaign Deleted Successfully."]);
+        return new CustomResource(['message' => "Deleted Successfully."]);
     }
 
     public function getFields(GetFieldsRequest $request)
@@ -353,6 +353,6 @@ class CampaignsController extends Controller
         });
 
         // return new CustomResource($campaign);
-        return new CustomResource(["message" => "Campaign Copied Successfully."]);
+        return new CustomResource(["message" => "Copied Successfully."]);
     }
 }
