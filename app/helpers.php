@@ -156,3 +156,30 @@ function createNewJob($channel_id, $input, $delay = 0)
 
     $lib->enqueue($queue, $input);
 }
+
+
+function getSeconds($unit, $value)
+{
+    $value = (int)$value;
+
+    switch ($unit) {
+        case "seconds": {
+                return $value * 1;
+            }
+        case "minutes": {
+                return $value * 60;
+            }
+            break;
+        case "hours": {
+                return $value * 60 * 60;
+            }
+            break;
+        case "days": {
+                return $value * 24 * 60 * 60;
+            }
+            break;
+        default: {
+                return 0;
+            }
+    }
+}
