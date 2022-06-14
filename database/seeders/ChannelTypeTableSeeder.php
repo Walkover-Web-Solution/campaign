@@ -118,6 +118,7 @@ class ChannelTypeTableSeeder extends Seeder
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
                             "is_required" => false,
+                            "unit" => "seconds",
                             "value" => "0"
                         )
                     ),
@@ -185,6 +186,7 @@ class ChannelTypeTableSeeder extends Seeder
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
                             "is_required" => false,
+                            "unit" => "seconds",
                             "value" => "0"
                         )
 
@@ -220,6 +222,17 @@ class ChannelTypeTableSeeder extends Seeder
                             "sourceFieldValue" => "name",
                             "is_required" => true,
                             "value" => ""
+                        ),
+                        array(
+                            "name" => "delay",
+                            "label" => "Delay for",
+                            "type" => "text",
+                            "source" => "",
+                            "sourceFieldLabel" => "",
+                            "sourceFieldValue" => "",
+                            "is_required" => false,
+                            "unit" => "seconds",
+                            "value" => "0"
                         )
                     ),
                     "mapping" => array(
@@ -242,7 +255,19 @@ class ChannelTypeTableSeeder extends Seeder
             [
                 "name" => "Voice",
                 "configurations" => array(
-                    "fields" => array(),
+                    "fields" => array(
+                        array(
+                            "name" => "delay",
+                            "label" => "Delay for",
+                            "type" => "text",
+                            "source" => "",
+                            "sourceFieldLabel" => "",
+                            "sourceFieldValue" => "",
+                            "is_required" => false,
+                            "unit" => "seconds",
+                            "value" => "0"
+                        )
+                    ),
                     "mapping" => array(
                         array(
                             "name" => "mobiles",
@@ -286,6 +311,7 @@ class ChannelTypeTableSeeder extends Seeder
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
                             "is_required" => false,
+                            "unit" => "seconds",
                             "value" => "0"
                         )
                     ),
@@ -318,6 +344,7 @@ class ChannelTypeTableSeeder extends Seeder
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
                             "is_required" => false,
+                            "unit" => "seconds",
                             "value" => "0"
                         ),
                         array(

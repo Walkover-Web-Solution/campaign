@@ -267,13 +267,20 @@ class CampaignsController extends Controller
             unset($obj->snippets['requestBody']['data']['sendTo'][0]['bcc']);
         }
 
-        // Attachments
         if ($obj->isEmail) {
+            // Attachments
             $obj->snippets['requestBody']['data']['attachments'] = [
                 [
                     "fileType" => "url/base64",
                     "fileName" => "{your_fileName}",
                     "file" => "{your_file}"
+                ]
+            ];
+            // reply_to
+            $obj->snippets['requestBody']['data']['reply_to'] = [
+                [
+                    "name" => "{your_name}",
+                    "email" => "{your_email}"
                 ]
             ];
         }
