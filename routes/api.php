@@ -14,6 +14,7 @@ use App\Http\Controllers\API\FlowActionsController;
 use App\Http\Controllers\API\CampaignLogController;
 use App\Http\Controllers\API\ConditionsController;
 use App\Http\Controllers\API\EventsController;
+use App\Http\Controllers\API\GeneralController;
 use App\Http\Controllers\API\RunCampaignController;
 use Illuminate\Support\Facades\Route;
 
@@ -30,7 +31,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/testing', [TestingController::class, 'index'])->withoutMiddleware('authby.jwt');
 
-Route::get('/failedJobs', [TestingController::class, 'getFailedJobs'])->withoutMiddleware('authby.jwt');
+Route::get('/failedJobs', [GeneralController::class, 'getFailedJobs'])->withoutMiddleware('authby.jwt');
 
 Route::post('/register', [AuthController::class, 'register']);
 
@@ -52,7 +53,7 @@ Route::post('/campaigns/{slug}/run', [RunCampaignController::class, 'run'])->wit
 
 Route::post('/campaigns/{slug}/dryrun', [RunCampaignController::class, 'dryRun']);
 
-Route::post('/encode', [TestingController::class, 'encodeData'])->withoutMiddleware('authby.jwt');
+Route::post('/encode', [GeneralController::class, 'encodeData'])->withoutMiddleware('authby.jwt');
 
 Route::get('/events', [EventsController::class, 'index']);
 
@@ -75,3 +76,5 @@ Route::resource('/actionPerformed', ActionPerformedController::class);
 Route::post('{slug}/activity', [CampaignLogController::class, 'activities']);
 
 Route::post('{slug}/activity/{campaignLogId}', [CampaignLogController::class, 'activity']);
+
+Route::get('/units', [GeneralController::class, 'getUnits'])->withoutMiddleware('authby.jwt');
