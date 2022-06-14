@@ -182,6 +182,18 @@ class CampaignLogController extends Controller
                         return new CustomResource(['message' => 'Activity performed successfully.']);
                     return new CustomResource(['message' => 'No log found to perform activity']);
                 }
+
+            case 'stop': {
+                    $campaignLogs = $request->campaign->campaignLogs()->where('status', 'Running')->where('is_paused', false)->get();
+                    $campaignLogs->map(function ($campaignLog) use ($obj) {
+                        $obj->count = true;
+                        $campaignLog->status = 'Stopped';
+                        $campaignLog->save();
+                    });
+                    if ($obj->count)
+                        return new CustomResource(['message' => 'Activity performed successfully.']);
+                    return new CustomResource(['message' => 'No log found to perform activity']);
+                }
             default:
                 throw new NotFoundHttpException('Invalid activity.');
         }
