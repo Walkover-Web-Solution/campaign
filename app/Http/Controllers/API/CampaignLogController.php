@@ -216,6 +216,11 @@ class CampaignLogController extends Controller
                     $this->playCampaign($request->campaignLog);
                     return new CustomResource(['message' => 'Activity performed successfully.']);
                 }
+            case 'stop': {
+                    $request->campaignLog->status = 'Stopped';
+                    $request->campaignLog->save();
+                    return new CustomResource(['message' => 'Activity performed successfully.']);
+                }
             default:
                 throw new NotFoundHttpException('Invalid activity.');
         }
