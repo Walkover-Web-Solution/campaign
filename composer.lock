@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7d1b44079d277f7f4c9ec7f1bb4e58d7",
+    "content-hash": "6b073dafb931384dab227d4121e23c6f",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1418,6 +1418,64 @@
                 }
             ],
             "time": "2022-06-09T08:26:02+00:00"
+        },
+        {
+            "name": "ixudra/curl",
+            "version": "6.22.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ixudra/curl.git",
+                "reference": "23cf5977a03a3ebcc41e979ef9e6ba87ae508f0e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ixudra/curl/zipball/23cf5977a03a3ebcc41e979ef9e6ba87ae508f0e",
+                "reference": "23cf5977a03a3ebcc41e979ef9e6ba87ae508f0e",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "illuminate/support": ">=4.0",
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Ixudra\\Curl\\CurlServiceProvider"
+                    ],
+                    "aliases": {
+                        "Curl": "Ixudra\\Curl\\Facades\\Curl"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Ixudra\\Curl\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jan Oris",
+                    "email": "jan.oris@ixudra.be"
+                }
+            ],
+            "description": "Custom PHP Curl library for the Laravel framework - developed by Ixudra",
+            "homepage": "http://ixudra.be",
+            "keywords": [
+                "Ixudra",
+                "curl",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/ixudra/curl/issues",
+                "source": "https://github.com/ixudra/curl/tree/6.22.0"
+            },
+            "time": "2021-11-14T14:39:54+00:00"
         },
         {
             "name": "jean85/pretty-package-versions",
