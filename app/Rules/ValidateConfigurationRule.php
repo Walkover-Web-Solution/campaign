@@ -36,7 +36,7 @@ class ValidateConfigurationRule implements Rule
         }
         $delayTime = getSeconds($delay['unit'], $delay['value']);
 
-        if ($delayTime > 7 * 24 * 60 * 60) {
+        if ($delayTime > 604800) {
             $this->errorMsg = "Delay must be less than 7 days";
             return false;
         }
