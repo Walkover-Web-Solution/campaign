@@ -164,6 +164,7 @@ class CampaignLogController extends Controller
                     $campaignLogs->map(function ($campaignLog) use ($obj) {
                         $obj->count = true;
                         $campaignLog->is_paused = true;
+                        $campaignLog->status = "Paused";
                         $campaignLog->save();
                     });
                     if ($obj->count)
@@ -175,6 +176,7 @@ class CampaignLogController extends Controller
                     $campaignLogs->map(function ($campaignLog) use ($obj) {
                         $obj->count = true;
                         $campaignLog->is_paused = false;
+                        $campaignLog->status = "Running";
                         $campaignLog->save();
                         $this->playCampaign($campaignLog);
                     });
