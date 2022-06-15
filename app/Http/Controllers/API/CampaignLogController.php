@@ -164,6 +164,7 @@ class CampaignLogController extends Controller
                     $campaignLogs->map(function ($campaignLog) use ($obj) {
                         $obj->count = true;
                         $campaignLog->is_paused = true;
+                        $campaignLog->status = "Paused";
                         $campaignLog->save();
                     });
                     if ($obj->count)
@@ -175,8 +176,21 @@ class CampaignLogController extends Controller
                     $campaignLogs->map(function ($campaignLog) use ($obj) {
                         $obj->count = true;
                         $campaignLog->is_paused = false;
+                        $campaignLog->status = "Running";
                         $campaignLog->save();
                         $this->playCampaign($campaignLog);
+                    });
+                    if ($obj->count)
+                        return new CustomResource(['message' => 'Activity performed successfully.']);
+                    return new CustomResource(['message' => 'No log found to perform activity']);
+                }
+
+            case 'stop': {
+                    $campaignLogs = $request->campaign->campaignLogs()->where('status', 'Running')->where('is_paused', false)->get();
+                    $campaignLogs->map(function ($campaignLog) use ($obj) {
+                        $obj->count = true;
+                        $campaignLog->status = 'Stopped';
+                        $campaignLog->save();
                     });
                     if ($obj->count)
                         return new CustomResource(['message' => 'Activity performed successfully.']);
@@ -202,6 +216,11 @@ class CampaignLogController extends Controller
                     $request->campaignLog->is_paused = false;
                     $request->campaignLog->save();
                     $this->playCampaign($request->campaignLog);
+                    return new CustomResource(['message' => 'Activity performed successfully.']);
+                }
+            case 'stop': {
+                    $request->campaignLog->status = 'Stopped';
+                    $request->campaignLog->save();
                     return new CustomResource(['message' => 'Activity performed successfully.']);
                 }
             default:
