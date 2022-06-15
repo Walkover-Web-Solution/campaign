@@ -42,10 +42,6 @@ class GeneralController extends Controller
 
     public function getUnits(Request $request)
     {
-        if (request()->header('unitKey') != 'thisisunitkey') {
-            throw new InvalidRequestException('Invalid Request');
-        }
-
         if (!$request->has('unit')) {
             throw new NotFoundHttpException('Invalid Unit!');
         }

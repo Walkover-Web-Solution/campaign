@@ -77,4 +77,4 @@ Route::post('{slug}/activity', [CampaignLogController::class, 'activities']);
 
 Route::post('{slug}/activity/{campaignLogId}', [CampaignLogController::class, 'activity']);
 
-Route::get('/units', [GeneralController::class, 'getUnits'])->withoutMiddleware('authby.jwt');
+Route::get('/units', [GeneralController::class, 'getUnits']);
