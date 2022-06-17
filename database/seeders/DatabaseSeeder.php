@@ -23,6 +23,8 @@ class DatabaseSeeder extends Seeder
         $this->call(ConditionTableSeeder::class);
         $this->call(FilterTableSeeder::class);
         $this->call(AddUnitInDelayFlowActionSeeder::class);
+        $this->call(AddSubpartKeyInDelayFlowActionSeeder::class);
+
         // $this->call(MongoIdJsonToStringSeeder::class);
     }
 }
