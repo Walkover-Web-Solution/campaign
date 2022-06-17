@@ -30,6 +30,6 @@ class JobService
         } else {
             $queue = 'bulk_data_queue';
         }
-        $this->lib->enqueue($queue, $input);
+        $this->lib->enqueue($queue, $input, 0);
     }
 }

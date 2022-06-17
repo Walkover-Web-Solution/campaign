@@ -237,8 +237,9 @@ class CampaignLogController extends Controller
         collect($actionLogs)->map(function ($actionLog) {
             $input = new \stdClass();
             $input->action_log_id =  $actionLog->id;
-            $channel_id = $actionLog->flowAction()->first()->channel_id;
-            createNewJob($channel_id, $input);
+            $flowAction = $actionLog->flowAction()->first();
+            $delay=collect($flowAction->configurations)->firstWhere('name','delay');
+            createNewJob($flowAction->channel_id, $input,$delay->value);
         });
     }
 }

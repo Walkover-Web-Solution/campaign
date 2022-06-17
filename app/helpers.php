@@ -154,7 +154,7 @@ function createNewJob($channel_id, $input, $delay = 0)
 
     $lib = new JobLib();
 
-    $lib->enqueue($queue, $input);
+    $lib->enqueue($queue, $input,$delay);
 }
 
 
