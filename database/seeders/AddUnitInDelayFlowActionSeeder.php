@@ -22,6 +22,18 @@ class AddUnitInDelayFlowActionSeeder extends Seeder
                     if (empty($item->unit)) {
                         $item->unit = "seconds";
                     }
+                    if (empty($item->subpart)) {
+                        $item->subpart = array(
+                            "name" => "time",
+                            "label" => "in",
+                            "type" => "dropdown",
+                            "source" => "/units?unit=time",
+                            "sourceFieldLabel" => "data",
+                            "sourceFieldValue" => "",
+                            "is_required" => true,
+                            "value" => "seconds"
+                        );
+                    }
                 }
                 return $item;
             })->toArray();
