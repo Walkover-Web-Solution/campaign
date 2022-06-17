@@ -19,7 +19,7 @@ class AddUnitInDelayFlowActionSeeder extends Seeder
         $flowActions->map(function ($flowAction) {
             $configurations = collect($flowAction->configurations)->map(function ($item) {
                 if ($item->name == 'delay') {
-                    if (empty($item->unit) || empty($item->subpart)) {
+                    if (empty($item->unit)) {
                         $item->unit = "seconds";
                     }
                     if (empty($item->subpart)) {
