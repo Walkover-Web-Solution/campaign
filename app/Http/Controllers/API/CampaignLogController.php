@@ -239,7 +239,8 @@ class CampaignLogController extends Controller
             $input->action_log_id =  $actionLog->id;
             $flowAction = $actionLog->flowAction()->first();
             $delay=collect($flowAction->configurations)->firstWhere('name','delay');
-            createNewJob($flowAction->channel_id, $input,$delay->value);
+            $delayValue = getSeconds($delay->unit, $delay->value);
+            createNewJob($flowAction->channel_id, $input,$delayValue);
         });
     }
 }
