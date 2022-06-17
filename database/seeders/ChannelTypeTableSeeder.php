@@ -119,7 +119,17 @@ class ChannelTypeTableSeeder extends Seeder
                             "sourceFieldValue" => "",
                             "is_required" => false,
                             "unit" => "seconds",
-                            "value" => "0"
+                            "value" => "0",
+                            "subpart" => array(
+                                "name" => "time",
+                                "label" => "in",
+                                "type" => "dropdown",
+                                "source" => "/units?unit=time",
+                                "sourceFieldLabel" => "data",
+                                "sourceFieldValue" => "",
+                                "is_required" => true,
+                                "value" => "seconds"
+                            )
                         )
                     ),
                     "mapping" => array(
@@ -187,7 +197,17 @@ class ChannelTypeTableSeeder extends Seeder
                             "sourceFieldValue" => "",
                             "is_required" => false,
                             "unit" => "seconds",
-                            "value" => "0"
+                            "value" => "0",
+                            "subpart" => array(
+                                "name" => "time",
+                                "label" => "in",
+                                "type" => "dropdown",
+                                "source" => "/units?unit=time",
+                                "sourceFieldLabel" => "data",
+                                "sourceFieldValue" => "",
+                                "is_required" => true,
+                                "value" => "seconds"
+                            )
                         )
 
                     ),
@@ -232,7 +252,17 @@ class ChannelTypeTableSeeder extends Seeder
                             "sourceFieldValue" => "",
                             "is_required" => false,
                             "unit" => "seconds",
-                            "value" => "0"
+                            "value" => "0",
+                            "subpart" => array(
+                                "name" => "time",
+                                "label" => "in",
+                                "type" => "dropdown",
+                                "source" => "/units?unit=time",
+                                "sourceFieldLabel" => "data",
+                                "sourceFieldValue" => "",
+                                "is_required" => true,
+                                "value" => "seconds"
+                            )
                         )
                     ),
                     "mapping" => array(
@@ -265,7 +295,17 @@ class ChannelTypeTableSeeder extends Seeder
                             "sourceFieldValue" => "",
                             "is_required" => false,
                             "unit" => "seconds",
-                            "value" => "0"
+                            "value" => "0",
+                            "subpart" => array(
+                                "name" => "time",
+                                "label" => "in",
+                                "type" => "dropdown",
+                                "source" => "/units?unit=time",
+                                "sourceFieldLabel" => "data",
+                                "sourceFieldValue" => "",
+                                "is_required" => true,
+                                "value" => "seconds"
+                            )
                         )
                     ),
                     "mapping" => array(
@@ -312,7 +352,17 @@ class ChannelTypeTableSeeder extends Seeder
                             "sourceFieldValue" => "",
                             "is_required" => false,
                             "unit" => "seconds",
-                            "value" => "0"
+                            "value" => "0",
+                            "subpart" => array(
+                                "name" => "time",
+                                "label" => "in",
+                                "type" => "dropdown",
+                                "source" => "/units?unit=time",
+                                "sourceFieldLabel" => "data",
+                                "sourceFieldValue" => "",
+                                "is_required" => true,
+                                "value" => "seconds"
+                            )
                         )
                     ),
                     "mapping" => array(
@@ -345,7 +395,17 @@ class ChannelTypeTableSeeder extends Seeder
                             "sourceFieldValue" => "",
                             "is_required" => false,
                             "unit" => "seconds",
-                            "value" => "0"
+                            "value" => "0",
+                            "subpart" => array(
+                                "name" => "time",
+                                "label" => "in",
+                                "type" => "dropdown",
+                                "source" => "/units?unit=time",
+                                "sourceFieldLabel" => "data",
+                                "sourceFieldValue" => "",
+                                "is_required" => true,
+                                "value" => "seconds"
+                            )
                         ),
                         array(
                             "name" => "Condition",
