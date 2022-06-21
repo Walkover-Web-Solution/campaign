@@ -15,6 +15,7 @@ class ActivityRequest extends FormRequest
      */
     protected $pause = false;
     protected $play = false;
+    protected $stop = false;
     protected $running = true;
     protected $invalidActivity = false;
     public function authorize()
@@ -35,6 +36,10 @@ class ActivityRequest extends FormRequest
                         $this->pause = true;
                         return false;
                     }
+                    if ($campaignLog->status == 'Stopped') {
+                        $this->stop = true;
+                        return false;
+                    }
                     if ($campaignLog->status == 'Complete') {
                         $this->running = false;
                         return false;
@@ -46,8 +51,23 @@ class ActivityRequest extends FormRequest
                         $this->running = false;
                         return false;
                     }
+                    if ($campaignLog->status == 'Stopped') {
+                        $this->stop = true;
+                        return false;
+                    }
                     if (!$campaignLog->is_paused) {
                         $this->play = true;
+                        return false;
+                    }
+                }
+                break;
+            case 'stop': {
+                    if ($campaignLog->status == 'Complete') {
+                        $this->running = false;
+                        return false;
+                    }
+                    if ($campaignLog->status == 'Stopped') {
+                        $this->stop = true;
                         return false;
                     }
                 }
@@ -72,6 +92,8 @@ class ActivityRequest extends FormRequest
             throw new ForbiddenException('Campaign is already playing.');
         } else if ($this->pause) {
             throw new ForbiddenException('Campaign is already paused.');
+        } else if ($this->stop) {
+            throw new ForbiddenException('Campaign is stopped. Unable to perform activity!');
         } else if (!$this->running) {
             throw new ForbiddenException('Campaign Completed. Unable to perform activity!');
         } else if ($this->invalidActivity) {
