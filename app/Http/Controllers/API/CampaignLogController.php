@@ -208,11 +208,13 @@ class CampaignLogController extends Controller
     {
         switch (strtolower($request->activity)) {
             case 'pause': {
+                    $request->campaignLog->status = "Paused";
                     $request->campaignLog->is_paused = true;
                     $request->campaignLog->save();
                     return new CustomResource(['message' => 'Activity performed successfully.']);
                 }
             case 'play': {
+                $request->campaignLog->status = "Running";
                     $request->campaignLog->is_paused = false;
                     $request->campaignLog->save();
                     $this->playCampaign($request->campaignLog);
@@ -238,9 +240,9 @@ class CampaignLogController extends Controller
             $input = new \stdClass();
             $input->action_log_id =  $actionLog->id;
             $flowAction = $actionLog->flowAction()->first();
-            $delay=collect($flowAction->configurations)->firstWhere('name','delay');
+            $delay = collect($flowAction->configurations)->firstWhere('name', 'delay');
             $delayValue = getSeconds($delay->unit, $delay->value);
-            createNewJob($flowAction->channel_id, $input,$delayValue);
+            createNewJob($flowAction->channel_id, $input, $delayValue);
         });
     }
 }
