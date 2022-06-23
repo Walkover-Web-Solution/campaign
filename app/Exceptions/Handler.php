@@ -92,6 +92,19 @@ class Handler extends ExceptionHandler
             ], 403);
         });
 
+        $this->renderable(function (AttachmentTooLargeException $e, $request) {
+            $message = $e->getMessage();
+            if (empty($message)) {
+                $message = 'Attachment too large!';
+            }
+
+            return response([
+                'errors' => $message,
+                'hasError' => true,
+                'status' => 'fail'
+            ], 413);
+        });
+
 
 
 
