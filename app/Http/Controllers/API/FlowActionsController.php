@@ -107,7 +107,7 @@ class FlowActionsController extends Controller
                 }
             });
             if ($obj->flag)
-                return new CustomResource(["message" => "Module Data doesn't Belongs to Campaign"], true);
+                return new CustomResource(["message" => "Module Data doesn't Belong to Unit."], true);
         }
 
         $flowAction->update($input);
@@ -151,7 +151,7 @@ class FlowActionsController extends Controller
     {
         $campaign = Campaign::where('slug', $slug)->where('company_id', $request->company->id)->first();
         if (empty($campaign)) {
-            return new CustomResource(['message' => "Campaign Not Found."]);
+            return new CustomResource(['message' => "Not Found."]);
         }
 
         //delete template related to this flowAction

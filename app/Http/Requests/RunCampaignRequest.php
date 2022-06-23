@@ -69,8 +69,17 @@ class RunCampaignRequest extends FormRequest
         }
 
         $validaitonArray = [
-            'data.attachments' => 'array'
+            'data.sendTo' => 'array',
+            'data.attachments' => 'array',
+            'data.reply_to' => 'array|max:5'
         ];
+
+        if (!empty($this->data['reply_to'])) {
+            $validaitonArray += [
+                'data.reply_to.*.email' => 'required|email',
+                'data.reply_to.*.name' => 'string',
+            ];
+        }
 
         if (!empty($this->data['attachments'])); {
             $validaitonArray += [

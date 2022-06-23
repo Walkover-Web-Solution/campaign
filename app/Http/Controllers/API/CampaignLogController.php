@@ -164,23 +164,37 @@ class CampaignLogController extends Controller
                     $campaignLogs->map(function ($campaignLog) use ($obj) {
                         $obj->count = true;
                         $campaignLog->is_paused = true;
+                        $campaignLog->status = "Paused";
                         $campaignLog->save();
                     });
                     if ($obj->count)
-                        return new CustomResource(['message' => 'Whole Campaign is Paused.']);
-                    return new CustomResource(['message' => 'No single one is playing.']);
+                        return new CustomResource(['message' => 'Activity performed successfully.']);
+                    return new CustomResource(['message' => 'No log found to perform activity']);
                 }
             case 'play': {
                     $campaignLogs = $request->campaign->campaignLogs()->where('is_paused', true)->get();
                     $campaignLogs->map(function ($campaignLog) use ($obj) {
                         $obj->count = true;
                         $campaignLog->is_paused = false;
+                        $campaignLog->status = "Running";
                         $campaignLog->save();
                         $this->playCampaign($campaignLog);
                     });
                     if ($obj->count)
-                        return new CustomResource(['message' => 'Whole Campaign is Unpaused.']);
-                    return new CustomResource(['message' => 'No single one is paused.']);
+                        return new CustomResource(['message' => 'Activity performed successfully.']);
+                    return new CustomResource(['message' => 'No log found to perform activity']);
+                }
+
+            case 'stop': {
+                    $campaignLogs = $request->campaign->campaignLogs()->where('status', 'Running')->where('is_paused', false)->get();
+                    $campaignLogs->map(function ($campaignLog) use ($obj) {
+                        $obj->count = true;
+                        $campaignLog->status = 'Stopped';
+                        $campaignLog->save();
+                    });
+                    if ($obj->count)
+                        return new CustomResource(['message' => 'Activity performed successfully.']);
+                    return new CustomResource(['message' => 'No log found to perform activity']);
                 }
             default:
                 throw new NotFoundHttpException('Invalid activity.');
@@ -194,15 +208,22 @@ class CampaignLogController extends Controller
     {
         switch (strtolower($request->activity)) {
             case 'pause': {
+                    $request->campaignLog->status = "Paused";
                     $request->campaignLog->is_paused = true;
                     $request->campaignLog->save();
-                    return new CustomResource(['message' => 'Campaign is paused.']);
+                    return new CustomResource(['message' => 'Activity performed successfully.']);
                 }
             case 'play': {
+                $request->campaignLog->status = "Running";
                     $request->campaignLog->is_paused = false;
                     $request->campaignLog->save();
                     $this->playCampaign($request->campaignLog);
-                    return new CustomResource(['message' => 'Campaign is unpaused.']);
+                    return new CustomResource(['message' => 'Activity performed successfully.']);
+                }
+            case 'stop': {
+                    $request->campaignLog->status = 'Stopped';
+                    $request->campaignLog->save();
+                    return new CustomResource(['message' => 'Activity performed successfully.']);
                 }
             default:
                 throw new NotFoundHttpException('Invalid activity.');
@@ -218,8 +239,10 @@ class CampaignLogController extends Controller
         collect($actionLogs)->map(function ($actionLog) {
             $input = new \stdClass();
             $input->action_log_id =  $actionLog->id;
-            $channel_id = $actionLog->flowAction()->first()->channel_id;
-            createNewJob($channel_id, $input);
+            $flowAction = $actionLog->flowAction()->first();
+            $delay = collect($flowAction->configurations)->firstWhere('name', 'delay');
+            $delayValue = getSeconds($delay->unit, $delay->value);
+            createNewJob($flowAction->channel_id, $input, $delayValue);
         });
     }
 }

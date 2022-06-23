@@ -118,7 +118,18 @@ class ChannelTypeTableSeeder extends Seeder
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
                             "is_required" => false,
-                            "value" => "0"
+                            "unit" => "seconds",
+                            "value" => "0",
+                            "subpart" => array(
+                                "name" => "time",
+                                "label" => "in",
+                                "type" => "dropdown",
+                                "source" => "/units?unit=time",
+                                "sourceFieldLabel" => "data",
+                                "sourceFieldValue" => "",
+                                "is_required" => true,
+                                "value" => "seconds"
+                            )
                         )
                     ),
                     "mapping" => array(
@@ -185,7 +196,18 @@ class ChannelTypeTableSeeder extends Seeder
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
                             "is_required" => false,
-                            "value" => "0"
+                            "unit" => "seconds",
+                            "value" => "0",
+                            "subpart" => array(
+                                "name" => "time",
+                                "label" => "in",
+                                "type" => "dropdown",
+                                "source" => "/units?unit=time",
+                                "sourceFieldLabel" => "data",
+                                "sourceFieldValue" => "",
+                                "is_required" => true,
+                                "value" => "seconds"
+                            )
                         )
 
                     ),
@@ -220,6 +242,27 @@ class ChannelTypeTableSeeder extends Seeder
                             "sourceFieldValue" => "name",
                             "is_required" => true,
                             "value" => ""
+                        ),
+                        array(
+                            "name" => "delay",
+                            "label" => "Delay for",
+                            "type" => "text",
+                            "source" => "",
+                            "sourceFieldLabel" => "",
+                            "sourceFieldValue" => "",
+                            "is_required" => false,
+                            "unit" => "seconds",
+                            "value" => "0",
+                            "subpart" => array(
+                                "name" => "time",
+                                "label" => "in",
+                                "type" => "dropdown",
+                                "source" => "/units?unit=time",
+                                "sourceFieldLabel" => "data",
+                                "sourceFieldValue" => "",
+                                "is_required" => true,
+                                "value" => "seconds"
+                            )
                         )
                     ),
                     "mapping" => array(
@@ -242,7 +285,29 @@ class ChannelTypeTableSeeder extends Seeder
             [
                 "name" => "Voice",
                 "configurations" => array(
-                    "fields" => array(),
+                    "fields" => array(
+                        array(
+                            "name" => "delay",
+                            "label" => "Delay for",
+                            "type" => "text",
+                            "source" => "",
+                            "sourceFieldLabel" => "",
+                            "sourceFieldValue" => "",
+                            "is_required" => false,
+                            "unit" => "seconds",
+                            "value" => "0",
+                            "subpart" => array(
+                                "name" => "time",
+                                "label" => "in",
+                                "type" => "dropdown",
+                                "source" => "/units?unit=time",
+                                "sourceFieldLabel" => "data",
+                                "sourceFieldValue" => "",
+                                "is_required" => true,
+                                "value" => "seconds"
+                            )
+                        )
+                    ),
                     "mapping" => array(
                         array(
                             "name" => "mobiles",
@@ -286,7 +351,18 @@ class ChannelTypeTableSeeder extends Seeder
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
                             "is_required" => false,
-                            "value" => "0"
+                            "unit" => "seconds",
+                            "value" => "0",
+                            "subpart" => array(
+                                "name" => "time",
+                                "label" => "in",
+                                "type" => "dropdown",
+                                "source" => "/units?unit=time",
+                                "sourceFieldLabel" => "data",
+                                "sourceFieldValue" => "",
+                                "is_required" => true,
+                                "value" => "seconds"
+                            )
                         )
                     ),
                     "mapping" => array(
@@ -318,7 +394,18 @@ class ChannelTypeTableSeeder extends Seeder
                             "sourceFieldLabel" => "",
                             "sourceFieldValue" => "",
                             "is_required" => false,
-                            "value" => "0"
+                            "unit" => "seconds",
+                            "value" => "0",
+                            "subpart" => array(
+                                "name" => "time",
+                                "label" => "in",
+                                "type" => "dropdown",
+                                "source" => "/units?unit=time",
+                                "sourceFieldLabel" => "data",
+                                "sourceFieldValue" => "",
+                                "is_required" => true,
+                                "value" => "seconds"
+                            )
                         ),
                         array(
                             "name" => "Condition",
