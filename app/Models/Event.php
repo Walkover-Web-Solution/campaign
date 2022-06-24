@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -48,6 +49,12 @@ class Event extends Model
             if (str_contains($event->name, '_')) {
                 throw new \Exception("Event name should not contains underscore!");
             }
+        });
+
+        static::addGlobalScope('hide_read_unread', function (Builder $builder) {
+            $success = 1;
+            $failed = 2;
+            $builder->whereIn('events.id', [$success, $failed]);
         });
     }
 }

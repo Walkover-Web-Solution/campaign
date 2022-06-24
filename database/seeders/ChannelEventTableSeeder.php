@@ -36,14 +36,14 @@ class ChannelEventTableSeeder extends Seeder
                 'channel_type_id' => $channelMap['Email'],
                 'event_id' => $eventsMap['Failed'],
             ],
-            [
-                'channel_type_id' => $channelMap['Email'],
-                'event_id' => $eventsMap['Read'],
-            ],
-            [
-                'channel_type_id' => $channelMap['Email'],
-                'event_id' => $eventsMap['Unread'],
-            ],
+            // [
+            //     'channel_type_id' => $channelMap['Email'],
+            //     'event_id' => $eventsMap['Read'],
+            // ],
+            // [
+            //     'channel_type_id' => $channelMap['Email'],
+            //     'event_id' => $eventsMap['Unread'],
+            // ],
             [
                 'channel_type_id' => $channelMap['SMS'],
                 'event_id' => $eventsMap['Success'],
