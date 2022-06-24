@@ -25,38 +25,6 @@ class TestingController extends Controller
         getCampaign(1);
     }
 
-    public function getActionLogFromCampaignRequest()
-    {
-    }
-
-    public function encodeData(Request $request)
-    {
-        if (request()->header('testerKey') != 'testerKey') {
-            throw new InvalidRequestException('Invalid Request');
-        }
-        try {
-            $input = $request->all();
-            return new CustomResource(["authorization" => JWTEncode($input)]);
-        } catch (\Exception $e) {
-            return new CustomResource(["message" => $e->getMessage()]);
-        }
-    }
-
-    public function getFailedJobs(Request $request)
-    {
-        if (request()->header('failedKey') != 'thisisfailedkey') {
-            throw new InvalidRequestException('Invalid Request');
-        }
-        $failedJobs = FailedJob::select()->where(function ($query) use ($request) {
-            if ($request->has('log_id')) {
-                $query->where('log_id', $request->log_id);
-            }
-            if ($request->has('queue')) {
-                $query->where('queue', $request->queue);
-            }
-        })->get();
-        return new CustomResource($failedJobs);
-    }
 
     /**
      * Show the form for creating a new resource.

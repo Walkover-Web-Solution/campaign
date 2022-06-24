@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\Campaign;
 use App\Models\ChannelType;
+use App\Rules\ValidateConfigurationRule;
 use App\Rules\ValidateModuleDataRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -39,7 +40,7 @@ class UpdateFlowActionRequest extends FormRequest
             'channel_id' => 'numeric',
             'style' => 'array',
             'module_data' => ['array', new ValidateModuleDataRule($this)],
-            'configurations' => 'array',
+            'configurations' => ['array', new ValidateConfigurationRule],
             'template' => 'array'
         ];
         return $validationArray;
