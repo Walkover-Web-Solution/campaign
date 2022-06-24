@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exceptions\InvalidRequestException;
 use App\Http\Resources\CustomResource;
 use App\Models\Campaign;
+use App\Models\ChannelType;
 use App\Models\FailedJob;
 use Illuminate\Http\Request;
 
@@ -90,6 +91,49 @@ class TestingController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function oneCampaign(Request $request)
+    {
+        $input = $request->data;
+        $campaignBody = [
+            'name' => $input['name'],
+            'module_data' => $input['module_data'],
+            'style' => $input['style'],
+            'configurations' => [],
+            'meta' => [],
+            'user_id' => $request->user->id,
+            'token_id' => $request->company->tokens()->first()->id,
+        ];
+
+        $campaign = $request->company->campaigns()->create($campaignBody);
+
+        $obj = new \stdClass();
+        $obj->keyMap = [];
+
+        $modules = $input['modules'];
+        collect($modules)->map(function ($channel, $key) use ($obj, $campaign) {
+            collect($channel)->map(function ($flowAction, $id) use ($obj, $campaign, $key) {
+                $flowAction['channel_id'] = ChannelType::where('name', $key)->pluck('id')->first();
+                dd($flowAction);
+                $flowActionModel = $campaign->flowActions()->create($flowAction);
+                $flowActionModel->template()->create($flowAction['template']);
+                $obj->keyMap[$id] = $flowActionModel->id;
+            });
+        });
+
+        // Update Campaign's op_start
+        $campModuleData = $campaign->module_data;
+        $campModuleData['op_start'] = $obj->keyMap[$campModuleData['op_start']];
+        $campaign->module_data = $campModuleData;
+        $campaign->save();
+
+        $flowActions = $campaign->flowActions()->get();
+        $flowActions->map(function ($flowAction) use ($obj) {
+            dd($flowAction->module_data);
+        });
+
+        return new CustomResource($campaign);
     }
 
     /*--- function to create flow actions,template and template details ---
