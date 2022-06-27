@@ -7,6 +7,8 @@ use App\Http\Resources\CustomResource;
 use App\Models\Campaign;
 use App\Models\ChannelType;
 use App\Models\FailedJob;
+use App\Models\FlowAction;
+use App\Models\Template;
 use Illuminate\Http\Request;
 
 class TestingController extends Controller
@@ -95,6 +97,9 @@ class TestingController extends Controller
 
     public function oneCampaign(Request $request)
     {
+        Campaign::truncate();
+        FlowAction::truncate();
+        Template::truncate();
         $input = $request->data;
         $campaignBody = [
             'name' => $input['name'],
@@ -115,9 +120,10 @@ class TestingController extends Controller
         collect($modules)->map(function ($channel, $key) use ($obj, $campaign) {
             collect($channel)->map(function ($flowAction, $id) use ($obj, $campaign, $key) {
                 $flowAction['channel_id'] = ChannelType::where('name', $key)->pluck('id')->first();
-                dd($flowAction);
+                $flowAction = collect($flowAction)->whereNotNull()->toArray();
                 $flowActionModel = $campaign->flowActions()->create($flowAction);
-                $flowActionModel->template()->create($flowAction['template']);
+                if (!empty($flowAction['template']))
+                    $flowActionModel->template()->create($flowAction['template']);
                 $obj->keyMap[$id] = $flowActionModel->id;
             });
         });
@@ -130,7 +136,24 @@ class TestingController extends Controller
 
         $flowActions = $campaign->flowActions()->get();
         $flowActions->map(function ($flowAction) use ($obj) {
-            dd($flowAction->module_data);
+            $module_data = collect($flowAction->module_data)->map(function ($value, $key) use ($obj) {
+                $key_split = explode('_', $key);
+                if (count($key_split) == 2 && !empty($value)) {
+                    return $obj->keyMap[$value];
+                }
+                return $value;
+            })->toArray();
+            if ($flowAction->channel_id == 6) {
+                if (!empty($module_data['groupNames'])) {
+                    $groupNames = collect($flowAction->module_data->groupNames)->map(function ($value) use ($obj) {
+                        $value->flowAction = $obj->keyMap[$value->flowAction];
+                        return $value;
+                    })->toArray();
+                    $module_data['groupNames'] = $groupNames;
+                }
+            }
+            $flowAction->module_data = $module_data;
+            $flowAction->save();
         });
 
         return new CustomResource($campaign);
