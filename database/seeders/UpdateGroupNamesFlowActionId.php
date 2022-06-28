@@ -17,6 +17,8 @@ class UpdateGroupNamesFlowActionId extends Seeder
         $obj = new \stdClass();
         $conditionFlowActions = FlowAction::where('channel_id', 6)->get();
         collect($conditionFlowActions)->map(function ($condition) use ($obj) {
+            $data = [];
+            printLog("Condition module data group details are ", (array)$condition->module_data->groupNames, 1);
             if (!empty($condition->module_data->groupNames)) {
                 $campaign = $condition->campaign()->first();
                 $data = collect($condition->module_data->groupNames)->map(function ($value) use ($campaign, $condition, $obj) {
