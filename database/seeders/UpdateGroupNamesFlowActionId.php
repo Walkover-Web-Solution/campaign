@@ -18,16 +18,13 @@ class UpdateGroupNamesFlowActionId extends Seeder
         $conditionFlowActions = FlowAction::where('channel_id', 6)->get();
         collect($conditionFlowActions)->map(function ($condition) use ($obj) {
             $data = [];
-            printLog("Condition module data group details are ", (array)$condition->module_data->groupNames, 1);
             if (!empty($condition->module_data->groupNames)) {
                 $campaign = $condition->campaign()->first();
                 $data = collect($condition->module_data->groupNames)->map(function ($value) use ($campaign, $condition, $obj) {
-                    $flowActionId = "";
-                    try {
-                        $flowActionId = $value->flowAction;
-                    } catch (\Exception $e) {
-                        printLog("Attempt to read property flowAction on String, on Condition ID :" . $condition->id . " : ", [$value]);
+                    if(is_string($value)){
+                        return $value;
                     }
+                    $flowActionId = $value->flowAction;
                     $flowAction = $campaign->flowActions()->where('id', $flowActionId)->first();
                     if (empty($flowAction)) {
                         $obj->id = null;
