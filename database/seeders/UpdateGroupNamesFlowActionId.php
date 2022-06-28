@@ -20,6 +20,7 @@ class UpdateGroupNamesFlowActionId extends Seeder
             if (!empty($condition->module_data->groupNames)) {
                 $campaign = $condition->campaign()->first();
                 $data = collect($condition->module_data->groupNames)->map(function ($value) use ($campaign, $condition, $obj) {
+                    $flowActionId = "";
                     try {
                         $flowActionId = $value->flowAction;
                     } catch (\Exception $e) {
