@@ -291,7 +291,7 @@ class CampaignsController extends Controller
 
 
     /**
-     * Copy the whole campaign.
+     * Copy the whole campaign. OPTIMIZE | TASK
      */
     public function copy(CopyCampaignRequest $request)
     {
@@ -349,9 +349,18 @@ class CampaignsController extends Controller
         collect($oldCampaign->flowActions()->get())->map(function ($action) use ($obj) {
             $module_data = $action->module_data;
             collect($module_data)->map(function ($item, $key) use ($obj, $module_data) {
-                if (\Str::startsWith($key, 'op')) {
+                $key_split = explode('_', $key);
+                if (count($key_split) == 2) {
                     if (!empty($obj->pair[$item]))
                         $module_data->$key = $obj->pair[$item];
+                }
+                if ($key == 'groupNames' && !empty($item)) {
+                    $groupNames = collect($item)->map(function ($value) use ($obj) {
+                        if (!empty($value))
+                            $value->flowAction = $obj->pair[$value->flowAction];
+                        return $value;
+                    })->toArray();
+                    $module_data->$key = $groupNames;
                 }
             });
             $flowAction = FlowAction::where('id', $obj->pair[$action->id])->first();
