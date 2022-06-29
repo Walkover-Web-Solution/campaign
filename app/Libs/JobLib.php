@@ -7,7 +7,7 @@ use Carbon\Carbon;
 
 class JobLib
 {
-    public function enqueue($queue, $data,$delayTime)
+    public function enqueue($queue, $data, $delayTime = 0)
     {
         // Count set to zero when job first created
         $data->failedCount = 0;
