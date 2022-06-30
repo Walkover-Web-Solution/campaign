@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Exceptions\InvalidRequestException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CopyCampaignRequest;
 use App\Http\Requests\CreateCampaignRequest;
@@ -195,12 +196,31 @@ class CampaignsController extends Controller
             throw new NotFoundHttpException('No Actions Found!');
         }
 
+        if (!$request->has('version')) {
+            $request->version = 'v1';
+        }
+
         $obj = new \stdClass();
         $obj->snippets = [];
         $obj->variables = [];
         $obj->contactVariables = [];
         $obj->ob = [];
         $obj->isEmail = false;
+
+        $obj->jsonTemplate = false;
+        switch ($request->version) {
+            case 'v1': {
+                    $obj->jsonTemplate = false;
+                }
+                break;
+            case 'v2': {
+                    $obj->jsonTemplate = true;
+                }
+                break;
+            default: {
+                    throw new InvalidRequestException('Invalid version!');
+                }
+        }
 
         // endpoint
         $obj->snippets['endpoint'] = env('SNIPPET_HOST_URL') . $request->campaign->slug . '/run';
@@ -237,11 +257,11 @@ class CampaignsController extends Controller
 
         // make variables in key-value format
         collect($variables)->each(function ($variable) use ($obj) {
-            $obj->variables[$variable] = $variable;
+            $obj->variables[$variable] = $obj->jsonTemplate ? ['type' => '{your_type}', '{your_type}' => "{your_value}"] : "{your_value}";
         });
 
         collect($contactVariables)->each(function ($variable) use ($obj) {
-            $obj->contactVariables[$variable] = $variable;
+            $obj->contactVariables[$variable] = $obj->jsonTemplate ? ['type' => '{your_type}', '{your_type}' => "{your_value}"] : "{your_value}";
         });
 
         // create object of name,email,mobile according to channelIds
@@ -271,7 +291,7 @@ class CampaignsController extends Controller
             // Attachments
             $obj->snippets['requestBody']['data']['attachments'] = [
                 [
-                    "fileType" => "url/base64",
+                    "fileType" => "url or base64",
                     "fileName" => "{your_fileName}",
                     "file" => "{your_file}"
                 ]

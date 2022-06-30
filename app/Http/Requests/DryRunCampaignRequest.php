@@ -44,7 +44,7 @@ class DryRunCampaignRequest extends FormRequest
     }
     protected function failedAuthorization()
     {
-        if(!$this->limit){
+        if (!$this->limit) {
             throw new AuthorizationException('Limit for today exceeded by 5.');
         }
         throw new AuthorizationException('This action is unauthorized.');
@@ -119,17 +119,20 @@ class DryRunCampaignRequest extends FormRequest
     {
         $obj = new \stdClass();
         $obj->case = '';
-        collect($this->data)->map(function ($item) use ($obj) {
-            if (count(explode(',', $item['value'])) > 5) {
-                $obj->case .= empty($obj->case) ? $item['name'] : ',' . $item['name'];
-            }
+        $keyArr = ['to', 'cc', 'bcc', 'mobiles'];
+        collect($this->data)->map(function ($item) use ($obj, $keyArr) {
+            // Exclude variables to explode
+            if (in_array($item['name'], $keyArr))
+                if (count(explode(',', $item['value'])) > 5) {
+                    $obj->case .= empty($obj->case) ? $item['name'] : ',' . $item['name'];
+                }
         });
         return $obj->case;
     }
     public function checkDayLimit()
     {
         $dayLimit = 5;
-        $campaignLogs = $this->campaign->campaignLogs()->where('created_at', '>=', Carbon::parse('-24 hours'))->where('ip',request()->ip())->get();
+        $campaignLogs = $this->campaign->campaignLogs()->where('created_at', '>=', Carbon::parse('-24 hours'))->where('ip', request()->ip())->get();
         if (count($campaignLogs) >= $dayLimit)
             return false;
         return true;
