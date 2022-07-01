@@ -233,7 +233,10 @@ class CampaignsController extends Controller
         );
 
         // Documentation
-        $obj->snippets['documentation'] = "Note: In case of SMS, RCS, Whatsapp priority will be given to variables associated with contacts and in case of Email priority will be given to variables associated with sendto object.";
+        $obj->snippets['documentation'] = [
+            "Note: In case of SMS, RCS, Whatsapp priority will be given to variables associated with contacts and in case of Email priority will be given to variables associated with sendto object.",
+            "Note: In case of Whatsapp make sure to pass the variables as required by Whatsapp service."
+        ];
 
         // get all channel ids from flow actions attached to given campaign
         $flowActions = collect($flowActions);

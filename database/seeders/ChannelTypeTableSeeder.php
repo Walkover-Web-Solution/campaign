@@ -244,6 +244,25 @@ class ChannelTypeTableSeeder extends Seeder
                             "value" => ""
                         ),
                         array(
+                            "name" => "template",
+                            "type" => "dropdown",
+                            "template" => array(
+                                "name" => "",
+                                "template_id" => "",
+                                "namespace" => "",
+                                "language" => array(
+                                    "code" => "",
+                                    "policy" => ""
+                                )
+                            ),
+                            "source" => "",
+                            "sourceFieldLabel" => "name",
+                            "sourceFieldValue" => "name",
+                            "is_required" => true,
+                            "value" => "",
+                            "variables" => []
+                        ),
+                        array(
                             "name" => "delay",
                             "label" => "Delay for",
                             "type" => "text",
