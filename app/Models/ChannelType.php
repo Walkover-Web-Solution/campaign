@@ -28,13 +28,13 @@ class ChannelType extends Model
     protected static function booted()
     {
         static::addGlobalScope('only_email_sms', function (Builder $builder) {
-            $emailType = 1;
+            $email = 1;
             $sms = 2;
             $whatsapp = 3;
             $voice = 4;
             $rcs = 5;
             $condition = 6;
-            $builder->whereIn('id', [$emailType, $sms, $rcs, $condition]);
+            $builder->whereIn('id', [$email, $sms, $rcs, $condition, $whatsapp]);
         });
     }
 
