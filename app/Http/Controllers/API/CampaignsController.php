@@ -260,11 +260,11 @@ class CampaignsController extends Controller
 
         // make variables in key-value format
         collect($variables)->each(function ($variable) use ($obj) {
-            $obj->variables[$variable] = $obj->jsonTemplate ? ['type' => '{your_type}', '{your_type}' => "{your_value}"] : "{your_value}";
+            $obj->variables[$variable] = $obj->jsonTemplate ? ['type' => '{your_type}', 'value' => "{your_value}"] : "{your_value}";
         });
 
         collect($contactVariables)->each(function ($variable) use ($obj) {
-            $obj->contactVariables[$variable] = $obj->jsonTemplate ? ['type' => '{your_type}', '{your_type}' => "{your_value}"] : "{your_value}";
+            $obj->contactVariables[$variable] = $obj->jsonTemplate ? ['type' => '{your_type}', 'value' => "{your_value}"] : "{your_value}";
         });
 
         // create object of name,email,mobile according to channelIds
