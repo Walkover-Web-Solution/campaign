@@ -237,7 +237,7 @@ class ChannelTypeTableSeeder extends Seeder
                             "name" => "integrated_number",
                             "label" => "Integrated number",
                             "type" => "dropdown",
-                            "source" => "",
+                            "source" => "/whatsapp-client-panel/number/",
                             "sourceFieldLabel" => "name",
                             "sourceFieldValue" => "name",
                             "is_required" => true,
@@ -255,7 +255,7 @@ class ChannelTypeTableSeeder extends Seeder
                                     "policy" => ""
                                 )
                             ),
-                            "source" => "",
+                            "source" => "/get-template/:phoneNumber/",
                             "sourceFieldLabel" => "name",
                             "sourceFieldValue" => "name",
                             "is_required" => true,
