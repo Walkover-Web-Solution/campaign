@@ -2,7 +2,7 @@
 
 namespace App\Libs;
 
-use App\Jobs\RabbitMQJob;
+use App\Jobs\Campaign\RabbitMQJob;
 use Carbon\Carbon;
 
 class JobLib
