@@ -7,6 +7,7 @@ use App\Models\FlowAction;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Illuminate\Support\Facades\Log;
+use Ixudra\Curl\Facades\Curl;
 
 function ISTToGMT($date)
 {
@@ -154,7 +155,7 @@ function createNewJob($channel_id, $input, $delay = 0)
 
     $lib = new JobLib();
 
-    $lib->enqueue($queue, $input,$delay);
+    $lib->enqueue($queue, $input, $delay);
 }
 
 
@@ -182,4 +183,22 @@ function getSeconds($unit, $value)
                 return 0;
             }
     }
+}
+
+function logTest($message, $data)
+{
+    $logData = [
+        "message" => $message,
+        "data" => $data,
+        'env' => env('APP_ENV')
+    ];
+
+    $endpoint = "https://sokt.io/app/PnZCHW9Tz62eNZNMn4aA/events-logs-test";
+
+    Curl::to($endpoint)
+        ->withHeader('')
+        ->withData($logData)
+        ->asJson()
+        ->asJsonResponse()
+        ->post();
 }
