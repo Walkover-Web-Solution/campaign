@@ -17,14 +17,11 @@ class UpdateCampaignLogStatusFor1KDataFail extends Seeder
      */
     public function run()
     {
-        $campaignLog = CampaignLog::all();
-        collect($campaignLog)->map(function ($campLog) {
-            $actionLog = $campLog->actionLogs()->first();
-            if (empty($actionLog)) {
-                $failJobId = FailedJob::where('uuid', $campLog->id)->first();
-                $campLog->status = 'Error - ' . $failJobId->id;
-                $campLog->save();
-            }
+        $campaignLogs = CampaignLog::doesnthave('actionLogs')->get();
+        collect($campaignLogs)->map(function ($campaignLog) {
+            $failJob = FailedJob::where('uuid', $campaignLog->id)->first();
+            $campaignLog->status = 'Error' . (!empty($failJob) ? ' - ' . $failJob->id : '');
+            $campaignLog->save();
         });
     }
 }
