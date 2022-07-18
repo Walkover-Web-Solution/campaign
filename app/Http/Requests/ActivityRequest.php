@@ -16,6 +16,7 @@ class ActivityRequest extends FormRequest
     protected $pause = false;
     protected $play = false;
     protected $stop = false;
+    protected $retry = false;
     protected $running = true;
     protected $invalidActivity = false;
     public function authorize()
@@ -72,6 +73,13 @@ class ActivityRequest extends FormRequest
                     }
                 }
                 break;
+            case 'retry': {
+                    if (!\Str::startsWith($campaignLog->status, 'Error')) {
+                        $this->retry = true;
+                        return false;
+                    }
+                }
+                break;
             default: {
                     $this->invalidActivity = true;
                     return false;
@@ -94,6 +102,8 @@ class ActivityRequest extends FormRequest
             throw new ForbiddenException('Campaign is already paused.');
         } else if ($this->stop) {
             throw new ForbiddenException('Campaign is stopped. Unable to perform activity!');
+        } else if ($this->retry) {
+            throw new ForbiddenException('Campaign has no error. Unable to perform activity!');
         } else if (!$this->running) {
             throw new ForbiddenException('Campaign Completed. Unable to perform activity!');
         } else if ($this->invalidActivity) {

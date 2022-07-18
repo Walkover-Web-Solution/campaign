@@ -225,6 +225,12 @@ class CampaignLogController extends Controller
                     $request->campaignLog->save();
                     return new CustomResource(['message' => 'Activity performed successfully.']);
                 }
+            case 'retry':{
+                $request->campaignLog->status = 'Running';
+                $request->campaignLog->save();
+                \JOB::processRunCampaign($request->campaignLog);
+                return new CustomResource(['message' => 'Activity performed successfully.']);
+            }
             default:
                 throw new NotFoundHttpException('Invalid activity.');
         }
