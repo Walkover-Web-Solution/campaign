@@ -15,10 +15,9 @@ class AddEventcolumnsActionLogTable extends Migration
     public function up()
     {
         Schema::table('action_logs', function (Blueprint $table) {
-            $table->boolean('is_complete')->default(false);
             $table->bigInteger('event_recieved')->default(0);
         });
-        \DB::statement('UPDATE action_logs SET event_recieved = no_of_records, is_complete=true');
+        \DB::statement('UPDATE action_logs SET event_recieved = no_of_records');
     }
 
     /**
@@ -29,7 +28,6 @@ class AddEventcolumnsActionLogTable extends Migration
     public function down()
     {
         Schema::table('action_logs', function (Blueprint $table) {
-            $table->dropColumn('is_complete');
             $table->dropColumn('event_recieved');
         });
     }
