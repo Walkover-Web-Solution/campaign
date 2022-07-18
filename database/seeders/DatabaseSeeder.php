@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
         $this->call(FilterTableSeeder::class);
         $this->call(AddUnitInDelayFlowActionSeeder::class);
         $this->call(UpdateGroupNamesFlowActionId::class);
+        $this->call(UpdateCampaignLogStatusFor1KDataFail::class);
 
         // $this->call(MongoIdJsonToStringSeeder::class);
     }
