@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CopyCampaignRequest;
 use App\Http\Requests\CreateCampaignRequest;
 use App\Http\Requests\DeleteCampaignRequest;
+use App\Http\Requests\FetchActionlogIDRequest;
 use App\Http\Requests\GetFieldsRequest;
 use App\Http\Requests\UpdateCampaignRequest;
 use App\Http\Resources\CustomResource;
@@ -393,5 +394,11 @@ class CampaignsController extends Controller
 
         // return new CustomResource($campaign);
         return new CustomResource(["message" => "Copied Successfully."]);
+    }
+
+    public function FetchFlowActionID(FetchActionlogIDRequest $request)
+    {
+        $flowActionID = $request->campaign->flowActions()->pluck('id')->toarray();
+        return new CustomResource($flowActionID);
     }
 }
