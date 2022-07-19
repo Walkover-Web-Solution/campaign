@@ -396,7 +396,7 @@ class CampaignsController extends Controller
         return new CustomResource(["message" => "Copied Successfully."]);
     }
 
-    public function FetchFlowActionID(FetchActionlogIDRequest $request)
+    public function fetchFlowActionID(FetchActionlogIDRequest $request)
     {
         $flowActionID = $request->campaign->flowActions()->pluck('id')->toarray();
         return new CustomResource($flowActionID);
