@@ -38,7 +38,7 @@ class JobLib
             $campaignLog->status = "Error - " . $failedJob->id;
             $campaignLog->save();
             printLog("Exception in enqueue Main, Message :", ['Stack' => $e->getTrace()]);
-            throw new ServerErrorException("Internal Server Error! : [RabbitMQ Connection Refused]");
+            throw new ServerErrorException("Internal Server Error! : [Queue Connection Refused]");
         }
     }
 }

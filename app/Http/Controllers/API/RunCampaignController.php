@@ -72,7 +72,7 @@ class RunCampaignController extends Controller
             }
         } catch (\Exception $e) {
             logTest("Mongo DB Error", ["exception" => $e->getMessage()], "errorlog");
-            throw new ServerErrorException("Internal Server Error! : [Mongo DB Connection Refused]");
+            throw new ServerErrorException("Internal Server Error! : [Database Connection Refused]");
         }
 
 
@@ -86,7 +86,7 @@ class RunCampaignController extends Controller
 
         // JobService
         \JOB::processRunCampaign($campaignLog);
-        
+
         $timeStamps['after_creating_job'] = round(microtime(true) * 1000 - $previousTime, 2);
         logTest("Run response time", $timeStamps, "eventlog");
 
