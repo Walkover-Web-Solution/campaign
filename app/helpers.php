@@ -185,15 +185,21 @@ function getSeconds($unit, $value)
     }
 }
 
-function logTest($message, $data)
+function logTest($message, $data, $logname)
 {
     $logData = [
         "message" => $message,
         "data" => $data,
         'env' => env('APP_ENV')
     ];
-
-    $endpoint = "https://sokt.io/app/PnZCHW9Tz62eNZNMn4aA/events-logs-test";
+    switch ($logname) {
+        case "eventlog":
+            $endpoint = "https://sokt.io/app/PnZCHW9Tz62eNZNMn4aA/events-logs-test";
+            break;
+        case "errorlog":
+            $endpoint = "https://sokt.io/app/PnZCHW9Tz62eNZNMn4aA/errors-logs";
+            break;
+    }
 
     Curl::to($endpoint)
         ->withHeader('')
