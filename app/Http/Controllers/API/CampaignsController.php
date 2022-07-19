@@ -398,7 +398,20 @@ class CampaignsController extends Controller
 
     public function fetchFlowActionID(FetchActionlogIDRequest $request)
     {
-        $flowActionID = $request->campaign->flowActions()->pluck('id')->toarray();
-        return new CustomResource($flowActionID);
+        $campaign = $request->campaign;
+        $channel_ids = $request->campaign->flowActions()->pluck('channel_id')->unique();
+        $channel_id_name_map = ChannelType::all()->pluck('name', 'id')->toArray();
+
+        $obj = (object)[];
+        $obj->data = [];
+
+        $channel_ids->map(function ($item) use ($obj, $campaign, $channel_id_name_map) {
+            $flowActionIds = $campaign->flowActions()->where('channel_id', $item)->pluck('id');
+            $name = $channel_id_name_map[$item];
+            $obj->data = array_merge($obj->data, [
+                $name => $flowActionIds
+            ]);
+        });
+        return new CustomResource($obj->data);
     }
 }
