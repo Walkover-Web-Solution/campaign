@@ -14,7 +14,7 @@ class AddRetryColumnToCampaignLogsTable extends Migration
     public function up()
     {
         Schema::table('campaign_logs', function (Blueprint $table) {
-            $table->boolean('retry_status')->default(0);
+            $table->boolean('canRetry')->default(0);
         });
     }
 
@@ -26,7 +26,7 @@ class AddRetryColumnToCampaignLogsTable extends Migration
     public function down()
     {
         Schema::table('campaign_logs', function (Blueprint $table) {
-            $table->dropColumn('retry_status');
+            $table->dropColumn('canRetry');
         });
     }
 }
