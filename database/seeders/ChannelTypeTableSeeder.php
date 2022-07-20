@@ -20,6 +20,7 @@ class ChannelTypeTableSeeder extends Seeder
         $channelTypes = [
             [
                 "name" => "Email",
+                "capacity" => 1000,
                 "configurations" => array(
                     "fields" => array(
                         array(
@@ -173,6 +174,7 @@ class ChannelTypeTableSeeder extends Seeder
             ],
             [
                 "name" => "SMS",
+                "capacity" => 1000,
                 "configurations" => array(
                     "fields" => array(
                         array(
@@ -231,6 +233,7 @@ class ChannelTypeTableSeeder extends Seeder
 
             [
                 "name" => "Whatsapp",
+                "capacity" => 1000,
                 "configurations" => array(
                     "fields" => array(
                         array(
@@ -303,6 +306,7 @@ class ChannelTypeTableSeeder extends Seeder
 
             [
                 "name" => "Voice",
+                "capacity" => 1000,
                 "configurations" => array(
                     "fields" => array(
                         array(
@@ -346,6 +350,7 @@ class ChannelTypeTableSeeder extends Seeder
 
             [
                 "name" => "RCS",
+                "capacity" => 1000,
                 "configurations" => array(
                     "fields" => array(
                         array(
@@ -403,6 +408,7 @@ class ChannelTypeTableSeeder extends Seeder
 
             [
                 "name" => "Condition",
+                "capacity" => 1000,
                 "configurations" => array(
                     "fields" => array(
                         array(

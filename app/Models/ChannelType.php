@@ -13,6 +13,7 @@ class ChannelType extends Model
     protected $fillable = [
         'name',
         'configurations',
+        "capacity"
     ];
 
     protected $casts = [
@@ -21,7 +22,8 @@ class ChannelType extends Model
 
     protected $hidden = array(
         'created_at',
-        'updated_at'
+        'updated_at',
+        "capacity"
     );
 
     // This function executed when channel type model initiated
