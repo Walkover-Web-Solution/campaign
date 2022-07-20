@@ -24,18 +24,24 @@ class JobLib
                 dispatch($job);
             }
         } catch (\Exception $e) {
-            $input = [
-                'connection' => $job->connection,
-                'uuid' => $data->campaignLogId,
-                'queue' => $queue,
-                'payload' => $data,
-                'exception' => $e->__toString(),
-                'failed_at' => Carbon::now(),
-                'log_id' => $data->campaignLogId
-            ];
-            $failedJob = FailedJob::create($input);
             $campaignLog = CampaignLog::where('id', $data->campaignLogId)->first();
-            $campaignLog->status = "Error - " . $failedJob->id;
+            $checkfailedJob = FailedJob::where('uuid', $data->campaignLogId)->first();
+            if (empty($checkfailedJob)) {
+                $input = [
+                    'connection' => $job->connection,
+                    'uuid' => $data->campaignLogId,
+                    'queue' => $queue,
+                    'payload' => $data,
+                    'exception' => $e->__toString(),
+                    'failed_at' => Carbon::now(),
+                    'log_id' => $data->campaignLogId
+                ];
+                $failedJob = FailedJob::create($input);
+                $campaignLog->status = "Error - " . $failedJob->id;
+            } else {
+                $campaignLog->status = "Error - " .  $checkfailedJob->id;
+            }
+            $campaignLog->retry_status = true;
             $campaignLog->save();
             printLog("Exception in enqueue Main, Message :", ['Stack' => $e->getTrace()]);
             throw new ServerErrorException("Internal Server Error! : [Queue Connection Refused]");

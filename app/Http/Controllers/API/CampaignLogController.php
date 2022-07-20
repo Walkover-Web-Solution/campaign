@@ -214,7 +214,7 @@ class CampaignLogController extends Controller
                     return new CustomResource(['message' => 'Activity performed successfully.']);
                 }
             case 'play': {
-                $request->campaignLog->status = "Running";
+                    $request->campaignLog->status = "Running";
                     $request->campaignLog->is_paused = false;
                     $request->campaignLog->save();
                     $this->playCampaign($request->campaignLog);
@@ -225,12 +225,13 @@ class CampaignLogController extends Controller
                     $request->campaignLog->save();
                     return new CustomResource(['message' => 'Activity performed successfully.']);
                 }
-            case 'retry':{
-                $request->campaignLog->status = 'Running';
-                $request->campaignLog->save();
-                \JOB::processRunCampaign($request->campaignLog);
-                return new CustomResource(['message' => 'Activity performed successfully.']);
-            }
+            case 'retry': {
+                    $request->campaignLog->status = 'Running';
+                    $request->campaignLog->retry_status = false;
+                    $request->campaignLog->save();
+                    \JOB::processRunCampaign($request->campaignLog);
+                    return new CustomResource(['message' => 'Activity performed successfully.']);
+                }
             default:
                 throw new NotFoundHttpException('Invalid activity.');
         }
