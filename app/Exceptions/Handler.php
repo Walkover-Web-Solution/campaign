@@ -105,6 +105,19 @@ class Handler extends ExceptionHandler
             ], 413);
         });
 
+        $this->renderable(function (ServerErrorException $e, $request) {
+            $message = $e->getMessage();
+            if (empty($message)) {
+                $message = 'Internal Server Error!';
+            }
+
+            return response([
+                'errors' => $message,
+                'hasError' => true,
+                'status' => 'fail'
+            ], 500);
+        });
+
 
 
 

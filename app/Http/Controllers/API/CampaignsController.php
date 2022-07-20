@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CopyCampaignRequest;
 use App\Http\Requests\CreateCampaignRequest;
 use App\Http\Requests\DeleteCampaignRequest;
+use App\Http\Requests\FetchActionlogIDRequest;
 use App\Http\Requests\GetFieldsRequest;
 use App\Http\Requests\UpdateCampaignRequest;
 use App\Http\Resources\CustomResource;
@@ -393,5 +394,24 @@ class CampaignsController extends Controller
 
         // return new CustomResource($campaign);
         return new CustomResource(["message" => "Copied Successfully."]);
+    }
+
+    public function fetchFlowActionID(FetchActionlogIDRequest $request)
+    {
+        $campaign = $request->campaign;
+        $channel_ids = $request->campaign->flowActions()->pluck('channel_id')->unique();
+        $channel_id_name_map = ChannelType::all()->pluck('name', 'id')->toArray();
+
+        $obj = (object)[];
+        $obj->data = [];
+
+        $channel_ids->map(function ($item) use ($obj, $campaign, $channel_id_name_map) {
+            $flowActionIds = $campaign->flowActions()->where('channel_id', $item)->pluck('id');
+            $name = $channel_id_name_map[$item];
+            $obj->data = array_merge($obj->data, [
+                $name => $flowActionIds
+            ]);
+        });
+        return new CustomResource($obj->data);
     }
 }
