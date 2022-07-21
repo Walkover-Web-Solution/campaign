@@ -227,7 +227,7 @@ class CampaignLogController extends Controller
                 }
             case 'retry': {
                     $request->campaignLog->status = 'Running';
-                    $request->campaignLog->retry_status = false;
+                    $request->campaignLog->canRetry = false;
                     $request->campaignLog->save();
                     \JOB::processRunCampaign($request->campaignLog);
                     return new CustomResource(['message' => 'Activity performed successfully.']);

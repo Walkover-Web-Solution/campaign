@@ -13,12 +13,8 @@ class ActivityRequest extends FormRequest
      *
      * @return bool
      */
-    protected $pause = false;
-    protected $play = false;
-    protected $stop = false;
-    protected $retry = false;
-    protected $running = true;
-    protected $invalidActivity = false;
+    protected $flag = false;
+    protected $canPerform = false;
     public function authorize()
     {
         $campaign = $this->company->campaigns()->where('slug', $this->slug)->first();
@@ -33,50 +29,27 @@ class ActivityRequest extends FormRequest
 
         switch (strtolower($this->activity)) {
             case 'pause': {
-                    if ($campaignLog->is_paused) {
-                        $this->pause = true;
-                        return false;
-                    }
-                    if ($campaignLog->status == 'Stopped') {
-                        $this->stop = true;
-                        return false;
-                    }
-                    if ($campaignLog->status == 'Complete') {
-                        $this->running = false;
-                        return false;
+                    if ($campaignLog->status == 'Running') {
+                        $this->canPerform = true;
                     }
                 }
                 break;
             case 'play': {
-                    if ($campaignLog->status == 'Complete') {
-                        $this->running = false;
-                        return false;
-                    }
-                    if ($campaignLog->status == 'Stopped') {
-                        $this->stop = true;
-                        return false;
-                    }
-                    if (!$campaignLog->is_paused) {
-                        $this->play = true;
-                        return false;
+
+                    if ($campaignLog->status == 'Paused') {
+                        $this->canPerform = true;
                     }
                 }
                 break;
             case 'stop': {
-                    if ($campaignLog->status == 'Complete') {
-                        $this->running = false;
-                        return false;
-                    }
-                    if ($campaignLog->status == 'Stopped') {
-                        $this->stop = true;
-                        return false;
+                    if ($campaignLog->status == 'Running' || $campaignLog->status == 'Paused') {
+                        $this->canPerform = true;
                     }
                 }
                 break;
             case 'retry': {
-                    if (!\Str::startsWith($campaignLog->status, 'Error')) {
-                        $this->retry = true;
-                        return false;
+                    if (\Str::startsWith($campaignLog->status, 'Error')) {
+                        $this->canPerform = true;
                     }
                 }
                 break;
@@ -84,6 +57,10 @@ class ActivityRequest extends FormRequest
                     $this->invalidActivity = true;
                     return false;
                 }
+        }
+        if (!$this->canPerform) {
+            $this->flag = true;
+            return false;
         }
 
         // Merge Campaign and CampaignLog to request
@@ -96,20 +73,12 @@ class ActivityRequest extends FormRequest
     }
     protected function failedAuthorization()
     {
-        if ($this->play) {
-            throw new ForbiddenException('Campaign is already playing.');
-        } else if ($this->pause) {
-            throw new ForbiddenException('Campaign is already paused.');
-        } else if ($this->stop) {
-            throw new ForbiddenException('Campaign is stopped. Unable to perform activity!');
-        } else if ($this->retry) {
-            throw new ForbiddenException('Campaign has no error. Unable to perform activity!');
-        } else if (!$this->running) {
-            throw new ForbiddenException('Campaign Completed. Unable to perform activity!');
-        } else if ($this->invalidActivity) {
+        if ($this->flag)
+            throw new ForbiddenException('Unable to perform activity');
+        else if ($this->invalidActivity)
             throw new NotFoundHttpException('Invalid activity.');
-        }
-        throw new NotFoundHttpException('Not found.');
+        else
+            throw new NotFoundHttpException('Not found.');
     }
 
     /**
