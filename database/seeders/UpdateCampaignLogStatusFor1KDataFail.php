@@ -32,8 +32,8 @@ class UpdateCampaignLogStatusFor1KDataFail extends Seeder
             ]);
             if (!empty($data)) {
                 $campaignLog->canRetry = true;
-                $campaignLog->save();
             }
+            $campaignLog->save();
         });
     }
 }

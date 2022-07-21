@@ -48,7 +48,7 @@ class ActivityRequest extends FormRequest
                 }
                 break;
             case 'retry': {
-                    if (\Str::startsWith($campaignLog->status, 'Error')) {
+                    if (\Str::startsWith($campaignLog->status, 'Error') && $campaignLog->canRetry == true) {
                         $this->canPerform = true;
                     }
                 }
