@@ -15,9 +15,10 @@ class AddEventcolumnsActionLogTable extends Migration
     public function up()
     {
         Schema::table('action_logs', function (Blueprint $table) {
+            $table->json('action_id')->default("[]");
             $table->bigInteger('event_recieved')->default(0);
         });
-        \DB::statement('UPDATE action_logs SET event_recieved = no_of_records');
+        \DB::statement('UPDATE action_logs SET event_recieved = no_of_records, action_id = "[]"');
     }
 
     /**
@@ -29,6 +30,7 @@ class AddEventcolumnsActionLogTable extends Migration
     {
         Schema::table('action_logs', function (Blueprint $table) {
             $table->dropColumn('event_recieved');
+            $table->dropColumn('action_id');
         });
     }
 }
