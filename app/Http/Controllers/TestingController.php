@@ -36,7 +36,34 @@ class TestingController extends Controller
      */
     public function create()
     {
-        //
+        return;
+        // SAVED
+        $ar = [];
+        for ($i = 1; $i <= 10; $i++) {
+            array_push($ar, [$i, $i, $i]);
+            // array_push($ar, $i);
+        }
+
+        $currentCount = 0;
+        $maxCount = 10;
+        $count = 0;
+        $temp = [];
+        $data = [];
+        foreach ($ar as $recipients) {
+            $recipientCount = count($recipients);
+            // $recipientCount = 1;
+            $count += $recipientCount;
+            if ($count > $maxCount) {
+                $currentCount = $count - $recipientCount;
+                print_r($currentCount . ' ');
+                array_push($data, $temp);
+                $count = $recipientCount;
+                $temp = [];
+            }
+            array_push($temp, $recipients);
+        }
+        print_r($count . ' ');
+        array_push($data, $temp);
     }
 
     public function fakeEmail()
