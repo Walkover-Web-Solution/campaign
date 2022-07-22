@@ -214,7 +214,7 @@ class CampaignLogController extends Controller
                     return new CustomResource(['message' => 'Activity performed successfully.']);
                 }
             case 'play': {
-                $request->campaignLog->status = "Running";
+                    $request->campaignLog->status = "Running";
                     $request->campaignLog->is_paused = false;
                     $request->campaignLog->save();
                     $this->playCampaign($request->campaignLog);
@@ -223,6 +223,13 @@ class CampaignLogController extends Controller
             case 'stop': {
                     $request->campaignLog->status = 'Stopped';
                     $request->campaignLog->save();
+                    return new CustomResource(['message' => 'Activity performed successfully.']);
+                }
+            case 'retry': {
+                    $request->campaignLog->status = 'Running';
+                    $request->campaignLog->canRetry = false;
+                    $request->campaignLog->save();
+                    \JOB::processRunCampaign($request->campaignLog);
                     return new CustomResource(['message' => 'Activity performed successfully.']);
                 }
             default:

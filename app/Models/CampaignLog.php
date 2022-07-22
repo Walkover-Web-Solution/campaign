@@ -16,7 +16,8 @@ class CampaignLog extends Model
         'status',
         'ip',
         'need_validation',
-        'is_paused'
+        'is_paused',
+        'canRetry'
     ];
 
     protected $casts = [

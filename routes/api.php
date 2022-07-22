@@ -37,6 +37,8 @@ Route::post('/register', [AuthController::class, 'register']);
 
 Route::resource('/campaigns', CampaignsController::class);
 
+Route::get('/campaigns/{slug}/actionIds',[CampaignsController::class, 'fetchFlowActionID']);
+
 Route::resource('/tokens/{token}/ips', CompanyTokenIPsController::class);
 
 Route::resource('/tokens', TokensController::class);

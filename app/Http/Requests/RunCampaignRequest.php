@@ -50,10 +50,6 @@ class RunCampaignRequest extends FormRequest
             return ['sendToNotFound' => 'required'];
         }
 
-        if (!$this->checkCount()) {
-            return ['checkCount' => 'required'];
-        }
-
         $flow_action = FlowAction::where('id', $this->campaign->module_data['op_start'])->where('campaign_id', $this->campaign->id)->first();
         if (empty($flow_action)) {
             return ['validCamp' => 'required'];
@@ -70,9 +66,16 @@ class RunCampaignRequest extends FormRequest
 
         $validaitonArray = [
             'data.sendTo' => 'array',
+            'data.sendTo.*.to' => 'array|max:50',
+            'data.sendTo.*.cc' => 'array|max:50',
+            'data.sendTo.*.bcc' => 'array|max:50',
             'data.attachments' => 'array',
             'data.reply_to' => 'array|max:5'
         ];
+
+        if (!$this->checkCount()) {
+            return ['checkCount' => 'required'];
+        }
 
         if (!empty($this->data['reply_to'])) {
             $validaitonArray += [
@@ -133,20 +136,17 @@ class RunCampaignRequest extends FormRequest
 
     public function checkCount()
     {
+        $maxCount = 1000;
         $totalCount = collect($this->data['sendTo'])->map(function ($item) {
-            $maxCount = 1000;
             $toCount = isset($item['to']) ? count(collect($item['to'])) : 0;
             $ccCount = isset($item['cc']) ? count(collect($item['cc'])) : 0;
             $bccCount = isset($item['bcc']) ? count(collect($item['bcc'])) : 0;;
             $count = $toCount + $ccCount + $bccCount;
-            if ($count >= $maxCount)
-                if ($count > $maxCount) {
-                    return false;
-                }
-            return true;
+            return $count;
         })->toArray();
-        if (in_array(false, $totalCount))
+        if (array_sum($totalCount) > $maxCount) {
             return false;
+        }
         return true;
     }
 }
