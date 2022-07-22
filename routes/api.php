@@ -67,11 +67,11 @@ Route::get('/campaigns/{slug}/snippets', [CampaignsController::class, 'getSnippe
 
 Route::post('/campaigns/{slug}/copy', [CampaignsController::class, 'copy']);
 
-Route::get('/logs', [ActionLogsController::class, 'index']);
-
 Route::resource('/{slug}/flowActions', FlowActionsController::class);
 
 Route::resource('/{slug}/campaignLogs', CampaignLogController::class);
+
+Route::resource('/campaigns/{slug}/actionLogs', ActionLogsController::class);
 
 Route::resource('/actionPerformed', ActionPerformedController::class);
 
