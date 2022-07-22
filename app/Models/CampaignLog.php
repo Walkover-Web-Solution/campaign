@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use phpDocumentor\Reflection\Types\Boolean;
 
 class CampaignLog extends Model
 {
@@ -22,13 +23,17 @@ class CampaignLog extends Model
 
     protected $casts = [
         'need_validation' => 'boolean',
-        'is_paused' => 'boolean'
+        'is_paused' => 'boolean',
+        'canRetry' => 'boolean',
+
     ];
 
     protected $hidden = [
         'mongo_uid',
-        'updated_at'
+        'updated_at',
+        'canRetry'
     ];
+    protected $appends = array('can_retry');
 
     public static function boot()
     {
@@ -39,6 +44,19 @@ class CampaignLog extends Model
                 $campaignLog->status = 'Running';
             }
         });
+    }
+
+    /**
+     * Get the campaignLog's canRetry.
+     *
+     * @param  string  $value
+     * @return string
+     */
+    public function getCanRetryAttribute($value)
+    {
+        $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
+        $this->attributes['canRetry'] = $value;
+        return $this->attributes['canRetry'];
     }
 
     // get campaigns
