@@ -25,7 +25,8 @@ class StoreCompanyTokenIPRequest extends FormRequest
     {
         return [
             'op_ip' => 'required|ip',
-            'ip_type_id' => 'required|exists:ip_types,id'
+            'ip_type_id' => 'required|exists:ip_types,id',
+            'expires_at' => 'nullable|date_format:Y-m-d H:i:s|after:today'
         ];
     }
 

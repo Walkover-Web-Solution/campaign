@@ -153,16 +153,14 @@ class AuthByAuthkeyOrTokenMiddleware
                     $tokenIP->delete();
                     $token->ips()->create([
                         'ip' => $ip,
-                        'ip_type_id' => $none,
-                        'expires_at' => ""
+                        'ip_type_id' => $none
                     ]);
                 }
             }
         } else {
             $token->ips()->create([
                 'ip' => $ip,
-                'ip_type_id' => $none,
-                'expires_at' => ""
+                'ip_type_id' => $none
             ]);
         }
         $temp = explode(':', $token->temporary_throttle_limit);
