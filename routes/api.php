@@ -80,3 +80,5 @@ Route::post('{slug}/activity/{campaignLogId}', [CampaignLogController::class, 'a
 Route::get('/units', [GeneralController::class, 'getUnits']);
 
 Route::post('/oneCampaign', [TestingController::class, 'oneCampaign']);
+
+Route::get('/fakeEmail', [TestingController::class, 'fakeEmail'])->withoutMiddleware('authby.jwt');

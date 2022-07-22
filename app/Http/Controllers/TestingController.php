@@ -39,6 +39,46 @@ class TestingController extends Controller
         //
     }
 
+    public function fakeEmail()
+    {
+
+        $fake_emails = [
+            "paresh",
+            "ayushupadhyay",
+            "prasuk",
+            "aditya",
+            "vedant",
+            "palkesh"
+        ];
+        $data = [];
+        for ($x = 0; $x < 1000; $x += 1) {
+            $arr = [];
+            for ($y = $x; $y < $x + 1; $y++) {
+                array_push($arr, [
+                    "name" => "Test" . $y,
+                    "email" => $fake_emails[array_rand($fake_emails)] . "+" . $y + 1 . "@whozzat.com",
+                    "mobiles" => "917223854594"
+                ]);
+            }
+
+            array_push($data, [
+                "to" => $arr,
+                "variables" => [
+                    "ORG_LOGO_LINK" => "ORG_LOGO_LINK" . $x,
+                    "ORG_NAME" => "abc" . $x,
+                    "NAME" => "default" . $x,
+                    "var1" => "defvar" . $x,
+                    "var" => "far" . $x
+                ]
+            ]);
+        }
+        return new CustomResource([
+            "data" => [
+                "sendTo" => $data
+            ]
+        ]);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
