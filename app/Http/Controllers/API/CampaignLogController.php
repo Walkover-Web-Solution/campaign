@@ -94,7 +94,7 @@ class CampaignLogController extends Controller
         $actionLogs = $campaignLog->actionLogs()->join('flow_actions', 'flow_actions.id', '=', 'action_logs.flow_action_id');
 
         $paginator = $actionLogs
-            ->select('action_logs.id', 'flow_actions.name', 'action_logs.campaign_id', 'campaign_log_id', 'status', 'report_status', 'response', 'ref_id', 'no_of_records', 'action_logs.created_at', 'action_logs.event_recieved')
+            ->select('action_logs.id', 'flow_actions.name', 'action_logs.campaign_id', 'campaign_log_id', 'status', 'report_status', 'response', 'ref_id', 'no_of_records', 'action_logs.created_at', 'action_logs.event_received')
             ->where(function ($query) use ($request) {
                 if ($request->has('status')) {
                     $query->where('status', $request->status);
