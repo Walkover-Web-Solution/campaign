@@ -94,7 +94,7 @@ class CampaignLogController extends Controller
         $actionLogs = $campaignLog->actionLogs()->join('flow_actions', 'flow_actions.id', '=', 'action_logs.flow_action_id');
 
         $paginator = $actionLogs
-            ->select('action_logs.id', 'flow_actions.name', 'action_logs.campaign_id', 'campaign_log_id', 'status', 'report_status', 'response', 'ref_id', 'no_of_records', 'action_logs.created_at')
+            ->select('action_logs.id', 'flow_actions.name', 'action_logs.campaign_id', 'campaign_log_id', 'status', 'report_status', 'response', 'ref_id', 'no_of_records', 'action_logs.created_at', 'action_logs.event_received')
             ->where(function ($query) use ($request) {
                 if ($request->has('status')) {
                     $query->where('status', $request->status);
@@ -214,7 +214,7 @@ class CampaignLogController extends Controller
                     return new CustomResource(['message' => 'Activity performed successfully.']);
                 }
             case 'play': {
-                $request->campaignLog->status = "Running";
+                    $request->campaignLog->status = "Running";
                     $request->campaignLog->is_paused = false;
                     $request->campaignLog->save();
                     $this->playCampaign($request->campaignLog);
@@ -223,6 +223,13 @@ class CampaignLogController extends Controller
             case 'stop': {
                     $request->campaignLog->status = 'Stopped';
                     $request->campaignLog->save();
+                    return new CustomResource(['message' => 'Activity performed successfully.']);
+                }
+            case 'retry': {
+                    $request->campaignLog->status = 'Running';
+                    $request->campaignLog->canRetry = false;
+                    $request->campaignLog->save();
+                    \JOB::processRunCampaign($request->campaignLog);
                     return new CustomResource(['message' => 'Activity performed successfully.']);
                 }
             default:

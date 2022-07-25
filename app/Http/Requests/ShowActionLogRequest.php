@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreCompanyTokenIPRequest extends FormRequest
+class ShowActionLogRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,6 +13,20 @@ class StoreCompanyTokenIPRequest extends FormRequest
      */
     public function authorize()
     {
+        $campaign = $this->company->campaigns()->where('slug', $this->slug)->first();
+
+        if (empty($campaign)) {
+            return false;
+        }
+
+        if ($this->actionLog->campaign->id != $campaign->id) {
+            return false;
+        }
+
+        $this->merge([
+            'campaign' => $campaign
+        ]);
+
         return true;
     }
 
@@ -24,17 +38,7 @@ class StoreCompanyTokenIPRequest extends FormRequest
     public function rules()
     {
         return [
-            'op_ip' => 'required|ip',
-            'ip_type_id' => 'required|exists:ip_types,id',
-            'expires_at' => 'nullable|date_format:Y-m-d H:i:s|after:today'
-        ];
-    }
-
-    public function messages()
-    {
-        return [
-            'op_ip.required' => 'The ip field is required.',
-            'op_ip.ip' => 'The ip must be a valid IP address.'
+            //
         ];
     }
 }

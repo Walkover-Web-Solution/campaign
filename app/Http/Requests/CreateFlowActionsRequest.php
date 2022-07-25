@@ -3,12 +3,9 @@
 namespace App\Http\Requests;
 
 use App\Models\Campaign;
-use App\Models\ChannelType;
-use App\Models\FlowAction;
 use App\Rules\ValidateConfigurationRule;
 use App\Rules\ValidateModuleDataRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class CreateFlowActionsRequest extends FormRequest
 {

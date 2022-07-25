@@ -37,6 +37,8 @@ Route::post('/register', [AuthController::class, 'register']);
 
 Route::resource('/campaigns', CampaignsController::class);
 
+Route::get('/campaigns/{slug}/actionIds',[CampaignsController::class, 'fetchFlowActionID']);
+
 Route::resource('/tokens/{token}/ips', CompanyTokenIPsController::class);
 
 Route::resource('/tokens', TokensController::class);
@@ -65,11 +67,11 @@ Route::get('/campaigns/{slug}/snippets', [CampaignsController::class, 'getSnippe
 
 Route::post('/campaigns/{slug}/copy', [CampaignsController::class, 'copy']);
 
-Route::get('/logs', [ActionLogsController::class, 'index']);
-
 Route::resource('/{slug}/flowActions', FlowActionsController::class);
 
 Route::resource('/{slug}/campaignLogs', CampaignLogController::class);
+
+Route::resource('/campaigns/{slug}/actionLogs', ActionLogsController::class);
 
 Route::resource('/actionPerformed', ActionPerformedController::class);
 

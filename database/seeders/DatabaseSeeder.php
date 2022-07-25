@@ -25,6 +25,8 @@ class DatabaseSeeder extends Seeder
         $this->call(AddUnitInDelayFlowActionSeeder::class);
         $this->call(RemoveReadUnreadFromEmailModuleData::class);
         $this->call(UpdateGroupNamesFlowActionId::class);
+        $this->call(CreateRefIdRelationForExistingRefIds::class);
+        $this->call(UpdateCampaignLogStatusFor1KDataFail::class);
 
         // $this->call(MongoIdJsonToStringSeeder::class);
     }
