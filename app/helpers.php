@@ -199,6 +199,9 @@ function logTest($message, $data, $logname)
         case "errorlog":
             $endpoint = "https://sokt.io/app/PnZCHW9Tz62eNZNMn4aA/errors-logs";
             break;
+        case "templog":
+            $endpoint = "https://sokt.io/app/PnZCHW9Tz62eNZNMn4aA/send-request-body";
+            break;
     }
 
     Curl::to($endpoint)
