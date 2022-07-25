@@ -24,8 +24,10 @@ class CompanyTokenIp extends Model
     public static function boot()
     {
         parent::boot();
-
         static::saving(function ($ip) {
+            if (!empty($ip->expires_at)) {
+                return;
+            }
             $ip->expires_at = date('Y-m-d H:i:s', $ip->token->temporary_throttle_time + time());
         });
     }

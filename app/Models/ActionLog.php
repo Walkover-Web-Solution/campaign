@@ -20,11 +20,13 @@ class ActionLog extends Model
         'created_at',
         'updated_at',
         'campaign_log_id',
+        'action_id',
         'event_recieved'
     ];
 
     protected $casts = [
-        'response' => 'json'
+        'response' => 'json',
+        'action_id'=>'json'
     ];
 
     /**
@@ -55,5 +57,13 @@ class ActionLog extends Model
     public function campaignLog()
     {
         return $this->belongsTo(CampaignLog::class, 'campaign_log_id');
+    }
+
+    /**
+     * Get the ref_ids that owns the ActionLog
+     */
+    public function ref_id()
+    {
+        return $this->hasMany(ActionLogRefIdRelation::class);
     }
 }
