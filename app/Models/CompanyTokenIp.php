@@ -37,7 +37,7 @@ class CompanyTokenIp extends Model
         if ($this->ip_type_id != 3) {
             return '-';
         }
-        return GMTToIST($value); // function comes from app\helper.php
+        return $value; // function comes from app\helper.php
     }
 
 

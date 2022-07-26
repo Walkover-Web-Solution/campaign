@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Exceptions\InvalidRequestException;
 use App\Models\Company;
 use App\Models\Token;
+use Carbon\Carbon;
 use Closure;
 use Illuminate\Cache\RateLimiter;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
@@ -147,7 +148,10 @@ class AuthByAuthkeyOrTokenMiddleware
 
             printLog("found token ip");
             if ($tokenIP->ip_type_id == $temporaryBlockedIPType) {
-                if (time() < strtotime(ISTToGMT($tokenIP->expires_at))) {
+                // Converting user time into GMT
+                $usertime=(new \DateTime(Carbon::now(), new \DateTimeZone('GMT')))->format('Y-m-d H:i:s T');
+                
+                if (strtotime($usertime)<strtotime($tokenIP->expires_at)) {
                     throw new NotFoundHttpException($ip . " is blocked temporary");
                 } else {
                     $tokenIP->delete();
