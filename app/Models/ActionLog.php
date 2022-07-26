@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ActionLog extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
+
     protected $fillable = [
         'campaign_id',
         'no_of_records',
@@ -26,7 +28,7 @@ class ActionLog extends Model
 
     protected $casts = [
         'response' => 'json',
-        'action_id'=>'json'
+        'action_id' => 'json'
     ];
 
     /**
