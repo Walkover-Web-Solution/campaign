@@ -21,7 +21,7 @@ class ActionLog extends Model
         'updated_at',
         'campaign_log_id',
         'action_id',
-        'event_recieved'
+        'event_received'
     ];
 
     protected $casts = [
