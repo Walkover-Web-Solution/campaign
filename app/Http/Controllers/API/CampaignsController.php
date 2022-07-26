@@ -285,10 +285,16 @@ class CampaignsController extends Controller
         });
 
         // creating snippet requestBody according to object created above
-        $obj->snippets['requestBody']['data']['sendTo'][0] = ['to' => [$obj->ob], 'cc' => [$obj->ob], 'bcc' => [$obj->ob]];
-        if (!$obj->isEmail) {
-            unset($obj->snippets['requestBody']['data']['sendTo'][0]['cc']);
-            unset($obj->snippets['requestBody']['data']['sendTo'][0]['bcc']);
+        $obj->snippets['requestBody']['data']['sendTo'][0] = ['to' => [$obj->ob]];
+
+        // Add only email and name in case of email exists for cc and bcc
+        if ($obj->isEmail) {
+            $obj->obWithoutMobile = [
+                'name' => 'name',
+                'email' => 'name@email.com'
+            ];
+            $obj->snippets['requestBody']['data']['sendTo'][0]['cc'] = [$obj->obWithoutMobile];
+            $obj->snippets['requestBody']['data']['sendTo'][0]['bcc'] = [$obj->obWithoutMobile];
         }
 
         if ($obj->isEmail) {
