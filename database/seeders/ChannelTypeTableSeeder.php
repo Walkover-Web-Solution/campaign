@@ -263,7 +263,8 @@ class ChannelTypeTableSeeder extends Seeder
                             "sourceFieldValue" => "name",
                             "is_required" => true,
                             "value" => "",
-                            "variables" => []
+                            "variables" => [],
+                            "variable_type" => []
                         ),
                         array(
                             "name" => "delay",
