@@ -311,6 +311,30 @@ class ChannelTypeTableSeeder extends Seeder
                 "configurations" => array(
                     "fields" => array(
                         array(
+                            "name" => "caller_id",
+                            "label" => "Caller ID",
+                            "type" => "dropdown",
+                            "source" => "",
+                            "sourceFieldLabel" => "name",
+                            "sourceFieldValue" => "name",
+                            "is_required" => true,
+                            "value" => ""
+                        ),
+                        array(
+                            "name" => "template",
+                            "type" => "dropdown",
+                            "template" => array(
+                                "name" => "",
+                                "template_id" => "",
+                            ),
+                            "source" => "",
+                            "sourceFieldLabel" => "name",
+                            "sourceFieldValue" => "name",
+                            "is_required" => true,
+                            "value" => "",
+                            "variables" => []
+                        ),
+                        array(
                             "name" => "delay",
                             "label" => "Delay for",
                             "type" => "text",

@@ -36,7 +36,7 @@ class ChannelType extends Model
             $voice = 4;
             $rcs = 5;
             $condition = 6;
-            $builder->whereIn('id', [$email, $sms, $rcs, $condition, $whatsapp]);
+            $builder->whereIn('id', [$email, $sms, $rcs, $condition, $whatsapp,$voice]);
         });
     }
 
