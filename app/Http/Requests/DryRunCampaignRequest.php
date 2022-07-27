@@ -20,6 +20,9 @@ class DryRunCampaignRequest extends FormRequest
      */
     public function authorize()
     {
+        // API REMOVED
+        return true;
+
         // get campaign using slug for same company
         $campaign = Campaign::where('slug', $this->slug)
             ->where('company_id', $this->company->id)
@@ -57,6 +60,9 @@ class DryRunCampaignRequest extends FormRequest
      */
     public function rules()
     {
+        // API REMOVED
+        return [];
+
         $validationArray = [
             'data' => 'array'
         ];
