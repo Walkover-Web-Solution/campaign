@@ -10,6 +10,7 @@ use App\Http\Resources\CustomResource;
 use App\Libs\MongoDBLib;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class RunCampaignController extends Controller
 {
@@ -95,6 +96,9 @@ class RunCampaignController extends Controller
 
     public function dryRun(DryRunCampaignRequest $request)
     {
+        // API REMOVED
+        throw new NotFoundHttpException("This API is deprecated, please use run API");
+
         $obj = new \stdClass();
         $obj->data = [];
         $obj->data['sendTo'] = [[]];
