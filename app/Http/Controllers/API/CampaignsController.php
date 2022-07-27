@@ -32,6 +32,7 @@ class CampaignsController extends Controller
 
         $campaigns = Campaign::select(explode(',', $fields))
             ->leftJoin('flow_actions', 'flow_actions.campaign_id', '=', 'campaigns.id')
+            ->where('flow_actions.deleted_at', null)
             ->where('company_id', $request->company->id)
             ->where(function ($query) use ($request) {
                 if ($request->has('name')) {
