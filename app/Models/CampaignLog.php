@@ -19,13 +19,15 @@ class CampaignLog extends Model
         'ip',
         'need_validation',
         'is_paused',
-        'canRetry'
+        'canRetry',
+        'mongo_deleted'
     ];
 
     protected $casts = [
         'need_validation' => 'boolean',
         'is_paused' => 'boolean',
         'canRetry' => 'boolean',
+        'mongo_deleted' => 'boolean'
 
     ];
 
