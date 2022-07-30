@@ -19,22 +19,22 @@ class CampaignLog extends Model
         'ip',
         'need_validation',
         'is_paused',
-        'canRetry'
+        'can_retry',
     ];
 
     protected $casts = [
         'need_validation' => 'boolean',
         'is_paused' => 'boolean',
-        'canRetry' => 'boolean',
+        'can_retry' => 'boolean',
 
     ];
 
     protected $hidden = [
         'mongo_uid',
         'updated_at',
-        'canRetry'
+        'mongo_deleted'
     ];
-    protected $appends = array('can_retry');
+
 
     public static function boot()
     {
@@ -47,18 +47,6 @@ class CampaignLog extends Model
         });
     }
 
-    /**
-     * Get the campaignLog's canRetry.
-     *
-     * @param  string  $value
-     * @return string
-     */
-    public function getCanRetryAttribute($value)
-    {
-        $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
-        $this->attributes['canRetry'] = $value;
-        return $this->attributes['canRetry'];
-    }
 
     // get campaigns
     public function campaign()

@@ -41,7 +41,7 @@ class JobLib
             } else {
                 $campaignLog->status = "Error - " .  $checkfailedJob->id;
             }
-            $campaignLog->canRetry = true;
+            $campaignLog->can_retry = true;
             $campaignLog->save();
             printLog("Exception in enqueue Main, Message :", ['Stack' => $e->getTrace()]);
             throw new ServerErrorException("Internal Server Error! : [Queue Connection Refused]");

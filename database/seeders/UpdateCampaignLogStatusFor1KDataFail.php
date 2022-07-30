@@ -31,7 +31,7 @@ class UpdateCampaignLogStatusFor1KDataFail extends Seeder
                 'requestId' => $campaignLog->mongo_uid
             ]);
             if (!empty($data)) {
-                $campaignLog->canRetry = true;
+                $campaignLog->can_retry = true;
             }
             $campaignLog->save();
         });
