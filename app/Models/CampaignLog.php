@@ -26,6 +26,7 @@ class CampaignLog extends Model
         'need_validation' => 'boolean',
         'is_paused' => 'boolean',
         'can_retry' => 'boolean',
+        'mongo_deleted' => 'boolean'
 
     ];
 
