@@ -32,7 +32,8 @@ class CampaignLogController extends Controller
         $paginator = $campaignLogs
             ->where(function ($query) use ($request) {
                 if ($request->has('status')) {
-                    $query->where('status', $request->status);
+                    $statusSplit = explode(',', $request->status);
+                    $query->whereIn('status', $statusSplit);
                 }
                 if ($request->has('requestId')) {
                     $query->where('mongo_uid', $request->requestId);
@@ -97,7 +98,8 @@ class CampaignLogController extends Controller
             ->select('action_logs.id', 'flow_actions.name', 'action_logs.campaign_id', 'campaign_log_id', 'status', 'report_status', 'response', 'ref_id', 'no_of_records', 'action_logs.created_at', 'action_logs.event_received')
             ->where(function ($query) use ($request) {
                 if ($request->has('status')) {
-                    $query->where('status', $request->status);
+                    $statusSplit = explode(',', $request->status);
+                    $query->whereIn('status', $statusSplit);
                 }
                 if ($request->has('report_status')) {
                     $query->where('report_status', $request->status);

@@ -16,8 +16,6 @@ class FilterTableSeeder extends Seeder
      */
     public function run()
     {
-        Filter::truncate();
-        ConditionFilter::truncate();
         $filtersJson = [
             "Countries" =>  [
                 [
@@ -1831,9 +1829,24 @@ class FilterTableSeeder extends Seeder
             ]
         ];
 
-        collect($filtersJson)->map(function ($value, $key) {
+        $obj = (object)[];
+        $obj->truncate = false;
+        collect($filtersJson)->map(function ($value, $key) use ($obj) {
+            if ($obj->truncate)
+                return;
             $condition = Condition::where('name', $key)->first();
-            $condition->filters()->createMany($value);
+            if ($condition->filters()->count() != count($value)) {
+                $obj->truncate = true;
+            }
         });
+
+        if ($obj->truncate) {
+            Filter::truncate();
+            ConditionFilter::truncate();
+            collect($filtersJson)->map(function ($value, $key) use ($obj) {
+                $condition = Condition::where('name', $key)->first();
+                $condition->filters()->createMany($value);
+            });
+        }
     }
 }
