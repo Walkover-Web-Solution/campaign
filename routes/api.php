@@ -16,6 +16,7 @@ use App\Http\Controllers\API\ConditionsController;
 use App\Http\Controllers\API\EventsController;
 use App\Http\Controllers\API\GeneralController;
 use App\Http\Controllers\API\RunCampaignController;
+use App\Http\Controllers\ShowMongoDataController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -78,6 +79,8 @@ Route::resource('/actionPerformed', ActionPerformedController::class);
 Route::post('{slug}/activity', [CampaignLogController::class, 'activities']);
 
 Route::post('{slug}/activity/{campaignLogId}', [CampaignLogController::class, 'activity']);
+
+Route::post('{slug}/mongoData', [ShowMongoDataController::class, 'mongoDataActivity']);
 
 Route::get('/units', [GeneralController::class, 'getUnits']);
 
