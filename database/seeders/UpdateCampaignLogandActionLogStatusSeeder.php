@@ -15,16 +15,12 @@ class UpdateCampaignLogandActionLogStatusSeeder extends Seeder
      */
     public function run()
     {
-        $campaigns = CampaignLog::where('status','Complete')->get();
-        $campaigns->each(function ($campaign) {
-            $campaign->status='Completed';
-            $campaign->save();
-        });
+        CampaignLog::where('status', 'Complete')->update([
+            'status' => 'Completed'
+        ]);
 
-        $actionLogs=ActionLog::where('status','Success')->orWhere('status','Failed')->get();
-        $actionLogs->each(function ($actionLog) {
-            $actionLog->status='Completed';
-            $actionLog->save();
-        });
+        ActionLog::where('status', 'Success')->orWhere('status', 'Failed')->update([
+            'status' => 'Completed'
+        ]);
     }
 }
