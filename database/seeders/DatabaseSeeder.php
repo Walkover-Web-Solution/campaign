@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
         $this->call(UpdateGroupNamesFlowActionId::class);
         $this->call(CreateRefIdRelationForExistingRefIds::class);
         $this->call(UpdateCampaignLogStatusFor1KDataFail::class);
+        $this->call(UpdateCampaignLogandActionLogStatusSeeder::class);
 
         // $this->call(MongoIdJsonToStringSeeder::class);
     }
