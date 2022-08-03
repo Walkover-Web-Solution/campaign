@@ -20,14 +20,15 @@ class CampaignLog extends Model
         'need_validation',
         'is_paused',
         'can_retry',
+        'loop_detected'
     ];
 
     protected $casts = [
         'need_validation' => 'boolean',
         'is_paused' => 'boolean',
         'can_retry' => 'boolean',
-        'mongo_deleted' => 'boolean'
-
+        'mongo_deleted' => 'boolean',
+        'loop_detected' => 'boolean'
     ];
 
     protected $hidden = [
