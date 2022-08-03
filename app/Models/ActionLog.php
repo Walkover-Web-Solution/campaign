@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ActionLog extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
+
     protected $fillable = [
         'campaign_id',
         'no_of_records',
@@ -19,11 +21,15 @@ class ActionLog extends Model
         'mongo_id',
         'created_at',
         'updated_at',
-        'campaign_log_id'
+        'campaign_log_id',
+        'action_id',
+        'event_received',
+        'defaultRecords'
     ];
 
     protected $casts = [
-        'response' => 'json'
+        'response' => 'json',
+        'action_id' => 'json'
     ];
 
     /**
@@ -54,5 +60,13 @@ class ActionLog extends Model
     public function campaignLog()
     {
         return $this->belongsTo(CampaignLog::class, 'campaign_log_id');
+    }
+
+    /**
+     * Get the ref_ids that owns the ActionLog
+     */
+    public function ref_id()
+    {
+        return $this->hasMany(ActionLogRefIdRelation::class);
     }
 }

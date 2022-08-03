@@ -59,6 +59,14 @@ class ChannelEventTableSeeder extends Seeder
             [
                 'channel_type_id' => $channelMap['RCS'],
                 'event_id' => $eventsMap['Failed'],
+            ],
+            [
+                'channel_type_id' => $channelMap['Whatsapp'],
+                'event_id' => $eventsMap['Success'],
+            ],
+            [
+                'channel_type_id' => $channelMap['Whatsapp'],
+                'event_id' => $eventsMap['Failed'],
             ]
         ];
 

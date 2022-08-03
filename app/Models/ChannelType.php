@@ -13,6 +13,7 @@ class ChannelType extends Model
     protected $fillable = [
         'name',
         'configurations',
+        "capacity"
     ];
 
     protected $casts = [
@@ -21,20 +22,21 @@ class ChannelType extends Model
 
     protected $hidden = array(
         'created_at',
-        'updated_at'
+        'updated_at',
+        "capacity"
     );
 
     // This function executed when channel type model initiated
     protected static function booted()
     {
         static::addGlobalScope('only_email_sms', function (Builder $builder) {
-            $emailType = 1;
+            $email = 1;
             $sms = 2;
             $whatsapp = 3;
             $voice = 4;
             $rcs = 5;
             $condition = 6;
-            $builder->whereIn('id', [$emailType, $sms, $rcs, $condition]);
+            $builder->whereIn('id', [$email, $sms, $rcs, $condition, $whatsapp]);
         });
     }
 

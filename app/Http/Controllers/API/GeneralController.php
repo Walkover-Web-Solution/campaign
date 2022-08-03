@@ -59,4 +59,22 @@ class GeneralController extends Controller
 
         return new CustomResource($units[$unit]);
     }
+
+    public function getStatus(Request $request)
+    {
+        if (!$request->has('field')) {
+            throw new NotFoundHttpException('Invalid Field!');
+        }
+        $field = $request->field;
+
+        $status = [
+            "campaignLog" => ['Running', 'Paused', 'Stopped', 'Completed', 'Error'],
+            "actionLog" => ['Pending', 'Completed', 'Stopped']
+        ];
+
+        if (empty($status[$field])) {
+            throw new NotFoundHttpException('Invalid Field!');
+        }
+        return new CustomResource($status[$field]);
+    }
 }

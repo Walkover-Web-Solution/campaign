@@ -20,6 +20,9 @@ class DryRunCampaignRequest extends FormRequest
      */
     public function authorize()
     {
+        // API REMOVED
+        return true;
+
         // get campaign using slug for same company
         $campaign = Campaign::where('slug', $this->slug)
             ->where('company_id', $this->company->id)
@@ -44,7 +47,7 @@ class DryRunCampaignRequest extends FormRequest
     }
     protected function failedAuthorization()
     {
-        if(!$this->limit){
+        if (!$this->limit) {
             throw new AuthorizationException('Limit for today exceeded by 5.');
         }
         throw new AuthorizationException('This action is unauthorized.');
@@ -57,6 +60,9 @@ class DryRunCampaignRequest extends FormRequest
      */
     public function rules()
     {
+        // API REMOVED
+        return [];
+
         $validationArray = [
             'data' => 'array'
         ];
@@ -119,17 +125,21 @@ class DryRunCampaignRequest extends FormRequest
     {
         $obj = new \stdClass();
         $obj->case = '';
-        collect($this->data)->map(function ($item) use ($obj) {
-            if (count(explode(',', $item['value'])) > 5) {
-                $obj->case .= empty($obj->case) ? $item['name'] : ',' . $item['name'];
-            }
+        $keyArr = ['to', 'cc', 'bcc', 'mobiles'];
+        collect($this->data)->map(function ($item) use ($obj, $keyArr) {
+            // Exclude variables to explode
+            if (in_array($item['name'], $keyArr))
+                if (count(explode(',', $item['value'])) > 5) {
+                    $obj->case .= empty($obj->case) ? $item['name'] : ',' . $item['name'];
+                }
         });
         return $obj->case;
     }
     public function checkDayLimit()
     {
         $dayLimit = 5;
-        $campaignLogs = $this->campaign->campaignLogs()->where('created_at', '>=', Carbon::parse('-24 hours'))->where('ip',request()->ip())->get();
+        $request_ip = !empty(request()->ip) ? request()->ip : request()->ip();
+        $campaignLogs = $this->campaign->campaignLogs()->where('created_at', '>=', Carbon::parse('-24 hours'))->where('ip', $request_ip)->get();
         if (count($campaignLogs) >= $dayLimit)
             return false;
         return true;

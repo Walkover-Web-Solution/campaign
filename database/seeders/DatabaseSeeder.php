@@ -22,9 +22,12 @@ class DatabaseSeeder extends Seeder
         $this->call(ChannelEventTableSeeder::class);
         $this->call(ConditionTableSeeder::class);
         $this->call(FilterTableSeeder::class);
-        $this->call(AddUnitInDelayFlowActionSeeder::class);
-        $this->call(RemoveReadUnreadFromEmailModuleData::class);
-        $this->call(UpdateGroupNamesFlowActionId::class);
+        // $this->call(AddUnitInDelayFlowActionSeeder::class);
+        // $this->call(RemoveReadUnreadFromEmailModuleData::class);
+        // $this->call(UpdateGroupNamesFlowActionId::class);
+        $this->call(CreateRefIdRelationForExistingRefIds::class);
+        $this->call(UpdateCampaignLogStatusFor1KDataFail::class);
+        $this->call(UpdateCampaignLogandActionLogStatusSeeder::class);
 
         // $this->call(MongoIdJsonToStringSeeder::class);
     }

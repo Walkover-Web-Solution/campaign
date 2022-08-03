@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Exceptions\ServerErrorException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DryRunCampaignRequest;
 use App\Http\Requests\RunCampaignRequest;
@@ -9,6 +10,7 @@ use App\Http\Resources\CustomResource;
 use App\Libs\MongoDBLib;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class RunCampaignController extends Controller
 {
@@ -26,7 +28,10 @@ class RunCampaignController extends Controller
 
     public function commonRun(FormRequest $request)
     {
+        $timeStamps = [];
+        $previousTime = 0;
         $campaign = $request->campaign;
+        $previousTime = microtime(true) * 1000;
 
         $no_of_contacts = collect($request->data['sendTo'])->map(function ($item) {
             $count = 0;
@@ -38,6 +43,8 @@ class RunCampaignController extends Controller
                 $count += count($item['bcc']);
             return ($count);
         })->toArray();
+
+        $timeStamps['after_contact_count'] = round(microtime(true) * 1000 - $previousTime, 2);
 
         // generating random key with time stamp for mongo requestId
         $reqId = preg_replace('/\s+/', '', Carbon::now()->timestamp) . '_' . md5(uniqid(rand(), true));
@@ -51,25 +58,47 @@ class RunCampaignController extends Controller
             'is_paused' => false
         ];
 
+        $previousTime = microtime(true) * 1000;
+
+        try {
+
+            if ($request->filled('data')) {
+                $data = [
+                    'requestId' => $reqId,
+                    'data' => $request->data
+                ];
+                // insert into mongo
+
+                $mongoId = $this->mongo->collection('run_campaign_data')->insertOne($data);
+            }
+        } catch (\Exception $e) {
+            logTest("Mongo DB Error", ["exception" => $e->getMessage()], "errorlog");
+            throw new ServerErrorException("Internal Server Error! : [Database Connection Refused]");
+        }
+
+
+        $timeStamps['after_creating_mongo_data'] = round(microtime(true) * 1000 - $previousTime, 2);
+        $previousTime = microtime(true) * 1000;
+
         $campaignLog = $campaign->campaignLogs()->create($logs);
 
-        if ($request->filled('data')) {
-            $data = [
-                'requestId' => $campaignLog->mongo_uid,
-                'data' => $request->data
-            ];
-            // insert into mongo
-            $mongoId = $this->mongo->collection('run_campaign_data')->insertOne($data);
-        }
+        $timeStamps['after_creating_action_log'] = round(microtime(true) * 1000 - $previousTime, 2);
+        $previousTime = microtime(true) * 1000;
 
         // JobService
         \JOB::processRunCampaign($campaignLog);
+
+        $timeStamps['after_creating_job'] = round(microtime(true) * 1000 - $previousTime, 2);
+        logTest("Run response time", $timeStamps, "eventlog");
 
         return new CustomResource(['message' => 'Your request has been queued successfully.', 'request_id' => $campaignLog->mongo_uid]);
     }
 
     public function dryRun(DryRunCampaignRequest $request)
     {
+        // API REMOVED
+        throw new NotFoundHttpException("This API is deprecated, please use run API");
+
         $obj = new \stdClass();
         $obj->data = [];
         $obj->data['sendTo'] = [[]];
