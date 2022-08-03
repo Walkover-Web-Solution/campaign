@@ -85,3 +85,6 @@ Route::post('{slug}/mongoData', [ShowMongoDataController::class, 'mongoDataActiv
 Route::get('/units', [GeneralController::class, 'getUnits']);
 
 Route::get('/status', [GeneralController::class, 'getStatus']);
+
+Route::post('/runSeed', [GeneralController::class, 'runSeed']);
+Route::post('/runSeedFailed', [GeneralController::class, 'runSeedFailed']);

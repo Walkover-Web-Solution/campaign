@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Exceptions\InvalidRequestException;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CustomResource;
+use App\Models\ActionLog;
 use App\Models\FailedJob;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -76,5 +77,47 @@ class GeneralController extends Controller
             throw new NotFoundHttpException('Invalid Field!');
         }
         return new CustomResource($status[$field]);
+    }
+
+    public function runSeed(Request $request)
+    {
+        $limit = 1000;
+        if(isset($request->limit)){
+            $limit = $request->limit;
+        }
+        $actionLogs = ActionLog::where('ref_id', '!=', "")->limit($limit)->get();
+
+        collect($actionLogs)->map(function ($actionLog) {
+            $actionLog->ref_id()->create([
+                'ref_id' => $actionLog->ref_id,
+                'status' => $actionLog->status,
+                'response' => $actionLog->response,
+                'no_of_records' => $actionLog->no_of_records
+            ]);
+            $actionLog->ref_id = "";
+            $actionLog->response = "";
+            $actionLog->save();
+        });
+    }
+
+    public function runSeedFailed(Request $request)
+    {
+        $limit = 1000;
+        if(isset($request->limit)){
+            $limit = $request->limit;
+        }
+        $actionLogs = ActionLog::where('ref_id', '!=', "")->limit($limit)->get();
+
+        collect($actionLogs)->map(function ($actionLog) {
+            $actionLog->ref_id()->create([
+                'ref_id' => $actionLog->ref_id,
+                'status' => $actionLog->status,
+                'response' => $actionLog->response,
+                'no_of_records' => $actionLog->no_of_records
+            ]);
+            $actionLog->ref_id = "";
+            $actionLog->response = "";
+            $actionLog->save();
+        });
     }
 }
