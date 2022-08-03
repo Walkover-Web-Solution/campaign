@@ -66,7 +66,7 @@ class RunCampaignRequest extends FormRequest
 
         $validaitonArray = [
             'data.sendTo' => 'array',
-            'data.sendTo.*.to' => 'array|max:50',
+            'data.sendTo.*.to' => 'required|array|max:50',
             'data.sendTo.*.cc' => 'array|max:50',
             'data.sendTo.*.bcc' => 'array|max:50',
             'data.attachments' => 'array',
